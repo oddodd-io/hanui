@@ -1,0 +1,263 @@
+---
+title: 'rem vs px, 언제 뭘 써야 할까'
+description: 'CSS 단위 선택 기준 정리. 글자와 여백은 rem, 테두리와 아이콘은 px을 쓰는 이유와 접근성 관점, 62.5% 트릭을 권하지 않는 이유, KRDS 17px 기준까지 다룹니다.'
+date: '2025-02-15'
+tags: ['CSS', 'rem', 'px', '반응형', '웹접근성', '프론트엔드', 'TailwindCSS']
+author: 'odada'
+---
+
+CSS 단위 뭐 써요?
+
+```css
+/* 이거? */
+font-size: 16px;
+padding: 24px;
+
+/* 아니면 이거? */
+font-size: 1rem;
+padding: 1.5rem;
+```
+
+"rem이 좋대" "px이 정확해" 이런 얘기 많이 들어봤을 거예요. 근데 정답은 **상황에 따라 달라요**.
+
+## 일단 뭐가 다른지
+
+### px (픽셀)
+
+절대 단위예요. 1px은 언제나 1px이에요.
+
+```css
+.box {
+  width: 200px; /* 항상 200px */
+  border: 1px solid #ccc; /* 항상 1px */
+}
+```
+
+### rem (root em)
+
+상대 단위예요. `html`의 `font-size`가 기준이에요.
+
+```css
+html {
+  font-size: 16px; /* 기본값 */
+}
+
+.text {
+  font-size: 1rem; /* = 16px */
+  font-size: 1.5rem; /* = 24px */
+  font-size: 0.875rem; /* = 14px */
+}
+```
+
+## 언제 px 쓰나
+
+**1. 테두리, 그림자**
+
+```css
+.card {
+  border: 1px solid #e5e5e5; /* ✅ px */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* ✅ px */
+}
+```
+
+테두리가 1.5px이면 어색해요. 1px 아니면 2px이에요.
+
+**2. 아이콘 크기**
+
+```css
+.icon {
+  width: 24px; /* ✅ px */
+  height: 24px;
+}
+```
+
+아이콘은 고정 크기가 나아요. 24px 아이콘이 글자 크기 따라 늘어나면 이상해져요.
+
+**3. 미디어 쿼리**
+
+```css
+@media (max-width: 768px) {
+  /* ✅ px — 브레이크포인트는 px이 직관적이에요 */
+}
+```
+
+**4. 최소/최대 크기**
+
+```css
+.container {
+  max-width: 1200px; /* ✅ px */
+  min-height: 100px;
+}
+```
+
+## 언제 rem 쓰나
+
+**1. 글자 크기**
+
+```css
+.heading {
+  font-size: 2rem; /* ✅ rem */
+}
+
+.body {
+  font-size: 1rem;
+}
+
+.caption {
+  font-size: 0.875rem;
+}
+```
+
+사용자가 브라우저에서 글자 크기를 키우면 rem은 같이 커져요. px은 안 커져요.
+
+**2. 여백**
+
+```css
+.section {
+  padding: 2rem; /* ✅ rem */
+  margin-bottom: 1.5rem;
+}
+```
+
+글자 크기를 키우면 여백도 같이 늘어나야 읽기 편해요.
+
+**3. 컴포넌트 간격**
+
+```css
+.card {
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+}
+```
+
+## 접근성이 핵심이에요
+
+왜 rem을 써야 하냐면 이것 때문이에요.
+
+```css
+/* 브라우저 설정: 글자 크기 150% */
+
+/* px 사용 */
+.text {
+  font-size: 16px;
+} /* 그대로 16px. 안 커짐 */
+
+/* rem 사용 */
+.text {
+  font-size: 1rem;
+} /* 24px로 커짐 */
+```
+
+시력이 안 좋은 사용자는 브라우저에서 기본 글자 크기를 키워요. rem을 쓰면 사이트 전체가 비례해서 커지고, px을 쓰면 안 커져요.
+
+**공공 SI에서 접근성 검수할 때 이걸 봐요.**
+
+## 62.5% 트릭은 권하지 않아요
+
+```css
+html {
+  font-size: 62.5%; /* 16px * 0.625 = 10px */
+}
+
+body {
+  font-size: 1.6rem; /* = 16px */
+}
+
+.heading {
+  font-size: 2.4rem; /* = 24px, 계산 쉬움 */
+}
+```
+
+계산은 쉬워지는데 문제가 있어요.
+
+1. 기본 글자 크기를 강제로 바꿔버려요
+2. 외부 라이브러리 스타일이 깨질 수 있어요
+3. 나중에 유지보수할 때 혼란스러워요
+
+그냥 16px 기준으로 계산하세요. 익숙해지면 어렵지 않아요.
+
+```
+1rem     = 16px
+0.5rem   = 8px
+0.75rem  = 12px
+0.875rem = 14px
+1.25rem  = 20px
+1.5rem   = 24px
+2rem     = 32px
+```
+
+## KRDS는 17px 기준이에요
+
+한국 공공 디자인 시스템(KRDS)은 기본 글자 크기가 17px이에요.
+
+```css
+html {
+  font-size: 17px;
+}
+
+.body-text {
+  font-size: 1rem; /* = 17px */
+}
+```
+
+이 경우 rem 계산이 좀 달라져요.
+
+```
+1rem     = 17px
+0.875rem ≈ 15px
+1.5rem   ≈ 25.5px
+```
+
+[HANUI](https://hanui.io)는 이 17px 기준이 세팅되어 있어서 그냥 rem 쓰면 KRDS 스펙에 맞아요.
+
+## Tailwind에서는?
+
+Tailwind는 기본적으로 rem을 써요.
+
+```html
+<p class="text-base">16px (1rem)</p>
+<p class="text-lg">18px (1.125rem)</p>
+<p class="text-xl">20px (1.25rem)</p>
+
+<div class="p-4">padding: 1rem</div>
+<div class="mt-6">margin-top: 1.5rem</div>
+```
+
+근데 일부는 px이에요.
+
+```html
+<div class="border">1px border</div>
+<div class="rounded-lg">8px border-radius</div>
+```
+
+Tailwind 설계자들이 이미 고민해서 정해놨어요.
+
+## 정리
+
+| 용도 | 단위 | 이유 |
+| --- | --- | --- |
+| 글자 크기 | rem | 접근성, 사용자 설정 반영 |
+| 여백/패딩 | rem | 글자와 비례해서 확대 |
+| 테두리 | px | 1px이 자연스러움 |
+| 그림자 | px | 섬세한 조절 필요 |
+| 아이콘 | px | 고정 크기 유지 |
+| 미디어쿼리 | px | 디바이스 기준 |
+| max-width | px | 레이아웃 고정 |
+
+**기본 원칙은 이거예요. 글자와 여백은 rem, 나머지는 px.**
+
+복잡하게 생각하지 마세요. 이 원칙만 지키면 접근성도 챙기고, 반응형도 자연스러워요.
+
+---
+
+## 관련 링크
+
+- [HANUI — KRDS 기반 디자인 시스템](https://hanui.io)
+- [KRDS 디자인 토큰 Tailwind 적용](/blog/krds-tokens)
+- [Tailwind로 디자인 시스템 만들기](/blog/tips-tailwind-design-system)
+- [React 웹접근성 체크리스트](/blog/tips-react-a11y-checklist)
+- [claude-settings](https://github.com/hanui-o/claude-settings) — CLAUDE.md 설정 저장소
