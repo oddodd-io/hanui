@@ -1,0 +1,199 @@
+---
+title: '번들 70% 줄였다고 쓴 뒤, 6개월 만에 다시 재봤어요'
+description: '릴리즈 노트에 "70% 감소"라고 적고 끝냈던 최적화를 다시 측정했습니다. 그때 뭘 했는지, 지금 뭐가 남아 있는지 — sideEffects 누락과 평평한 400kB까지 실측으로 확인했어요.'
+date: '2026-08-10'
+tags: ['성능최적화', '번들사이즈', '프론트엔드', 'tree-shaking', '품질']
+author: 'odada'
+---
+
+2월에 이런 커밋을 올렸어요.
+
+```
+feat: major bundle optimization and accessibility improvements
+
+Bundle Optimization (70% size reduction)
+```
+
+**70% 감소.** 릴리즈 노트에 적고, 뿌듯해하고, 다음 일로 넘어갔어요.
+
+6개월이 지났어요. 그동안 컴포넌트가 계속 늘었고, 차트가 들어왔고, Kits가 붙었어요. 그런데 그 뒤로 **번들을 한 번도 다시 안 재봤더라고요.**
+
+오늘 다시 재봤어요. 그때 뭘 했고 지금 뭐가 남았는지, 실측으로 정리했습니다.
+
+## 그때 한 건 코드 최적화가 아니었어요
+
+먼저 그 70%가 뭐였는지부터요. 코드를 줄인 게 아니에요. `package.json`에서 **의존성을 옮긴 것**이었어요.
+
+```diff
+  "peerDependencies": {
+    "react": "^18.0.0",
+-   "react-dom": "^18.0.0"
++   "react-dom": "^18.0.0",
++   "@radix-ui/react-accordion": "^1.2.0",
++   "@radix-ui/react-alert-dialog": "^1.1.0",
+    ... (Radix 17개)
++   "lucide-react": "^0.400.0",
++   "tailwindcss": "^3.0.0"
+  },
+  "dependencies": {
+-   "@radix-ui/react-accordion": "^1.2.12",
+-   "@radix-ui/react-alert-dialog": "^1.1.15",
+    ... (전부 제거)
+```
+
+`dependencies`에 있으면 우리 패키지를 설치할 때 **같이 따라와요.** `peerDependencies`로 옮기면 "이건 너가 이미 갖고 있을 테니 네 걸 써"가 돼요.
+
+컴포넌트 라이브러리를 쓰는 프로젝트는 Radix를 이미 갖고 있을 확률이 높아요. shadcn/ui 계열이면 거의 확실하고요. 그런데 우리가 `dependencies`로 들고 있으면 **같은 패키지가 두 벌 설치돼요.**
+
+빌드 설정도 같이 바꿨어요. 외부 처리 목록이 하드코딩이었거든요.
+
+```diff
+  external: [
+    'react', 'react-dom', 'react/jsx-runtime', 'next/link',
+-   '@radix-ui/react-dropdown-menu',
+-   '@radix-ui/react-navigation-menu',
+-   'swiper', 'swiper/react', 'swiper/modules',
+-   'swiper/css', 'swiper/css/navigation',
++   /^@radix-ui\//,
++   /^lucide-react/,
++   /^@tanstack\//,
++   /^swiper/,
+  ],
+```
+
+하나씩 적다 보면 새 Radix 패키지를 추가할 때마다 여기도 고쳐야 해요. 그리고 까먹어요. 까먹으면 그 패키지가 조용히 번들 안으로 들어와요. 정규식으로 바꾸니까 **까먹을 일 자체가 없어졌어요.**
+
+한 가지 정직하게 덧붙이면, 이건 공짜가 아니었어요. 커밋에 이렇게 적혀 있어요.
+
+```
+BREAKING CHANGE: Radix UI packages are now peer dependencies.
+Users must install them separately.
+```
+
+쓰는 사람이 직접 설치해야 해요. **70%는 우리가 줄인 게 아니라, 설치 책임을 옮겨서 중복을 없앤 것**에 가까워요. 자주 쓰는 라이브러리라면 옳은 결정이지만, 대가가 있는 결정이었어요.
+
+## 두 번째로 한 건 차트 분리였어요
+
+차트가 들어오면서 하나 더 했어요. 빌드 엔트리를 둘로 나눴어요.
+
+```ts
+entry: {
+  index: resolve(__dirname, 'src/index.ts'),
+  charts: resolve(__dirname, 'src/charts/index.ts'),
+},
+```
+
+결과가 이래요. 실제 `dist` 파일 크기예요.
+
+| 파일 | 크기 |
+| --- | --- |
+| `index.mjs` | 594 KB |
+| `charts.mjs` | **18 KB** |
+
+차트를 안 쓰는 프로젝트는 저 18KB를 아예 안 받아요. `@hanui/react/charts`로 따로 들어가 있으니까요. 지금 서브패스가 10개예요 — `./charts`, `./kits/authentication`, `./kits/dashboard`, `./kits/form`, `./kits/settings`, 그리고 CSS들.
+
+**무거운 걸 지우는 것보다, 안 쓰는 사람이 안 받게 하는 게 쉬워요.**
+
+## 그런데 지금 다시 재보니
+
+여기까지가 6개월 전 이야기고, 오늘 다시 재보니 두 가지가 남아 있었어요.
+
+### 하나: `sideEffects`가 없어요
+
+`package.json`을 열어봤는데 이 필드가 없어요.
+
+```json
+{
+  "sideEffects": false
+}
+```
+
+이게 없으면 번들러가 **"이 파일을 지워도 되나?"를 확신하지 못해요.** import만 하고 안 쓰는 모듈이 있어도, 그 파일이 뭔가 부작용(전역 변수 수정 같은 것)을 일으킬까 봐 안 지우고 남겨둬요.
+
+CSS 파일이 있으면 `false` 대신 배열로 예외를 둬야 해요.
+
+```json
+{
+  "sideEffects": ["**/*.css"]
+}
+```
+
+이걸 6개월간 몰랐어요. 70%를 줄이면서 정작 **tree-shaking을 하겠다는 선언은 안 한 셈**이에요.
+
+### 둘: 문서 사이트 라우트가 평평해요
+
+빌드 출력을 봤어요. 페이지별 First Load JS예요.
+
+```
+/kits/board              6.7 kB    409 kB
+/components/radio        6.13 kB   409 kB
+/kits/settings           4.95 kB   408 kB
+/templates/basic-layout  4.49 kB   407 kB
+/docs/installation       4.76 kB   407 kB
+```
+
+왼쪽(페이지 고유 코드)은 4~7kB로 작아요. 그런데 오른쪽 **First Load가 전부 407~409kB로 똑같아요.**
+
+페이지마다 쓰는 컴포넌트가 다른데 처음 받는 양이 같다는 건, **라우트 단위 코드 분할이 사실상 안 걸려 있다는 뜻**이에요. Button 하나 보러 온 사람이 차트와 Kits까지 다 받고 있는 거죠.
+
+원인은 짐작이 가요. 문서 사이트 공통 레이아웃이 `@hanui/react`를 통째로 import하고 있을 거예요. 라이브러리는 서브패스로 잘 갈라놨는데, **정작 우리 문서 사이트가 그걸 안 쓰고 있는 것**이고요.
+
+남 주라고 만든 문을 우리가 안 쓰고 있었어요.
+
+## 체크리스트는 있었는데요
+
+여기서 좀 뼈아픈 부분이 있어요. 저장소에 성능 점검 커맨드가 **이미 있어요.** `.claude/commands/optimize.md`에 이렇게 적혀 있어요.
+
+```
+### 1. 번들 최적화 (CRITICAL)
+- barrel import (index.ts에서 전체 re-export) 사용 여부 → 직접 import 권장
+- 동적 import (React.lazy, next/dynamic) 활용 여부
+- tree-shaking이 안 되는 import 패턴
+```
+
+**위에서 발견한 두 문제가 여기 그대로 적혀 있어요.** barrel import 지적도, tree-shaking 지적도요.
+
+체크리스트가 없어서 놓친 게 아니에요. **돌리지 않아서 놓친 거예요.**
+
+이게 품질 개선에서 제일 흔한 실패라고 생각해요. 규칙을 만드는 건 하루면 되는데, 그 규칙이 계속 실행되게 만드는 건 다른 일이거든요. 만들어두고 잊으면 없는 것과 같아요.
+
+## 그래서 뭘 바꿀 거냐면
+
+두 가지로 정리했어요.
+
+**측정을 릴리즈에 붙이기.** 번들 크기를 사람이 생각날 때 재는 한 6개월씩 벌어져요. 릴리즈 스크립트에서 `dist` 크기를 찍고, 직전 버전과 비교해서 일정 비율 이상 커지면 알려주는 정도면 충분해요. 정확한 예산 관리까지 안 가도, **"어 이번에 왜 커졌지?"가 나오는 시점만 앞당기면** 돼요.
+
+**한 번에 하나만.** `sideEffects` 추가와 문서 사이트 import 정리를 같이 하면, 나중에 크기가 변했을 때 뭐 때문인지 몰라요. 따로 하고 각각 재는 게 결국 빨라요.
+
+## 직접 재보세요
+
+이 글에서 제일 쓸모 있는 건 제 숫자가 아니라 명령어일 거예요. 5분이면 자기 프로젝트 상태를 알 수 있어요.
+
+```bash
+# 1) 배포되는 파일이 실제로 몇 KB인지
+ls -la dist/*.mjs dist/*.js
+
+# 2) tree-shaking 힌트가 있는지
+grep '"sideEffects"' package.json
+
+# 3) dependencies에 무거운 게 들어있진 않은지
+#    (쓰는 쪽도 갖고 있을 법한 게 여기 있으면 peer로 옮길 후보)
+node -e "console.log(Object.keys(require('./package.json').dependencies||{}))"
+```
+
+Next.js 앱이면 `next build` 출력의 First Load JS 열만 봐도 돼요. **전 라우트가 비슷한 숫자면 코드 분할이 안 걸린 거예요.**
+
+## 마무리
+
+성능 최적화 글은 보통 "이렇게 해서 좋아졌어요"로 끝나요. 저도 2월에 그렇게 끝냈고요.
+
+그런데 최적화는 **상태가 아니라 시점**이더라고요. 2월의 70%는 2월에만 참이었어요. 그 뒤로 컴포넌트가 늘고 차트가 붙는 동안 아무도 다시 안 쟀고, 정작 놓친 것들은 이미 우리가 만들어둔 체크리스트에 적혀 있었어요.
+
+그래서 오늘 얻은 결론은 `sideEffects`를 넣어야 한다는 게 아니에요. **다시 재는 일이 저절로 일어나게 만들어야 한다**는 거예요. 안 그러면 6개월 뒤에 또 같은 글을 쓰게 되니까요.
+
+## 관련 링크
+
+- [HANUI — KRDS 기반 디자인 시스템](https://hanui.io)
+- [PR 리뷰가 병목이 될 때](/blog/agile-pr-review-bottleneck) — 만들어둔 규칙이 안 돌아가는 문제
+- [프론트엔드 추정은 왜 항상 틀릴까](/blog/agile-frontend-estimation) — 감이 아니라 저장소를 여는 방법
+- [claude-settings](https://github.com/hanui-o/claude-settings) — `/perf`, `/optimize` 커맨드 저장소
