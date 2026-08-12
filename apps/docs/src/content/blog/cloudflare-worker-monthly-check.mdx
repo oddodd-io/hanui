@@ -1,0 +1,358 @@
+---
+title: '사내 월간 점검 폼, Cloudflare Worker 하나로 만들기 — 서버도 DB도 없이'
+description: '구글폼으로는 안 되는 사내 점검 양식을 Worker 하나로 해결한 기록. 정적 페이지 + API 한 워커에 담기, 프론트에서 관리자 비밀번호 제거하기, KV LIST 한도 없이 월별 목록 조회하기.'
+date: '2026-08-13'
+tags: ['Cloudflare Workers', 'Workers KV', 'HMAC', '사내도구', '서버리스']
+author: 'odada'
+---
+
+사내에서 매달 걷어야 하는 점검 양식 같은 거, 있잖아요.
+
+"구글폼으로 하면 되지 않아요?"
+
+되긴 돼요. 그런데 양식이 좀 특이하면 막혀요. 한글·영문 병기, 항목별로 다른 조건부 입력, 그리고 **누가 아직 안 냈는지** 명단과 대조해서 보여주는 화면. 이쯤 되면 폼 도구로는 안 되고 직접 만들어야 해요.
+
+문제는 이걸 만들려고 하면 보통 이렇게 되죠. Next.js 띄우고, DB 붙이고, 인증 붙이고, 배포 파이프라인 만들고... 한 달에 한 번 열리는 페이지 하나에요.
+
+Cloudflare Worker **하나로** 끝냈습니다. 파일 3개, 코드 700줄 정도. 오늘은 그 구조 얘기예요.
+
+## 전체 구조
+
+```text
+public/index.html   — 입력 폼 + 관리자 대시보드 (빌드 없음)
+public/_headers     — 캐시 정책
+src/worker.js       — API 3개 (159줄)
+wrangler.toml       — KV 바인딩 + 에셋 바인딩
+```
+
+끝이에요. 빌드 스텝 없고, `node_modules`는 wrangler 하나뿐이에요.
+
+## 문제 1: 정적 페이지와 API를 어디에 두지?
+
+보통은 페이지는 Pages에, API는 Worker에 나눠 올려요. 그러면 도메인이 갈리고, CORS 설정하고, 배포도 두 번 해야 해요.
+
+Workers의 `[assets]` 바인딩을 쓰면 한 워커에 다 들어가요.
+
+```toml
+# wrangler.toml
+name = "claude-check"
+main = "src/worker.js"
+compatibility_date = "2025-06-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "여기에_본인_네임스페이스_id"
+```
+
+라우팅은 워커에서 한 줄로 갈라요.
+
+```js
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/api/")) {
+      return handleApi(request, env, url);
+    }
+    // /api 외 요청은 정적 에셋으로 위임
+    return env.ASSETS.fetch(request);
+  },
+};
+```
+
+같은 오리진이라 CORS 설정이 아예 필요 없어요. 배포도 `wrangler deploy` 한 번.
+
+### 캐시 함정 하나
+
+HTML이 캐시되면 배포해도 사람들 화면이 안 바뀌어요. 한 달에 한 번 쓰는 페이지라 이게 특히 치명적이에요 — 다음 달에 열었더니 지난달 양식이 뜨는 거죠.
+
+```text
+# public/_headers
+/*
+  Cache-Control: no-cache
+```
+
+API 응답도 따로 막아둡니다.
+
+```js
+function json(obj, status) {
+  return new Response(JSON.stringify(obj), {
+    status: status || 200,
+    headers: {
+      "content-type": "application/json;charset=utf-8",
+      "cache-control": "no-store",
+    },
+  });
+}
+```
+
+## 문제 2: 관리자 비밀번호를 어디에 두지?
+
+이게 사내 도구에서 제일 흔하게 틀리는 부분이에요.
+
+처음엔 이렇게 하고 싶어져요.
+
+```js
+// 절대 이렇게 하지 마세요
+const ADMIN_PW = "1234";
+if (input === ADMIN_PW) showDashboard();
+```
+
+프론트 코드에 비밀번호가 있으면 **개발자도구 열면 그냥 보여요.** 사내라서 괜찮다고요? 사내 명단과 제출 내용이 다 들어있는 대시보드인데요.
+
+그래서 비밀번호 검증은 Worker에서만 하고, 프론트에는 **서명된 토큰**만 내려줍니다.
+
+```js
+// wrangler secret put ADMIN_PW
+// wrangler secret put AUTH_SECRET
+if (path === "/api/login" && request.method === "POST") {
+  const body = await request.json().catch(() => ({}));
+  const pw = body && body.pw;
+  if (!pw || !env.ADMIN_PW || !timingSafeEqual(String(pw), String(env.ADMIN_PW))) {
+    return json({ error: "invalid password" }, 401);
+  }
+  return json({ token: await makeToken(env) });
+}
+```
+
+### JWT 라이브러리 없이 서명 토큰
+
+이 정도 용도엔 JWT 라이브러리도 과해요. Workers엔 Web Crypto가 그냥 있어서 HMAC 몇 줄로 됩니다.
+
+토큰 형태: `admin.<만료시각>.<서명>`
+
+```js
+async function hmacKey(env) {
+  const secret = env.AUTH_SECRET || "dev-insecure-secret";
+  return crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign", "verify"]
+  );
+}
+
+async function makeToken(env) {
+  const exp = Date.now() + 60 * 60 * 1000; // 1시간
+  const payload = "admin." + exp;
+  const key = await hmacKey(env);
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  return payload + "." + b64url(sig);
+}
+```
+
+검증할 때 **만료시각을 먼저 보고, 서명을 확인**해요. 순서가 바뀌면 만료된 토큰도 서명이 맞으면 통과해버려요.
+
+```js
+async function verifyToken(request, env) {
+  const auth = request.headers.get("authorization") || "";
+  const m = auth.match(/^Bearer\s+(.+)$/i);
+  if (!m) return false;
+  const parts = m[1].split(".");
+  if (parts.length !== 3) return false;
+  const exp = Number(parts[1]);
+  if (!exp || Date.now() > exp) return false;      // 만료 먼저
+  const payload = parts[0] + "." + parts[1];
+  const key = await hmacKey(env);
+  try {
+    return await crypto.subtle.verify(
+      "HMAC", key, b64urlToBytes(parts[2]), new TextEncoder().encode(payload)
+    );
+  } catch (_) {
+    return false;
+  }
+}
+```
+
+`exp`는 payload에 들어있고 서명 대상이라, 만료시각만 늘려서 위조하면 서명이 깨져요.
+
+### 비밀번호 비교는 상수시간으로
+
+```js
+function timingSafeEqual(a, b) {
+  const ab = new TextEncoder().encode(a);
+  const bb = new TextEncoder().encode(b);
+  if (ab.length !== bb.length) return false;
+  let diff = 0;
+  for (let i = 0; i < ab.length; i++) diff |= ab[i] ^ bb[i];
+  return diff === 0;
+}
+```
+
+`===` 로 비교하면 앞자리가 맞을수록 응답이 미세하게 늦어져요. 사내 도구에서 이걸로 털릴 확률은 낮지만, 6줄이면 되는 거라 그냥 넣었어요.
+
+## 문제 3: 월별 목록을 어떻게 조회하지?
+
+여기가 KV 쓸 때 제일 많이 걸리는 부분이에요.
+
+가장 먼저 떠오르는 건 `KV.list({ prefix })` 예요.
+
+```js
+// 되긴 하는데...
+const keys = await env.KV.list({ prefix: "resp:2026-08:" });
+```
+
+문제가 두 가지 있어요.
+
+- **LIST는 한 번에 1000개 제한**이고 커서로 페이징해야 해요
+- **LIST는 값을 안 줘요.** 키만 받고 다시 하나씩 GET 해야 해요
+
+그래서 방향을 바꿨어요. **키를 결정적으로 만들고, LIST 없이 바로 GET** 합니다.
+
+```js
+// 키 규칙: resp:{YYYY-MM}:{이름}
+const key = "resp:" + month + ":" + safeName(rec.person);
+await env.KV.put(key, JSON.stringify(rec));
+```
+
+조회할 때는 명단을 프론트에서 넘겨받아서, 있을 만한 키를 **병렬로 GET**해요.
+
+```js
+const names = Array.isArray(body.names) ? body.names.slice(0, 500) : [];
+const values = await Promise.all(
+  names.map((name) => env.KV.get("resp:" + month + ":" + safeName(String(name))))
+);
+const out = [];
+for (const v of values) {
+  if (v) { try { out.push(JSON.parse(v)); } catch (_) { /* 깨진 레코드 skip */ } }
+}
+out.sort((a, b) => String(a.person).localeCompare(String(b.person)));
+```
+
+미제출자는 별도 조회가 아니라 **명단에서 제출자를 뺀 나머지**예요. `null`로 돌아온 키가 곧 미제출이니까요.
+
+명단(ROSTER)은 프론트에 있어요. 백엔드에 또 두면 두 곳을 같이 고쳐야 하고, 어차피 로그인한 관리자만 보는 화면이라 중복을 안 만들었어요.
+
+```js
+// 팀 · 이름 · 직급 · 이메일
+const ROSTER = [
+  ["개발팀", "홍길동", "선임", "hong@example.com"],
+  ["개발팀", "김철수", "책임", "kim@example.com"],
+  // ...
+];
+const PEOPLE = ROSTER.map(function (r) { return r[1]; });
+```
+
+`slice(0, 500)`은 안전장치예요. 클라이언트가 명단을 보내는 구조라 개수 제한이 없으면 요청 하나로 GET을 몇천 개 만들 수 있어요.
+
+### 키에 이름을 쓸 때
+
+한글 이름을 키에 넣으면 공백이나 특수문자가 문제를 일으켜요. 프론트·백엔드가 **똑같은 규칙**으로 정규화해야 합니다.
+
+```js
+// 한글/영숫자 외는 _ 로 치환
+function safeName(s) {
+  return String(s).replace(/[^a-zA-Z0-9가-힣]/g, "_");
+}
+```
+
+이 함수가 양쪽에 같은 내용으로 있어요. 다르면 PUT한 키와 GET하는 키가 어긋나서, 제출은 됐는데 대시보드에 안 뜨는 상황이 나와요.
+
+## 문제 4: "이번 달"이 언제인지
+
+Worker는 UTC로 돌아요. 한국 시간 8월 1일 오전 8시에 제출하면 UTC로는 아직 7월 31일이에요. **8월 제출이 7월 칸에 들어가요.**
+
+```js
+// 한국시간(UTC+9) 기준 YYYY-MM
+function monthKeyKST() {
+  const d = new Date(Date.now() + 9 * 3600000);
+  return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0");
+}
+```
+
+`Date.now()`에 9시간을 더하고 **`getUTC*`로 읽는** 게 포인트예요. `getMonth()`로 읽으면 런타임 타임존이 또 끼어들어서 두 번 보정돼요.
+
+프론트에서도 월을 계산해서 보내지만, 백엔드에서 형식을 검사하고 안 맞으면 서버 기준으로 덮어요.
+
+```js
+const month = /^\d{4}-\d{2}$/.test(rec.month) ? rec.month : monthKeyKST();
+rec.month = month;
+```
+
+## 프레임워크 없이 화면 만들기
+
+`index.html` 하나에 폼과 대시보드가 다 있어요. 상태 하나 두고, 문자열로 HTML 만들어서 갈아끼우는 방식이에요.
+
+```js
+function render() {
+  document.getElementById("app").innerHTML =
+    state.view === "admin" ? adminHtml() : formHtml();
+}
+```
+
+React 안 쓴 이유는 단순해요. **빌드 스텝이 생기면 관리 비용이 생겨요.** 한 달에 한 번 열리는 페이지에 번들러 버전 올리는 일을 만들고 싶지 않았어요.
+
+대신 문자열로 HTML을 만들면 XSS가 바로 문제가 돼요. 입력값은 전부 이스케이프해서 넣습니다.
+
+```js
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+```
+
+이름·비고 같은 자유 입력이 대시보드에 그대로 렌더되니까, 이거 빼먹으면 제출 폼이 그대로 스크립트 주입구가 돼요.
+
+### 로그인 유지
+
+토큰은 `localStorage`에 두고, 페이지 열 때 만료를 먼저 확인해요.
+
+```js
+function tokenExp(t) {
+  var p = String(t || "").split(".");
+  return p.length === 3 ? Number(p[1]) || 0 : 0;
+}
+```
+
+토큰 형태를 직접 정한 덕에 만료시각을 프론트에서도 바로 읽어요. 만료됐으면 요청 보내기 전에 지우고 로그인 화면을 띄우니까, 401 받고 나서 튕기는 일이 없어요.
+
+## API 정리
+
+| 엔드포인트 | 메서드 | 인증 | 용도 |
+| --- | --- | --- | --- |
+| `/api/submit` | POST | 없음 | 점검 결과 저장 |
+| `/api/login` | POST | 없음 | 비밀번호 → 서명 토큰 |
+| `/api/list` | POST | Bearer | 월별 제출 목록 |
+
+세 개예요. `/api/list`가 GET이 아니라 POST인 건 명단 배열을 바디로 보내기 때문이에요.
+
+## 배포
+
+```bash
+# 1) KV 네임스페이스 생성 → wrangler.toml 의 id 교체
+npx wrangler kv namespace create KV
+
+# 2) 시크릿 등록
+npx wrangler secret put ADMIN_PW
+npx wrangler secret put AUTH_SECRET
+
+# 3) 배포
+npx wrangler deploy
+```
+
+로컬은 `.dev.vars`에 같은 키를 넣고 `wrangler dev`. KV도 로컬로 흉내내주니까 실제 데이터 안 건드리고 테스트돼요. `.dev.vars`는 당연히 `.gitignore`.
+
+```text
+# .dev.vars (커밋 금지)
+ADMIN_PW=로컬용비밀번호
+AUTH_SECRET=로컬용랜덤문자열
+```
+
+## 마무리
+
+정리하면:
+
+- **정적 + API 한 워커**: `[assets]` 바인딩으로 CORS·이중 배포 제거
+- **비밀번호는 시크릿에만**: 프론트엔 HMAC 서명 토큰만, 검증은 만료 → 서명 순서로
+- **KV는 결정적 키 + 병렬 GET**: LIST 한도·페이징을 아예 안 만남
+- **월 기준은 KST로 고정**: `+9시간` 후 `getUTC*`로 읽기
+- **빌드 스텝 없음**: 대신 이스케이프는 직접 챙기기
+
+무료 티어 안에서 돌아가고, 유지비는 0원이에요. 서버도 DB도 없고, 신경 쓸 게 시크릿 두 개뿐이에요.
+
+사내에 "이거 폼으로는 안 되는데" 하는 양식 하나쯤 있잖아요. 반나절이면 돼요.
