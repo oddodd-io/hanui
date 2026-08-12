@@ -1,0 +1,214 @@
+---
+title: '프론트엔드 성능 측정 도구 지도 — 어떤 질문에 어떤 도구를 쓰나'
+description: 'Lighthouse, Performance 패널, React DevTools Profiler, 번들 분석기, web-vitals. 도구가 많은 게 아니라 묻는 질문이 다른 거예요. 실험실/실사용자 × 로딩/상호작용 네 칸으로 정리했습니다.'
+date: '2026-08-12'
+tags: ['성능최적화', '프론트엔드', 'Lighthouse', 'React', '측정']
+author: 'odada'
+series: '프론트엔드 성능 측정'
+seriesOrder: 2
+---
+
+[1편](/blog/performance-in-job-postings)에서 제 라이브러리를 세어보니 `React.memo`가 0개인데 `useCallback`은 16개였어요. 기법은 쓰는데 효과는 재본 적이 없는 상태였죠.
+
+그래서 이번엔 도구를 깔려고 `package.json`을 열었어요. 그런데 여기서도 같은 게 나왔어요.
+
+```bash
+grep -riE "bundle-analyzer|lighthouse|web-vitals|size-limit" package.json
+# (출력 없음)
+```
+
+**측정 도구가 하나도 없었어요.** 접근성 테스트용 `axe-core`는 있는데, 성능 쪽은 비어 있더라고요.
+
+깔면서 정리했어요. 도구가 헷갈리는 이유는 종류가 많아서가 아니라, **각 도구가 서로 다른 질문에 답하기 때문**이에요. 질문을 먼저 정하면 도구는 저절로 정해져요.
+
+## 두 축으로 나뉘어요
+
+성능 도구는 두 가지 축으로 갈려요.
+
+**첫째, 무엇이 느린가.**
+
+- **로딩** — 첫 화면이 뜨기까지. 번들 크기, 네트워크, 서버 응답
+- **상호작용** — 뜨고 난 뒤 클릭·스크롤·입력할 때의 버벅임
+
+이 둘은 원인도 해법도 완전히 달라요. 번들을 줄여도 스크롤 끊김은 그대로예요.
+
+**둘째, 누구 기준인가.**
+
+- **실험실(Lab)** — 내 컴퓨터에서 조건을 고정해놓고 재기. 재현되고, 비교 가능
+- **실사용자(Field)** — 실제 방문자 기기에서 수집. 진짜지만 통제 불가
+
+내 맥북에서 빠른 게 사용자 기기에서 빠르다는 보장이 없어요. 반대로 실사용자 데이터만 보면 원인을 못 찾고요. **둘 다 필요해요.**
+
+이 두 축을 겹치면 네 칸이 나오고, 도구가 각 칸에 들어가요.
+
+| | 실험실 | 실사용자 |
+| --- | --- | --- |
+| **로딩** | Lighthouse, 번들 분석기, 빌드 출력 | web-vitals (LCP) |
+| **상호작용** | Performance 패널, React Profiler | web-vitals (INP) |
+
+이제 하나씩 볼게요.
+
+## Lighthouse — 종합 진단부터
+
+**답하는 질문:** 첫 화면이 느린가? 뭐가 발목을 잡나?
+
+가장 먼저 돌릴 도구예요. 점수와 함께 개선 항목을 목록으로 줘요.
+
+```bash
+# 설치 없이
+npx lighthouse https://example.com --view
+
+# CI용
+npm i -D @lhci/cli
+```
+
+Chrome DevTools의 **Lighthouse** 탭에서도 바로 돼요.
+
+**함정이 두 개 있어요.**
+
+**개발 서버로 재면 안 돼요.** `next dev`는 최적화를 안 하고 소스맵까지 붙어서 항상 느리게 나와요. 반드시 프로덕션 빌드로 재세요.
+
+```bash
+next build && next start
+```
+
+**점수에 매달리지 마세요.** 90점을 95점으로 올리는 것보다, 리포트 아래 **Opportunities**와 **Diagnostics** 항목을 읽는 게 훨씬 중요해요. 점수는 요약이고, 할 일은 거기 적혀 있어요.
+
+## Chrome DevTools Performance 패널 — 버벅임의 원인
+
+**답하는 질문:** 클릭했을 때 왜 멈칫하나?
+
+Lighthouse가 "느리다"까지 알려준다면, 이건 "**어느 함수가** 몇 ms 잡아먹는지"를 보여줘요.
+
+1. DevTools → **Performance** 탭
+2. 녹화 버튼 → 문제 동작을 실제로 해보기 → 정지
+3. **Main** 트랙에서 빨간 삼각형이 붙은 긴 막대를 찾기
+
+그 빨간 삼각형이 **Long Task**예요. 50ms 넘게 메인 스레드를 붙잡은 작업이고, 사용자가 "멈췄다"고 느끼는 실체예요. 막대를 클릭하면 어느 함수인지 콜스택이 나와요.
+
+**꼭 켜야 할 게 하나 있어요.** 패널 위쪽의 **CPU throttling**을 `4x` 또는 `6x slowdown`으로 놓으세요. 개발자 노트북은 사용자 기기보다 훨씬 빨라서, 그냥 재면 문제가 안 보여요. 저사양 안드로이드를 흉내 내야 진짜가 보여요.
+
+## React DevTools Profiler — 무엇이 다시 그려지나
+
+**답하는 질문:** 이 클릭 하나에 컴포넌트 몇 개가 다시 그려지나? 왜?
+
+React 앱이라면 Performance 패널보다 이쪽이 먼저예요. 원인을 컴포넌트 단위로 짚어주거든요.
+
+브라우저 확장(React Developer Tools)을 깔면 **Profiler** 탭이 생겨요.
+
+**설정을 먼저 켜야 해요.** 톱니바퀴 → Profiler → **"Record why each component rendered while profiling"** 체크. 이걸 안 켜면 "다시 그려졌다"만 알고 **왜**를 몰라요. 사실상 이 체크박스가 이 도구의 핵심이에요.
+
+그다음 녹화 → 조작 → 정지. 두 가지를 보세요.
+
+- **Flamegraph** — 이번 커밋에서 그려진 트리. 넓은 막대가 오래 걸린 것
+- **Ranked** — 오래 걸린 순으로 줄 세우기. 여기부터 보는 게 빨라요
+
+컴포넌트를 클릭하면 오른쪽에 **"Why did this render?"** 가 뜨고, `Props changed: (onSelect)` 같은 이유가 나와요. 여기서 인라인 콜백 문제가 그대로 드러나요.
+
+**함정:** 프로덕션 빌드에서는 프로파일링이 안 돼요. 개발 빌드로 재되, **개발 빌드는 원래 느리다**는 걸 감안하세요. 절대 시간(ms)보다 **몇 개가 그려졌는지(개수)**를 비교하는 게 안전해요. 1편에서 말한 "리렌더 200 → 1" 같은 숫자가 여기서 나와요.
+
+## 번들 분석기 — 무엇이 용량을 먹나
+
+**답하는 질문:** 이 400kB 안에 뭐가 들었나?
+
+빌드 도구에 따라 도구가 갈려요.
+
+```bash
+# Next.js
+npm i -D @next/bundle-analyzer
+ANALYZE=true next build
+
+# Vite / Rollup
+npm i -D rollup-plugin-visualizer
+
+# 범용 (소스맵만 있으면)
+npx source-map-explorer 'dist/**/*.js'
+```
+
+네모 크기로 패키지 비중을 보여줘요. 보통 여기서 **예상 밖의 큰 덩어리** 하나가 나와요. date 라이브러리 전체가 들어와 있다든가, 아이콘 세트가 통째로 들어와 있다든가요.
+
+설치 없이 볼 수 있는 1차 지표도 있어요. `next build` 출력의 **First Load JS** 열이에요. [지난 글](/blog/bundle-size-six-months-later)에서 제 문서 사이트가 전 라우트 407~409kB로 평평하다는 걸 이걸로 확인했어요. **전 라우트가 비슷하면 코드 분할이 안 걸린 거예요.**
+
+## Coverage 탭 — 안 쓰는 코드 찾기
+
+**답하는 질문:** 받아놓고 안 쓰는 코드가 얼마나 되나?
+
+덜 알려졌는데 유용해요. DevTools에서 `Cmd+Shift+P` → `Show Coverage` → 녹화 후 새로고침.
+
+파일별로 **사용되지 않은 바이트 비율**이 빨간 막대로 나와요. 80% 빨간 파일이 있으면 그건 지연 로딩 후보예요.
+
+## web-vitals — 진짜 사용자는 어떤가
+
+**답하는 질문:** 내 노트북 말고, 실제 방문자한테도 빠른가?
+
+위 도구들은 전부 실험실이에요. 실사용자 수치는 따로 모아야 해요.
+
+```bash
+npm i web-vitals
+```
+
+```js
+import { onLCP, onINP, onCLS } from 'web-vitals';
+
+const send = (metric) => {
+  // 분석 서버로 전송 (Vercel Analytics, GA4 등)
+  navigator.sendBeacon('/api/vitals', JSON.stringify(metric));
+};
+
+onLCP(send);  // 가장 큰 요소가 그려진 시점 — 로딩 체감
+onINP(send);  // 입력에 반응하기까지 — 상호작용 체감
+onCLS(send);  // 화면이 밀리는 정도 — 시각 안정성
+```
+
+이 셋이 Core Web Vitals예요. **INP가 특히 중요해요.** 실험실에선 잘 안 잡히거든요 — 개발자는 저사양 기기에서 백 번 클릭해보지 않으니까요.
+
+Vercel/Netlify를 쓴다면 자체 Analytics로 코드 없이 켤 수도 있어요.
+
+## 회귀 방지 — 재는 걸 잊지 않게
+
+[지난 글](/blog/bundle-size-six-months-later)에서 얻은 교훈이 이거였어요. 한 번 재는 건 쉬운데, **계속 재는 게 어려워요.** 저는 6개월을 방치했고요.
+
+그래서 CI에 붙이는 것까지가 한 세트예요.
+
+```bash
+npm i -D size-limit @size-limit/preset-big-lib
+```
+
+```json
+{
+  "size-limit": [
+    { "path": "dist/index.mjs", "limit": "600 KB" }
+  ]
+}
+```
+
+한도를 넘으면 CI가 실패해요. Lighthouse도 `@lhci/cli`로 같은 걸 할 수 있고요. **숫자를 사람이 기억하지 않게 만드는 것**이 핵심이에요.
+
+## 순서를 정한다면
+
+전부 한 번에 깔 필요는 없어요. 저는 이 순서로 갈 거예요.
+
+1. **`next build` 출력 보기** — 설치 0, 5초. 라우트가 평평한지부터
+2. **Lighthouse 한 번** — 프로덕션 빌드로. 할 일 목록 확보
+3. **React Profiler** — 느린 화면이 있으면 "왜 다시 그려지는지"
+4. **번들 분석기** — 크기 문제가 확인됐을 때만
+5. **size-limit CI** — 고친 뒤, 다시 나빠지지 않게
+6. **web-vitals** — 실제 사용자 확인
+
+1·2번은 오늘 30분이면 되고, 대부분의 문제는 거기서 드러나요.
+
+## 다음 편
+
+다음은 **React DevTools Profiler**만 따로 깊게 다룰게요. 1편에서 발견한 `memo` 0개 / `useCallback` 16개 상태를 실제로 프로파일링해서, 그 `useCallback`들이 효과가 있는지 없는지 숫자로 확인해볼 거예요.
+
+## 관련 링크
+
+- [HANUI — KRDS 기반 디자인 시스템](https://hanui.io)
+- [번들 70% 줄였다고 쓴 뒤, 6개월 만에 다시 재봤어요](/blog/bundle-size-six-months-later)
+- [claude-settings](https://github.com/hanui-o/claude-settings) — `/perf`, `/optimize` 커맨드 저장소
+
+## 시리즈: 프론트엔드 성능 측정
+
+- 1편: [채용공고 1순위가 성능 최적화인데, 내 라이브러리엔 React.memo가 0개였어요](/blog/performance-in-job-postings)
+- **2편: 성능 측정 도구 지도** ← 현재 글
+- 다음 편: React DevTools Profiler 실전 (예정)
