@@ -1,0 +1,180 @@
+---
+title: 'React Profiler를 스크린샷 말고 코드로 — 실제 컴포넌트 재보기'
+description: 'DevTools Profiler와 같은 데이터를 React.Profiler API로 받을 수 있어요. hanui DataTable을 50/200/1000행으로 재보니 부모가 한 번 리렌더할 때마다 테이블 전체가 다시 그려지고 있었습니다.'
+date: '2026-08-19'
+tags: ['성능최적화', 'React', 'Profiler', '측정', 'DataTable']
+author: 'odada'
+series: '프론트엔드 성능 측정'
+seriesOrder: 4
+---
+
+[2편](/blog/perf-measurement-tools)에서 React DevTools Profiler를 소개하면서 "다음 편에 실전으로 다루겠다"고 했어요. 그런데 막상 쓰려니 걸리는 게 있더라고요.
+
+**Profiler는 화면을 봐야 하는 도구예요.** 녹화하고, 플레임그래프를 읽고, 컴포넌트를 클릭해서 "Why did this render?"를 보는 거요. 글로 옮기면 스크린샷 나열이 되고, 스크린샷은 **독자가 자기 프로젝트에서 다시 만들 수가 없어요.**
+
+그래서 방향을 바꿨어요. React에는 **`<Profiler>` 컴포넌트 API**가 따로 있어서, DevTools가 화면에 그려주는 것과 **같은 데이터를 코드로 받을 수 있어요.**
+
+## Profiler를 코드로 붙이기
+
+쓰는 법은 이게 전부예요.
+
+```tsx
+import { Profiler } from 'react';
+
+<Profiler
+  id="table"
+  onRender={(id, phase, actualDuration) => {
+    console.log(phase, actualDuration);
+  }}
+>
+  <DataTable columns={columns} data={rows} />
+</Profiler>
+```
+
+`onRender`가 **커밋될 때마다** 호출돼요. 인자 셋이 중요해요.
+
+- `phase` — `'mount'`(첫 렌더) / `'update'`(다시 그림)
+- `actualDuration` — 이번 커밋에 실제로 쓴 시간(ms)
+- (안 쓴 것) `baseDuration` — 메모이제이션이 하나도 없었다면 걸렸을 시간
+
+`actualDuration`이 DevTools 플레임그래프의 막대 길이와 같은 값이에요. 즉 **GUI로 보던 걸 숫자로 받는 것**이고, 그러면 테스트에 넣을 수 있어요.
+
+## 실제 컴포넌트를 재봤어요
+
+[1편](/blog/performance-in-job-postings)에서 이렇게 썼어요.
+
+> `.map()`으로 리스트를 그리는 컴포넌트가 29개예요. 이 중에 행이 많아질 때 실제로 느려지는 게 있는지 먼저 잴 거예요.
+
+그 약속을 지킬 차례예요. hanui의 `DataTable`을 행 수를 늘려가며 쟀어요. 부모에 버튼을 하나 두고, **테이블 props는 전혀 건드리지 않은 채** 부모만 리렌더시켰어요.
+
+| 행 수 | 마운트 | 부모 리렌더 1회 |
+| --- | --- | --- |
+| 50 | 9.9ms | 1.9ms |
+| 200 | 15.3ms | 4.7ms |
+| 1000 | 56.2ms | **21.0ms** |
+
+두 가지가 보여요.
+
+**하나. props가 안 바뀌었는데도 매번 다시 그려요.** 부모가 리렌더될 때마다 테이블 전체가 커밋돼요. [3편](/blog/react-memo-stable-callback)에서 본 D 케이스 — `memo`가 없으면 참조가 같든 말든 그려진다 — 의 실물이에요.
+
+**둘. 행 수에 거의 비례해서 늘어요.** 50행에서 1.9ms면 무시할 만한데, 1000행에서 21ms는 얘기가 달라요. 60fps를 유지하려면 한 프레임 예산이 **16.7ms**거든요. 리렌더 하나가 그걸 넘어가면 그 프레임은 떨어져요.
+
+## 고치면 얼마나 줄어드나
+
+`memo`로 감싸고 다시 쟀어요.
+
+| 행 수 | memo 없음 | memo 적용 | 감소 |
+| --- | --- | --- | --- |
+| 50 | 0.9ms | 0.0ms | 100% |
+| 200 | 3.7ms | 0.0ms | 100% |
+| 1000 | 18.6ms | 0.0ms | **100%** |
+
+`0.0ms`는 빨라졌다는 뜻이 아니라 **커밋이 아예 안 일어났다**는 뜻이에요. `onRender`가 호출되지 않았거든요.
+
+## 그런데 이 100%엔 함정이 있어요
+
+여기서 멈추면 "memo 붙이면 공짜로 100%"가 되는데, 그건 제가 계속 비판해온 얕은 조언이에요. 왜 100%가 나왔는지 정확히 말해야 해요.
+
+**제가 props를 일부러 고정해뒀기 때문이에요.**
+
+```tsx
+const stableColumns = React.useMemo(() => columns, []);
+const stableData = React.useMemo(() => rows, [rows]);
+```
+
+실제 코드에서는 보통 이렇게 쓰죠.
+
+```tsx
+<DataTable
+  columns={[{ accessorKey: 'name', header: '이름' }, ...]}  // 매번 새 배열
+  data={rows.filter((r) => r.active)}                        // 매번 새 배열
+/>
+```
+
+이러면 `memo`를 붙여도 **감소율이 0%**예요. 3편의 B 케이스 그대로고요. 얕은 비교는 배열 내용이 아니라 참조를 보니까요.
+
+그러니 위 표는 "`memo`를 붙이면 100% 준다"가 아니라 **"`memo` + 안정된 props를 함께 갖추면 100% 준다"**로 읽어야 맞아요. 둘 중 하나만 하면 0이에요. 3편에서 확인한 그대로예요.
+
+## 이 숫자를 얼마나 믿을 수 있나
+
+정직하게 덧붙일 게 있어요. 이 측정은 **jsdom**에서 돌린 거예요. 실제 브라우저가 아니고, 레이아웃·페인트도 없어요.
+
+그래서 **절대 ms를 그대로 믿으면 안 돼요.** 실제로 같은 조건을 두 번 재봤더니 50행 부모 리렌더가 1.9ms와 0.9ms로 갈렸어요. 실행 순서와 워밍업에 따라 흔들려요.
+
+믿을 수 있는 건 두 가지예요.
+
+- **스케일링** — 행이 20배 늘 때 비용이 어떻게 늘어나는가
+- **커밋이 일어났는가 / 안 일어났는가** — 이건 0과 1의 문제라 환경을 안 타요
+
+실제 사용자 체감 시간이 필요하면 브라우저에서 재야 해요. 그건 [2편](/blog/perf-measurement-tools)의 Performance 패널과 web-vitals 몫이고요. **jsdom 측정은 "구조가 잘못됐는지"를 잡는 용도**예요.
+
+## 그래서 CI에 넣을 수 있어요
+
+이게 코드로 재는 진짜 이유예요. [지난 글](/blog/bundle-size-six-months-later)에서 번들을 6개월 방치했던 교훈이 여기에도 적용돼요.
+
+커밋 횟수는 환경을 안 타니까 **단언으로 박아둘 수 있어요.**
+
+```tsx
+it('부모가 리렌더돼도 테이블은 다시 그리지 않는다', async () => {
+  const commits = [];
+  render(
+    <Profiler id="t" onRender={(_, phase) => commits.push(phase)}>
+      <MemoTable columns={stableColumns} data={stableData} />
+    </Profiler>
+  );
+  commits.length = 0;                       // 마운트분 제외
+  await user.click(screen.getByText('부모 리렌더'));
+  expect(commits).toHaveLength(0);          // ← 여기가 회귀 방지선
+});
+```
+
+누군가 나중에 `columns={[...]}`를 인라인으로 바꾸면 이 테스트가 깨져요. **"최적화가 풀렸다"를 사람이 눈치채지 않아도 CI가 알려주는 것** — 2편에서 `size-limit`으로 번들에 했던 것과 같은 얘기예요.
+
+## DevTools Profiler는 언제 쓰나
+
+코드로 재는 게 GUI를 대체하진 않아요. 역할이 갈려요.
+
+| | DevTools Profiler | `<Profiler>` API |
+| --- | --- | --- |
+| 원인 찾기 | ✅ "Why did this render?"로 바로 | ❌ 직접 좁혀야 |
+| 트리 전체 훑기 | ✅ 플레임그래프 | ❌ |
+| 반복 실행 | ❌ 매번 손으로 | ✅ |
+| CI 회귀 방지 | ❌ | ✅ |
+
+**처음 원인을 찾을 때는 DevTools, 찾은 뒤 지키는 건 코드**예요. 순서가 그래요. 저도 원인을 이미 알고 있었으니(3편에서 확인) 바로 코드로 간 거고요.
+
+## hanui는 어떻게 할 거냐면
+
+`DataTable`에 `memo`를 넣는 건 맞아 보여요. 1000행에서 21ms면 프레임 예산을 넘고, 공공 사이트 목록이 1000행까지 가는 건 드물지 않으니까요.
+
+다만 **라이브러리에 `memo`를 넣는 건 반쪽짜리**예요. 쓰는 쪽이 `data={rows.filter(...)}`로 넘기면 아무 효과가 없거든요. 그래서 두 가지를 같이 해야 해요.
+
+1. `DataTable`을 `memo`로 감싸기
+2. 문서에 **"`columns`와 `data`는 `useMemo`로 고정하세요"**를 명시하고, 안 지켰을 때 개발 환경에서 경고하기
+
+2번 없이 1번만 하면 "우린 최적화했다"고 말은 되는데 실제로 안 줄어요. 이 시리즈에서 계속 나온 그 패턴이죠.
+
+나머지 28개 리스트 컴포넌트는 아직 안 쟀어요. `Pagination`이나 `Breadcrumb`처럼 항목이 열 개 남짓인 건 잴 필요도 없고요. **행이 수백까지 갈 수 있는 것만** 골라서 같은 방식으로 재려고 해요.
+
+## 직접 해보기
+
+실험 코드는 저장소에 있어요.
+
+```bash
+npx vitest run src/__experiments__
+```
+
+본인 프로젝트라면 제일 무거워 보이는 목록 컴포넌트 하나를 `<Profiler>`로 감싸고, 부모만 리렌더시켜 보세요. `onRender`가 호출되면 **props가 안 바뀌었는데도 다시 그리고 있는 것**이고, 거기가 시작점이에요.
+
+## 관련 링크
+
+- [Profiler — React 공식 문서](https://react.dev/reference/react/Profiler)
+- [HANUI — KRDS 기반 디자인 시스템](https://hanui.io)
+- [claude-settings](https://github.com/hanui-o/claude-settings) — `/perf`, `/optimize` 커맨드 저장소
+
+## 시리즈: 프론트엔드 성능 측정
+
+- 1편: [채용공고 1순위가 성능 최적화인데, 내 라이브러리엔 React.memo가 0개였어요](/blog/performance-in-job-postings)
+- 2편: [성능 측정 도구 지도 — 어떤 질문에 어떤 도구를 쓰나](/blog/perf-measurement-tools)
+- 3편: [React.memo가 안 듣는 이유 — 200번 리렌더를 0으로 만든 조건](/blog/react-memo-stable-callback)
+- **4편: React Profiler를 스크린샷 말고 코드로** ← 현재 글
