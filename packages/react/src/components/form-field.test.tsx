@@ -1,12 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { axe } from '../test/setup';
-import {
-  FormField,
-  FormLabel,
-  FormError,
-  FormHelperText,
-} from './form-field';
+import { FormField, FormLabel, FormError, FormHelperText } from './form-field';
 import { Input } from './input';
 
 describe('FormField', () => {
@@ -98,10 +93,14 @@ describe('FormField', () => {
     );
 
     const input = screen.getByRole('textbox');
-    const helper = screen.getByText('example@email.com 형식으로 입력하세요');
+    // FormHelperText는 children을 <span>으로 감싸므로 id는 바깥 컨테이너에 있다
+    const helper = screen
+      .getByText('example@email.com 형식으로 입력하세요')
+      .closest('[id]');
     const describedBy = input.getAttribute('aria-describedby') || '';
 
-    expect(describedBy.split(/\s+/)).toContain(helper.id);
+    expect(helper).not.toBeNull();
+    expect(describedBy.split(/\s+/)).toContain(helper!.id);
   });
 
   it('에러는 alert로 즉시 알려져야 합니다', () => {

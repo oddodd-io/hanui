@@ -16,7 +16,9 @@ const DATA: Row[] = [
 const COLUMNS: ColumnDef<Row, unknown>[] = [
   {
     accessorKey: 'name',
-    header: ({ column }) => <SortableHeader column={column}>이름</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>이름</SortableHeader>
+    ),
   },
   { accessorKey: 'role', header: '역할' },
 ];
@@ -76,8 +78,19 @@ describe('DataTable', () => {
     expect(nameHeader).toHaveAttribute('aria-sort', 'descending');
   });
 
-  it('정렬 불가능한 컬럼에는 aria-sort가 없어야 합니다', () => {
-    render(<DataTable columns={COLUMNS} data={DATA} caption="사용자 목록" />);
+  it('enableSorting: false 컬럼에는 aria-sort가 없어야 합니다', () => {
+    // TanStack Table은 accessor 컬럼의 정렬을 기본 활성화한다.
+    // 정렬 대상이 아님을 나타내는 계약은 enableSorting: false 이다.
+    const cols: ColumnDef<Row, unknown>[] = [
+      { accessorKey: 'name', header: '이름' },
+      { accessorKey: 'role', header: '역할', enableSorting: false },
+    ];
+    render(<DataTable columns={cols} data={DATA} caption="사용자 목록" />);
+
+    expect(screen.getByRole('columnheader', { name: '이름' })).toHaveAttribute(
+      'aria-sort',
+      'none'
+    );
     expect(
       screen.getByRole('columnheader', { name: '역할' })
     ).not.toHaveAttribute('aria-sort');
@@ -103,7 +116,10 @@ describe('DataTable', () => {
       />
     );
 
-    await user.type(screen.getByRole('textbox', { name: '테이블 검색' }), '김하나');
+    await user.type(
+      screen.getByRole('textbox', { name: '테이블 검색' }),
+      '김하나'
+    );
     expect(screen.getByText('김하나')).toBeInTheDocument();
     expect(screen.queryByText('박세찌')).toBeNull();
   });
@@ -120,7 +136,9 @@ describe('DataTable', () => {
     expect(
       screen.getByRole('checkbox', { name: '전체 선택' })
     ).toBeInTheDocument();
-    expect(screen.getAllByRole('checkbox', { name: '행 선택' })).toHaveLength(3);
+    expect(screen.getAllByRole('checkbox', { name: '행 선택' })).toHaveLength(
+      3
+    );
   });
 
   it('행을 선택하면 콜백이 호출되어야 합니다', async () => {

@@ -5,6 +5,10 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 };
 
+// jsdom은 레이아웃을 계산하지 않아 scrollIntoView가 구현돼 있지 않다.
+// (목록에서 활성 항목을 보이게 스크롤하는 컴포넌트들이 호출한다)
+Element.prototype.scrollIntoView = function scrollIntoView() {};
+
 import '@testing-library/jest-dom/vitest';
 import * as matchers from 'vitest-axe/matchers';
 import { expect } from 'vitest';
