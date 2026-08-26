@@ -614,6 +614,32 @@
     "dependencies": ["clsx", "tailwind-merge", "lucide-vue-next"],
     "files": [{ "path": "components/Sidebar.vue", "type": "component" }]
   },
+  "signup-form": {
+    "name": "signup-form",
+    "type": "block",
+    "description": "회원가입 폼 블록 (비밀번호 강도, 약관동의, SNS, 스텝 방식)",
+    "dependencies": ["clsx", "tailwind-merge", "lucide-vue-next"],
+    "registryDependencies": [
+      "card",
+      "input",
+      "button",
+      "checkbox",
+      "label",
+      "link",
+      "body",
+      "progress",
+      "step-indicator"
+    ],
+    "files": [
+      { "path": "components/blocks/SignupForm.vue", "type": "component" },
+      {
+        "path": "components/blocks/SignupPasswordFields.vue",
+        "type": "component"
+      },
+      { "path": "components/blocks/SignupAgreements.vue", "type": "component" },
+      { "path": "components/blocks/SignupSnsSection.vue", "type": "component" }
+    ]
+  },
   "simple-grid": {
     "name": "simple-grid",
     "type": "ui",

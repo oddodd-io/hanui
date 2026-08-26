@@ -207,6 +207,11 @@ export { default as LoginForm } from './components/blocks/LoginForm.vue';
 export type { LoginFormValues } from './components/blocks/LoginForm.vue';
 export { default as OtpVerify } from './components/blocks/OtpVerify.vue';
 export { default as ProfileCard } from './components/blocks/ProfileCard.vue';
+export { default as SignupForm } from './components/blocks/SignupForm.vue';
+export type {
+  SignupFormValues,
+  SnsProvider,
+} from './components/blocks/SignupForm.vue';
 export { default as SearchBar } from './components/blocks/SearchBar.vue';
 export type { SearchCategory } from './components/blocks/SearchBar.vue';
 export { default as StatsCard } from './components/blocks/StatsCard.vue';
