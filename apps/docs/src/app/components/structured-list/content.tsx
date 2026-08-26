@@ -8,8 +8,8 @@ import {
   Heading,
   Subsection,
   PageNavigation,
+  PlannedNotice,
 } from '@/components/content';
-import { Installation } from '@/components/content/Installation';
 
 // UI components - from @hanui/react
 import {
@@ -30,17 +30,14 @@ import {
 } from '@hanui/react';
 import { ComponentPreview } from '@/components/content/ComponentPreview';
 
-// TODO: StructuredList 컴포넌트는 CLI로 설치 필요
-// npx hanui add structured-list
+// 아직 @hanui/react에 포함되지 않은 컴포넌트라 미리보기 자리표시자를 쓴다.
 const StructuredList: React.FC<{
   items: StructuredListItem[];
   variant?: 'default' | 'full';
   size?: 'sm' | 'md' | 'lg';
 }> = () => (
-  <div className="text-center py-8 text-krds-gray-50">
-    StructuredList 컴포넌트 미리보기
-    <br />
-    <Code>npx hanui add structured-list</Code>로 설치하세요.
+  <div className="text-center py-8 text-krds-gray-60">
+    StructuredList 미리보기 (구현 예정)
   </div>
 );
 
@@ -95,6 +92,11 @@ export default function StructuredListPage() {
         description="복잡한 콘텐츠를 카드 형식으로 정리하여 표시하는 구조화 목록 컴포넌트입니다."
       />
 
+      <PlannedNotice
+        name="Structured List"
+        note="원본 구현은 packages/registry/components/structured-list.tsx에 있으나 .module.scss 기반이라 Tailwind 아키텍처로 옮기는 작업이 남아 있습니다."
+      />
+
       <Tabs defaultValue="overview">
         <TabsList>
           <TabsTrigger value="overview">개요</TabsTrigger>
@@ -131,11 +133,6 @@ export default function StructuredListPage() {
   ]}
 />`}
             </Code>
-          </Section>
-
-          {/* 2. 설치 */}
-          <Section level="h2">
-            <Installation componentName="structured-list" />
           </Section>
 
           {/* 3. 사용법 */}

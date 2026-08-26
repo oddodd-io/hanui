@@ -10,3 +10,4 @@ export { GuidelineBox } from './GuidelineBox';
 export { GuidelineSection } from './GuidelineSection';
 export { Installation } from './Installation';
 export { PageHeader } from './PageHeader';
+export { PlannedNotice } from './PlannedNotice';
