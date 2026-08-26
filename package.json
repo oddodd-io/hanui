@@ -25,7 +25,8 @@
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
     "hanui": "node packages/cli/dist/hanui.mjs",
-    "optimize-images": "node scripts/optimize-images.js"
+    "optimize-images": "node scripts/optimize-images.js",
+    "verify:packaging": "node scripts/verify-packaging.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -49,6 +50,9 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-vue": "^10.6.2",
+    "eslint-plugin-vuejs-accessibility": "^2.4.1",
+    "vue-eslint-parser": "^10.2.0",
     "globals": "^16.5.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",

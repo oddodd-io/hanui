@@ -70,6 +70,46 @@
       }
     ]
   },
+  "calendar": {
+    "name": "calendar",
+    "type": "ui",
+    "description": "달력 컴포넌트 (단일/범위 선택, 키보드 네비게이션)",
+    "dependencies": ["clsx", "tailwind-merge", "lucide-react"],
+    "registryDependencies": ["button"],
+    "files": [{ "path": "components/calendar.tsx", "type": "component" }]
+  },
+  "carousel": {
+    "name": "carousel",
+    "type": "ui",
+    "description": "캐러셀 컴포넌트",
+    "dependencies": ["clsx", "tailwind-merge", "swiper", "lucide-react"],
+    "files": [{ "path": "components/carousel.tsx", "type": "component" }]
+  },
+  "carousel-content": {
+    "name": "carousel-content",
+    "type": "ui",
+    "description": "콘텐츠형 캐러셀",
+    "dependencies": ["clsx", "tailwind-merge", "swiper", "lucide-react"],
+    "files": [
+      { "path": "components/carousel-content.tsx", "type": "component" }
+    ]
+  },
+  "carousel-hero": {
+    "name": "carousel-hero",
+    "type": "ui",
+    "description": "히어로형 캐러셀",
+    "dependencies": ["clsx", "tailwind-merge", "swiper", "lucide-react"],
+    "files": [{ "path": "components/carousel-hero.tsx", "type": "component" }]
+  },
+  "carousel-preview": {
+    "name": "carousel-preview",
+    "type": "ui",
+    "description": "미리보기형 캐러셀",
+    "dependencies": ["clsx", "tailwind-merge", "swiper", "lucide-react"],
+    "files": [
+      { "path": "components/carousel-preview.tsx", "type": "component" }
+    ]
+  },
   "copy-button": {
     "name": "copy-button",
     "type": "ui",
@@ -106,6 +146,39 @@
         "type": "component"
       }
     ]
+  },
+  "critical-alerts": {
+    "name": "critical-alerts",
+    "type": "ui",
+    "description": "긴급 공지 컴포넌트",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge",
+      "class-variance-authority",
+      "lucide-react"
+    ],
+    "files": [{ "path": "components/critical-alerts.tsx", "type": "component" }]
+  },
+  "date-input": {
+    "name": "date-input",
+    "type": "ui",
+    "description": "날짜 입력 컴포넌트 (달력 팝오버)",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge",
+      "class-variance-authority",
+      "@radix-ui/react-popover",
+      "lucide-react"
+    ],
+    "registryDependencies": ["calendar"],
+    "files": [{ "path": "components/date-input.tsx", "type": "component" }]
+  },
+  "disclosure": {
+    "name": "disclosure",
+    "type": "ui",
+    "description": "펼침/접힘 컴포넌트",
+    "dependencies": ["clsx", "tailwind-merge", "lucide-react"],
+    "files": [{ "path": "components/disclosure.tsx", "type": "component" }]
   },
   "display": {
     "name": "display",
@@ -145,18 +218,6 @@
     "files": [
       {
         "path": "components/footer.tsx",
-        "type": "component"
-      }
-    ]
-  },
-  "form": {
-    "name": "form",
-    "type": "ui",
-    "description": "폼 컴포넌트",
-    "dependencies": ["clsx", "tailwind-merge"],
-    "files": [
-      {
-        "path": "components/form.tsx",
         "type": "component"
       }
     ]
@@ -528,6 +589,27 @@
       }
     ]
   },
+  "step-indicator": {
+    "name": "step-indicator",
+    "type": "ui",
+    "description": "단계 표시 컴포넌트",
+    "dependencies": ["clsx", "tailwind-merge", "class-variance-authority"],
+    "files": [
+      { "path": "components/step-indicator.tsx", "type": "component" }
+    ]
+  },
+  "steps": {
+    "name": "steps",
+    "type": "ui",
+    "description": "단계 진행 컴포넌트 (Steps, StepsItem)",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge",
+      "class-variance-authority",
+      "@radix-ui/react-slot"
+    ],
+    "files": [{ "path": "components/steps.tsx", "type": "component" }]
+  },
   "table": {
     "name": "table",
     "type": "ui",
@@ -563,6 +645,18 @@
         "type": "component"
       }
     ]
+  },
+  "tag": {
+    "name": "tag",
+    "type": "ui",
+    "description": "태그 컴포넌트",
+    "dependencies": [
+      "clsx",
+      "tailwind-merge",
+      "class-variance-authority",
+      "lucide-react"
+    ],
+    "files": [{ "path": "components/tag.tsx", "type": "component" }]
   },
   "tooltip": {
     "name": "tooltip",
@@ -887,6 +981,13 @@
       }
     ]
   },
+  "visually-hidden": {
+    "name": "visually-hidden",
+    "type": "ui",
+    "description": "시각적으로만 숨기는 컴포넌트 (스크린리더 전용 텍스트)",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "files": [{ "path": "components/visually-hidden.tsx", "type": "component" }]
+  },
   "wrap": {
     "name": "wrap",
     "type": "ui",
@@ -902,43 +1003,36 @@
   "kit/board": {
     "name": "kit/board",
     "type": "kit",
-    "description": "게시판 기능 키트 (목록, 상세, 작성, 수정, 삭제, 댓글)",
+    "description": "게시판 기능 키트 (목록, 상세, 작성, 수정, 삭제)",
     "dependencies": [
       "axios",
       "zustand",
       "@tanstack/react-query",
       "react-hook-form",
       "@hookform/resolvers",
-      "zod",
-      "lucide-react"
+      "zod"
     ],
-    "registryDependencies": [
-      "button",
-      "input",
-      "card",
-      "badge",
-      "pagination",
-      "skeleton",
-      "alert-dialog",
-      "textarea",
-      "select"
-    ],
+    "registryDependencies": ["button", "input", "pagination"],
     "files": [
-      { "path": "kits/board/types/post.ts", "type": "lib" },
-      { "path": "kits/board/api/posts.ts", "type": "lib" },
-      { "path": "kits/board/hooks/usePosts.ts", "type": "hook" },
-      { "path": "kits/board/stores/postStore.ts", "type": "lib" },
-      { "path": "kits/board/components/PostCard.tsx", "type": "component" },
-      { "path": "kits/board/components/PostList.tsx", "type": "component" },
-      { "path": "kits/board/components/PostDetail.tsx", "type": "component" },
-      { "path": "kits/board/components/PostForm.tsx", "type": "component" },
+      { "path": "kits/board/api/board.ts", "type": "lib" },
+      {
+        "path": "kits/board/components/BoardDeleteModal.tsx",
+        "type": "component"
+      },
+      { "path": "kits/board/components/BoardDetail.tsx", "type": "component" },
+      { "path": "kits/board/components/BoardForm.tsx", "type": "component" },
+      { "path": "kits/board/components/BoardItem.tsx", "type": "component" },
+      { "path": "kits/board/components/BoardList.tsx", "type": "component" },
+      { "path": "kits/board/hooks/useBoard.ts", "type": "hook" },
+      { "path": "kits/board/store/boardStore.ts", "type": "lib" },
+      { "path": "kits/board/types/board.ts", "type": "lib" },
       { "path": "kits/board/index.ts", "type": "lib" }
     ]
   },
   "kit/auth": {
     "name": "kit/auth",
     "type": "kit",
-    "description": "인증 기능 키트 (로그인, 회원가입, 비밀번호 찾기, 토큰 갱신)",
+    "description": "인증 기능 키트 (로그인, 회원가입, 비밀번호 찾기, 2단계 인증)",
     "dependencies": [
       "axios",
       "zustand",
@@ -946,224 +1040,155 @@
       "react-hook-form",
       "@hookform/resolvers",
       "zod",
-      "lucide-react"
-    ],
-    "registryDependencies": ["button", "input", "card", "checkbox", "label"],
-    "files": [
-      { "path": "kits/auth/types/auth.ts", "type": "lib" },
-      { "path": "kits/auth/api/auth.ts", "type": "lib" },
-      { "path": "kits/auth/hooks/useAuth.ts", "type": "hook" },
-      { "path": "kits/auth/stores/authStore.ts", "type": "lib" },
-      { "path": "kits/auth/components/LoginForm.tsx", "type": "component" },
-      { "path": "kits/auth/components/SignupForm.tsx", "type": "component" },
-      {
-        "path": "kits/auth/components/ForgotPasswordForm.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/auth/components/ResetPasswordForm.tsx",
-        "type": "component"
-      },
-      { "path": "kits/auth/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/table": {
-    "name": "kit/table",
-    "type": "kit",
-    "description": "데이터 테이블 키트 (정렬, 필터, 페이지네이션, CSV 내보내기)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "lucide-react"
+      "lucide-react",
+      "class-variance-authority"
     ],
     "registryDependencies": [
-      "table",
       "button",
       "input",
-      "select",
+      "card",
       "checkbox",
-      "pagination",
-      "skeleton"
+      "label",
+      "form-field",
+      "link"
     ],
     "files": [
-      { "path": "kits/table/types/table.ts", "type": "lib" },
-      { "path": "kits/table/hooks/useTable.ts", "type": "hook" },
-      { "path": "kits/table/stores/tableStore.ts", "type": "lib" },
-      { "path": "kits/table/components/DataTableKit.tsx", "type": "component" },
-      { "path": "kits/table/index.ts", "type": "lib" }
+      {
+        "path": "components/kits/authentication/forgot-password-form.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/authentication/login-form.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/authentication/signup-form.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/authentication/two-factor-setup.tsx",
+        "type": "component"
+      },
+      { "path": "kits/authentication/api/auth.ts", "type": "lib" },
+      { "path": "kits/authentication/hooks/useAuth.ts", "type": "hook" },
+      { "path": "kits/authentication/store/authStore.ts", "type": "lib" },
+      { "path": "kits/authentication/types/auth.ts", "type": "lib" },
+      { "path": "components/kits/authentication/index.ts", "type": "lib" },
+      { "path": "kits/authentication/index.ts", "type": "lib" }
     ]
   },
   "kit/form": {
     "name": "kit/form",
     "type": "kit",
-    "description": "폼 기능 키트 (다단계 폼, 파일 업로드, 동적 필드)",
+    "description": "폼 기능 키트 (다단계 폼, 폼 빌더, 자동 저장, 검증 스키마)",
     "dependencies": [
-      "axios",
-      "zustand",
       "react-hook-form",
       "@hookform/resolvers",
       "zod",
-      "uuid",
       "lucide-react"
     ],
-    "registryDependencies": ["button", "input", "card", "progress", "label"],
+    "registryDependencies": [
+      "input",
+      "checkbox",
+      "radio",
+      "select",
+      "textarea",
+      "form-field"
+    ],
     "files": [
-      { "path": "kits/form/types/form.ts", "type": "lib" },
-      { "path": "kits/form/hooks/useMultiStepForm.ts", "type": "hook" },
-      { "path": "kits/form/hooks/useFileUpload.ts", "type": "hook" },
-      { "path": "kits/form/hooks/useDynamicFields.ts", "type": "hook" },
-      { "path": "kits/form/stores/formStore.ts", "type": "lib" },
-      { "path": "kits/form/components/MultiStepForm.tsx", "type": "component" },
       {
-        "path": "kits/form/components/FileUploadField.tsx",
+        "path": "components/kits/form/auto-save-form.tsx",
         "type": "component"
       },
+      { "path": "components/kits/form/form-builder.tsx", "type": "component" },
       {
-        "path": "kits/form/components/DynamicFieldList.tsx",
+        "path": "components/kits/form/multi-step-form.tsx",
         "type": "component"
       },
-      { "path": "kits/form/index.ts", "type": "lib" }
+      { "path": "components/kits/form/use-form-builder.ts", "type": "lib" },
+      { "path": "components/kits/form/validation-schemas.ts", "type": "lib" },
+      { "path": "components/kits/form/index.ts", "type": "lib" }
     ]
   },
   "kit/dashboard": {
     "name": "kit/dashboard",
     "type": "kit",
-    "description": "대시보드 키트 (통계 카드, 차트, 활동 피드, 실시간 업데이트)",
+    "description": "대시보드 키트 (통계 카드, 차트, 활동 피드, 빠른 실행)",
     "dependencies": [
       "axios",
       "zustand",
       "@tanstack/react-query",
-      "recharts",
-      "lucide-react"
+      "lucide-react",
+      "class-variance-authority"
     ],
-    "registryDependencies": ["card", "badge", "skeleton"],
+    "registryDependencies": ["card", "badge", "button"],
     "files": [
-      { "path": "kits/dashboard/types/dashboard.ts", "type": "lib" },
+      {
+        "path": "components/kits/dashboard/activity-feed.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/dashboard/chart-widget.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/dashboard/quick-actions.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/dashboard/stat-card.tsx",
+        "type": "component"
+      },
       { "path": "kits/dashboard/api/dashboard.ts", "type": "lib" },
       { "path": "kits/dashboard/hooks/useDashboard.ts", "type": "hook" },
-      { "path": "kits/dashboard/stores/dashboardStore.ts", "type": "lib" },
-      {
-        "path": "kits/dashboard/components/StatCardGrid.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/dashboard/components/ActivityFeed.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/dashboard/components/DashboardChart.tsx",
-        "type": "component"
-      },
+      { "path": "kits/dashboard/store/dashboardStore.ts", "type": "lib" },
+      { "path": "kits/dashboard/types/dashboard.ts", "type": "lib" },
+      { "path": "components/kits/dashboard/index.ts", "type": "lib" },
       { "path": "kits/dashboard/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/search": {
-    "name": "kit/search",
-    "type": "kit",
-    "description": "검색 기능 키트 (검색바, 자동완성, 인기검색어, 최근검색어)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "lucide-react"
-    ],
-    "registryDependencies": [
-      "button",
-      "input",
-      "card",
-      "badge",
-      "pagination",
-      "skeleton"
-    ],
-    "files": [
-      { "path": "kits/search/types/search.ts", "type": "lib" },
-      { "path": "kits/search/api/search.ts", "type": "lib" },
-      { "path": "kits/search/hooks/useSearch.ts", "type": "hook" },
-      { "path": "kits/search/stores/searchStore.ts", "type": "lib" },
-      { "path": "kits/search/components/SearchBar.tsx", "type": "component" },
-      {
-        "path": "kits/search/components/SearchResults.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/search/components/PopularSearches.tsx",
-        "type": "component"
-      },
-      { "path": "kits/search/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/notification": {
-    "name": "kit/notification",
-    "type": "kit",
-    "description": "알림 기능 키트 (알림 센터, 토스트, 실시간 알림, 푸시 알림)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "lucide-react"
-    ],
-    "registryDependencies": ["button", "skeleton"],
-    "files": [
-      { "path": "kits/notification/types/notification.ts", "type": "lib" },
-      { "path": "kits/notification/api/notification.ts", "type": "lib" },
-      { "path": "kits/notification/hooks/useNotification.ts", "type": "hook" },
-      {
-        "path": "kits/notification/stores/notificationStore.ts",
-        "type": "lib"
-      },
-      {
-        "path": "kits/notification/components/NotificationBell.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/notification/components/NotificationItem.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/notification/components/NotificationCenter.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/notification/components/ToastContainer.tsx",
-        "type": "component"
-      },
-      { "path": "kits/notification/index.ts", "type": "lib" }
     ]
   },
   "kit/settings": {
     "name": "kit/settings",
     "type": "kit",
-    "description": "설정 기능 키트 (테마, 언어, 접근성, 알림 설정, 프로필 관리)",
-    "dependencies": ["zustand", "lucide-react"],
+    "description": "설정 기능 키트 (프로필, 보안, 알림 설정)",
+    "dependencies": [
+      "axios",
+      "zustand",
+      "@tanstack/react-query",
+      "react-hook-form"
+    ],
     "registryDependencies": [
       "button",
-      "card",
-      "switch",
-      "radio",
       "input",
-      "select"
+      "select",
+      "switch",
+      "checkbox",
+      "tabs",
+      "file-upload",
+      "form-field"
     ],
     "files": [
-      { "path": "kits/settings/types/settings.ts", "type": "lib" },
+      {
+        "path": "components/kits/settings/notification-preferences.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/settings/profile-settings.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/settings/security-settings.tsx",
+        "type": "component"
+      },
+      {
+        "path": "components/kits/settings/settings-tabs.tsx",
+        "type": "component"
+      },
+      { "path": "kits/settings/api/settings.ts", "type": "lib" },
       { "path": "kits/settings/hooks/useSettings.ts", "type": "hook" },
-      { "path": "kits/settings/stores/settingsStore.ts", "type": "lib" },
-      {
-        "path": "kits/settings/components/ThemeSwitcher.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/settings/components/LanguageSelector.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/settings/components/SettingsSection.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/settings/components/SettingsPage.tsx",
-        "type": "component"
-      },
+      { "path": "kits/settings/store/settingsStore.ts", "type": "lib" },
+      { "path": "kits/settings/types/settings.ts", "type": "lib" },
+      { "path": "components/kits/settings/index.ts", "type": "lib" },
       { "path": "kits/settings/index.ts", "type": "lib" }
     ]
   },
