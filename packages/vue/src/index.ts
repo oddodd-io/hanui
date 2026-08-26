@@ -187,3 +187,16 @@ export { useSteps } from './composables/useSteps';
 
 // Utils
 export { cn } from './lib/utils';
+
+// ============================================================================
+// Blocks — Component를 조합한 완성된 UI 패턴
+// ============================================================================
+export { default as EmptyState } from './components/blocks/EmptyState.vue';
+export { default as ErrorPage } from './components/blocks/ErrorPage.vue';
+export { default as FileDownload } from './components/blocks/FileDownload.vue';
+export type { FileItem } from './components/blocks/FileDownload.vue';
+export { default as ProfileCard } from './components/blocks/ProfileCard.vue';
+export { default as SearchBar } from './components/blocks/SearchBar.vue';
+export type { SearchCategory } from './components/blocks/SearchBar.vue';
+export { default as StatsCard } from './components/blocks/StatsCard.vue';
+export type { StatItem } from './components/blocks/StatsCard.vue';

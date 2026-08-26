@@ -199,6 +199,36 @@
       { "path": "components/DropdownMenuLabel.vue", "type": "component" }
     ]
   },
+  "empty-state": {
+    "name": "empty-state",
+    "type": "block",
+    "description": "빈 상태 블록",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": ["card", "button", "body"],
+    "files": [
+      { "path": "components/blocks/EmptyState.vue", "type": "component" }
+    ]
+  },
+  "error-page": {
+    "name": "error-page",
+    "type": "block",
+    "description": "에러 페이지 블록 (404/500/403)",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": ["button", "body", "display"],
+    "files": [
+      { "path": "components/blocks/ErrorPage.vue", "type": "component" }
+    ]
+  },
+  "file-download": {
+    "name": "file-download",
+    "type": "block",
+    "description": "첨부파일 다운로드 목록",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": ["button", "badge", "body"],
+    "files": [
+      { "path": "components/blocks/FileDownload.vue", "type": "component" }
+    ]
+  },
   "file-upload": {
     "name": "file-upload",
     "type": "ui",
@@ -434,6 +464,16 @@
     "dependencies": ["clsx", "tailwind-merge", "lucide-vue-next"],
     "files": [{ "path": "components/Pagination.vue", "type": "component" }]
   },
+  "profile-card": {
+    "name": "profile-card",
+    "type": "block",
+    "description": "프로필 카드 블록 (아바타, 이름, 역할, 연락처)",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": ["card", "badge", "button", "body"],
+    "files": [
+      { "path": "components/blocks/ProfileCard.vue", "type": "component" }
+    ]
+  },
   "progress": {
     "name": "progress",
     "type": "ui",
@@ -449,6 +489,16 @@
     "files": [
       { "path": "components/Radio.vue", "type": "component" },
       { "path": "components/RadioGroup.vue", "type": "component" }
+    ]
+  },
+  "search-bar": {
+    "name": "search-bar",
+    "type": "block",
+    "description": "검색 바 블록 (검색 범위 + 검색어)",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": ["input", "button", "select"],
+    "files": [
+      { "path": "components/blocks/SearchBar.vue", "type": "component" }
     ]
   },
   "search-modal": {
@@ -545,6 +595,16 @@
       { "path": "components/Stack.vue", "type": "component" },
       { "path": "components/VStack.vue", "type": "component" },
       { "path": "components/HStack.vue", "type": "component" }
+    ]
+  },
+  "stats-card": {
+    "name": "stats-card",
+    "type": "block",
+    "description": "통계 카드 블록",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": ["card", "badge", "body"],
+    "files": [
+      { "path": "components/blocks/StatsCard.vue", "type": "component" }
     ]
   },
   "steps": {
