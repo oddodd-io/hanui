@@ -498,7 +498,7 @@ function DefaultForm({
         setPassword={setPassword}
         passwordConfirm={passwordConfirm}
         setPasswordConfirm={setPasswordConfirm}
-        idPrefix="signup"
+        idPrefix={uid}
       />
 
       <AgreementCheckboxes
@@ -508,7 +508,7 @@ function DefaultForm({
         setAgreePrivacy={setAgreePrivacy}
         termsHref={termsHref}
         privacyHref={privacyHref}
-        idPrefix="signup"
+        idPrefix={uid}
       />
 
       <Button
@@ -641,7 +641,7 @@ function SteppedForm({
             setPassword={setPassword}
             passwordConfirm={passwordConfirm}
             setPasswordConfirm={setPasswordConfirm}
-            idPrefix="signup-step"
+            idPrefix={uid}
           />
 
           <div className="flex gap-3">
@@ -677,7 +677,7 @@ function SteppedForm({
             setAgreePrivacy={setAgreePrivacy}
             termsHref={termsHref}
             privacyHref={privacyHref}
-            idPrefix="signup-step"
+            idPrefix={uid}
           />
 
           <div className="flex gap-3">
