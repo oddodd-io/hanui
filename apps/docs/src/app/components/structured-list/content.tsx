@@ -22,7 +22,6 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  Card,
   Tabs,
   TabsList,
   TabsTrigger,

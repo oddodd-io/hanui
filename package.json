@@ -35,6 +35,9 @@
     "*.{js,jsx,mjs,cjs}": [
       "prettier --write"
     ],
+    "*.vue": [
+      "prettier --write"
+    ],
     "*.{json,md,css}": [
       "prettier --write"
     ]

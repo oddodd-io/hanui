@@ -34,6 +34,9 @@ function useHeadings() {
         level: Number(el.tagName[1]),
       };
     });
+    // 마운트 후 DOM(외부 시스템)을 한 번 읽어 목차를 만든다.
+    // 파생 상태가 아니라 외부 상태 동기화라 cascading render가 발생하지 않는다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHeadings(items);
   }, []);
 

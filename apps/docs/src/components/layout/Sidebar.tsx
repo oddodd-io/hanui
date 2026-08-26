@@ -396,6 +396,11 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           'border-r border-krds-gray-5',
         ].join(' ')}
       >
+        {/*
+          내부 링크가 이미 포커스·활성화 가능한 요소라 키보드 경로는 확보돼 있다.
+          여기의 핸들러는 링크 클릭을 위임 처리하기 위한 것이다.
+        */}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <nav
           ref={navRef}
           onClick={handleNavClick}
