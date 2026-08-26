@@ -12,7 +12,7 @@ const badgeVariants = cva(
         primary: 'bg-krds-primary-5 text-krds-primary-base',
         secondary: 'bg-krds-gray-10 text-krds-gray-80',
         success: 'bg-krds-success-5 text-krds-success-base',
-        warning: 'bg-krds-warning-5 text-krds-warning-40',
+        warning: 'bg-krds-warning-5 text-krds-warning-60',
         error: 'bg-krds-danger-5 text-krds-danger-base',
         info: 'bg-krds-info-5 text-krds-info-base',
         'outline-gray': 'border border-krds-gray-30 bg-transparent text-krds-gray-90',

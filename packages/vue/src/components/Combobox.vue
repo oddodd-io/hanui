@@ -5,7 +5,7 @@ import { Check, ChevronsUpDown, Search, X, Loader2 } from 'lucide-vue-next';
 import { cn } from '@/lib/utils';
 
 const comboboxTriggerVariants = cva(
-  'flex h-10 w-full items-center justify-between rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-krds-gray-40 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+  'flex h-10 w-full items-center justify-between rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-krds-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       variant: {
@@ -209,7 +209,7 @@ onUnmounted(() => {
     >
       <span
         :class="
-          cn('flex-1 truncate text-left', !selectedOption && 'text-krds-gray-40')
+          cn('flex-1 truncate text-left', !selectedOption && 'text-krds-gray-50')
         "
       >
         {{ selectedOption ? selectedOption.label : placeholder }}
@@ -249,8 +249,9 @@ onUnmounted(() => {
         <input
           type="text"
           :value="search"
+          :aria-label="searchPlaceholder"
           :placeholder="searchPlaceholder"
-          class="flex h-10 w-full bg-transparent py-3 text-sm outline-none placeholder:text-krds-gray-40"
+          class="flex h-10 w-full bg-transparent py-3 text-sm outline-none placeholder:text-krds-gray-50"
           @input="handleSearchChange"
           @keydown="handleKeyDown"
         />

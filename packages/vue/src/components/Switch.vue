@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
 import { cva } from 'class-variance-authority';
 import { Check, X } from 'lucide-vue-next';
 import { cn } from '@/lib/utils';
@@ -68,7 +68,8 @@ const props = withDefaults(
   }
 );
 
-const switchId = computed(() => props.id || `switch-${Math.random().toString(36).substr(2, 9)}`);
+const generatedSwitchId = useId();
+const switchId = computed(() => props.id || `switch-${generatedSwitchId}`);
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean];

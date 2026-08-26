@@ -31,7 +31,7 @@ const stepsDescriptionVariants = cva('transition-colors', {
     status: {
       completed: 'text-krds-gray-50',
       current: 'text-krds-gray-70',
-      upcoming: 'text-krds-gray-40',
+      upcoming: 'text-krds-gray-60',
     },
     size: {
       sm: 'text-krds-body-xs',

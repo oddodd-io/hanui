@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
 import { cva } from 'class-variance-authority';
 import { Check } from 'lucide-vue-next';
 import { cn } from '@/lib/utils';
@@ -40,7 +40,8 @@ const props = withDefaults(
   }
 );
 
-const checkboxId = computed(() => props.id || `checkbox-${Math.random().toString(36).slice(2, 9)}`);
+const generatedCheckboxId = useId();
+const checkboxId = computed(() => props.id || `checkbox-${generatedCheckboxId}`);
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean];

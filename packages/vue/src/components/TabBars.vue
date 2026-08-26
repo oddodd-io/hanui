@@ -95,9 +95,9 @@ if (props.items.length > 5) {
                 'leading-none'
               )
             "
-            :aria-label="`${item.badge} notifications`"
           >
             {{ item.badge > 99 ? '99+' : item.badge }}
+            <span class="sr-only">개 알림</span>
           </span>
         </div>
 

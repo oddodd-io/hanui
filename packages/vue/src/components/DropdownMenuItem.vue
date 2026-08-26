@@ -51,6 +51,8 @@ const handleClick = () => {
     :aria-disabled="disabled"
     tabindex="0"
     @click="handleClick"
+    @keydown.enter.prevent="handleClick"
+    @keydown.space.prevent="handleClick"
   >
     <span v-if="$slots.icon" class="mr-2 h-4 w-4" aria-hidden="true">
       <slot name="icon" />
@@ -58,7 +60,7 @@ const handleClick = () => {
     <slot />
     <span
       v-if="shortcut"
-      class="ml-auto text-[15px] tracking-widest text-krds-gray-40"
+      class="ml-auto text-[15px] tracking-widest text-krds-gray-60"
       aria-hidden="true"
     >
       {{ shortcut }}

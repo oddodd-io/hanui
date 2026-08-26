@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, useId, watch, nextTick } from 'vue';
 import { ChevronDown, Check } from 'lucide-vue-next';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +33,60 @@ const emit = defineEmits<{
 
 const isOpen = ref(false);
 
+// ARIA listbox 패턴에 필요한 id들 (label↔trigger↔listbox↔option 연결)
+const selectId = useId();
+const triggerId = `${selectId}-trigger`;
+const labelId = `${selectId}-label`;
+const listboxId = `${selectId}-listbox`;
+const optionId = (index: number) => `${selectId}-option-${index}`;
+
+/** 키보드로 이동 중인 옵션 (aria-activedescendant 대상) */
+const activeIndex = ref(-1);
+const listboxRef = ref<HTMLElement | null>(null);
+
+const isSelectable = (i: number) => !!props.options[i] && !props.options[i].disabled;
+
+/** from에서 step 방향으로 선택 가능한 다음 옵션을 찾는다 (양끝에서 순환) */
+const findNext = (from: number, step: number) => {
+  const n = props.options.length;
+  if (n === 0) return -1;
+  for (let k = 1; k <= n; k++) {
+    const i = (((from + step * k) % n) + n) % n;
+    if (isSelectable(i)) return i;
+  }
+  return -1;
+};
+
+const findEdge = (step: 1 | -1) =>
+  step === 1 ? findNext(-1, 1) : findNext(props.options.length, -1);
+
+/** 열 때는 현재 선택값에서, 없으면 첫 선택 가능 옵션에서 시작한다 */
+const openList = (startAt?: number) => {
+  if (props.disabled) return;
+  isOpen.value = true;
+  const selected = props.options.findIndex((o) => o.value === props.modelValue);
+  activeIndex.value =
+    startAt !== undefined
+      ? startAt
+      : selected >= 0 && isSelectable(selected)
+        ? selected
+        : findEdge(1);
+};
+
+const closeList = () => {
+  isOpen.value = false;
+  activeIndex.value = -1;
+};
+
+// 활성 옵션이 화면 밖이면 스크롤해서 보이게 한다
+watch(activeIndex, async (i) => {
+  if (i < 0 || !isOpen.value) return;
+  await nextTick();
+  listboxRef.value
+    ?.querySelector(`#${CSS.escape(optionId(i))}`)
+    ?.scrollIntoView({ block: 'nearest' });
+});
+
 const sizeClasses = {
   lg: 'h-14',
   md: 'h-12',
@@ -65,19 +119,55 @@ const dropdownClasses = computed(() =>
 const handleSelect = (option: SelectOption) => {
   if (option.disabled) return;
   emit('update:modelValue', option.value);
-  isOpen.value = false;
+  closeList();
 };
 
+// WAI-ARIA Listbox 패턴: 마우스 없이도 목록을 열고 이동하고 선택할 수 있어야 한다
 const handleKeyDown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') {
-    isOpen.value = false;
-  } else if (e.key === 'Enter' || e.key === ' ') {
-    isOpen.value = !isOpen.value;
+  if (props.disabled) return;
+
+  switch (e.key) {
+    case 'ArrowDown':
+      e.preventDefault();
+      if (!isOpen.value) openList();
+      else activeIndex.value = findNext(activeIndex.value, 1);
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      if (!isOpen.value) openList();
+      else activeIndex.value = findNext(activeIndex.value, -1);
+      break;
+    case 'Home':
+      if (!isOpen.value) return;
+      e.preventDefault();
+      activeIndex.value = findEdge(1);
+      break;
+    case 'End':
+      if (!isOpen.value) return;
+      e.preventDefault();
+      activeIndex.value = findEdge(-1);
+      break;
+    case 'Enter':
+    case ' ':
+      e.preventDefault();
+      if (!isOpen.value) openList();
+      else if (activeIndex.value >= 0) handleSelect(props.options[activeIndex.value]);
+      else closeList();
+      break;
+    case 'Escape':
+      if (!isOpen.value) return;
+      e.preventDefault();
+      closeList();
+      break;
+    case 'Tab':
+      // 포커스가 떠나므로 목록을 닫는다 (Tab 자체는 막지 않는다)
+      closeList();
+      break;
   }
 };
 
 const handleClickOutside = () => {
-  isOpen.value = false;
+  closeList();
 };
 </script>
 
@@ -86,6 +176,8 @@ const handleClickOutside = () => {
     <!-- Label -->
     <label
       v-if="label"
+      :id="labelId"
+      :for="triggerId"
       class="block text-krds-body-sm leading-[150%] font-medium text-krds-gray-70 mb-1"
     >
       {{ label }}
@@ -93,12 +185,18 @@ const handleClickOutside = () => {
 
     <!-- Trigger Button -->
     <button
+      :id="triggerId"
       type="button"
       :class="triggerClasses"
       :disabled="disabled"
       :aria-expanded="isOpen"
       aria-haspopup="listbox"
-      @click="isOpen = !isOpen"
+      :aria-controls="isOpen ? listboxId : undefined"
+      :aria-activedescendant="
+        isOpen && activeIndex >= 0 ? optionId(activeIndex) : undefined
+      "
+      :aria-labelledby="label ? labelId : undefined"
+      @click="isOpen ? closeList() : openList()"
       @keydown="handleKeyDown"
     >
       <span :class="!selectedOption && 'text-krds-gray-50'">
@@ -107,6 +205,7 @@ const handleClickOutside = () => {
       <ChevronDown
         class="h-6 w-6 absolute right-4 top-1/2 -translate-y-1/2 transition-transform"
         :class="isOpen && 'rotate-180'"
+        aria-hidden="true"
       />
     </button>
 
@@ -119,23 +218,33 @@ const handleClickOutside = () => {
       leave-from-class="opacity-100 scale-100"
       leave-to-class="opacity-0 scale-95"
     >
-      <div v-if="isOpen" :class="dropdownClasses" role="listbox">
+      <div
+        v-if="isOpen"
+        :id="listboxId"
+        ref="listboxRef"
+        :class="dropdownClasses"
+        role="listbox"
+        :aria-labelledby="label ? labelId : undefined"
+      >
         <div class="p-1">
           <div
-            v-for="option in options"
+            v-for="(option, index) in options"
+            :id="optionId(index)"
             :key="option.value"
             :class="
               cn(
                 'relative flex cursor-pointer select-none items-center rounded-sm py-2 pl-8 pr-2 outline-none',
                 'hover:bg-krds-primary-60 hover:text-krds-white',
                 option.disabled && 'pointer-events-none opacity-50',
-                option.value === modelValue && 'bg-krds-primary-5'
+                option.value === modelValue && 'bg-krds-primary-5',
+                index === activeIndex && 'bg-krds-primary-60 text-krds-white'
               )
             "
             role="option"
             :aria-selected="option.value === modelValue"
             :aria-disabled="option.disabled"
             @click="handleSelect(option)"
+            @mousemove="activeIndex = index"
           >
             <!-- Check Icon -->
             <span

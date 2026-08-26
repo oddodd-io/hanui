@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted, useId } from 'vue';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
@@ -58,7 +58,7 @@ const props = withDefaults(
 const isVisible = ref(false);
 const autoPos = ref<'left' | 'right'>('right');
 const wrapperRef = ref<HTMLDivElement | null>(null);
-const tooltipId = `tooltip-${Math.random().toString(36).substr(2, 9)}`;
+const tooltipId = `tooltip-${useId()}`;
 let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
 const calculatePosition = () => {

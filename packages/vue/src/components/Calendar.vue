@@ -436,6 +436,7 @@ function getTabIndex(day: CalendarDay) {
       'krds-calendar-area bg-white border border-krds-gray-30 rounded-lg shadow-lg',
       props.class
     )"
+    role="group"
     aria-label="달력"
   >
     <div class="calendar-wrap p-4">

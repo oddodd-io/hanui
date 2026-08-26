@@ -3,7 +3,7 @@
  * DateInputRange 컴포넌트
  * KRDS 날짜 입력 필드 - 기간(범위) 입력
  */
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
 import { cn } from '@/lib/utils';
 
 const props = withDefaults(
@@ -50,7 +50,7 @@ const emit = defineEmits<{
   (e: 'endCalendarClick'): void;
 }>();
 
-const uniqueId = Math.random().toString(36).substring(2, 9);
+const uniqueId = useId();
 const labelId = `date-range-${uniqueId}-label`;
 
 const fieldClasses = computed(() =>

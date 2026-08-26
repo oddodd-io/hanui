@@ -166,6 +166,74 @@ const handleThumbDrag = (index: number, event: MouseEvent | TouchEvent) => {
   document.addEventListener('touchend', handleEnd);
 };
 
+/** index번 thumb을 value로 옮긴다 (범위·경계 클램프 포함) */
+const commitValue = (index: number, value: number) => {
+  const stepped =
+    Math.round((value - props.min) / props.step) * props.step + props.min;
+  let next = Math.max(props.min, Math.min(props.max, stepped));
+
+  // 범위 슬라이더에서 두 thumb이 서로를 지나치지 않게 한다
+  if (isRange.value) {
+    if (index === 0) next = Math.min(next, internalValue.value[1]);
+    else next = Math.max(next, internalValue.value[0]);
+  }
+
+  const newValues = [...internalValue.value];
+  newValues[index] = next;
+  internalValue.value = newValues;
+  emit('update:modelValue', isRange.value ? newValues : newValues[0]);
+};
+
+/**
+ * role="slider"는 키보드로 값을 바꿀 수 있어야 한다 (WCAG 2.1.1).
+ * WAI-ARIA Slider 패턴: 화살표 ±step, PageUp/Down ±10step, Home/End 양끝.
+ */
+const handleThumbKeyDown = (index: number, e: KeyboardEvent) => {
+  if (props.disabled) return;
+  const current = internalValue.value[index];
+  const big = props.step * 10;
+  let next: number | null = null;
+
+  switch (e.key) {
+    case 'ArrowRight':
+    case 'ArrowUp':
+      next = current + props.step;
+      break;
+    case 'ArrowLeft':
+    case 'ArrowDown':
+      next = current - props.step;
+      break;
+    case 'PageUp':
+      next = current + big;
+      break;
+    case 'PageDown':
+      next = current - big;
+      break;
+    case 'Home':
+      next = props.min;
+      break;
+    case 'End':
+      next = props.max;
+      break;
+    default:
+      return;
+  }
+
+  e.preventDefault();
+  commitValue(index, next);
+};
+
+/** 범위 슬라이더에서 각 thumb이 움직일 수 있는 한계 */
+const thumbMin = (index: number) =>
+  isRange.value && index === 1 ? internalValue.value[0] : props.min;
+const thumbMax = (index: number) =>
+  isRange.value && index === 0 ? internalValue.value[1] : props.max;
+
+const thumbLabel = (index: number) => {
+  if (!isRange.value) return props.label;
+  return index === 0 ? '최솟값' : '최댓값';
+};
+
 const handleTrackClick = (event: MouseEvent) => {
   if (props.disabled) return;
 
@@ -220,12 +288,10 @@ const classes = computed(() => cn(sliderVariants({ size: props.size }), props.cl
     <!-- Slider -->
     <div
       :class="classes"
-      role="slider"
-      :aria-valuemin="min"
-      :aria-valuemax="max"
-      :aria-valuenow="isRange ? undefined : internalValue[0]"
+      role="group"
       :aria-disabled="disabled"
       :aria-labelledby="labelId"
+      :aria-label="labelId ? undefined : label"
     >
       <!-- Track -->
       <div
@@ -255,9 +321,19 @@ const classes = computed(() => cn(sliderVariants({ size: props.size }), props.cl
           colorClasses[color].thumb
         )"
         :style="{ left: `calc(${thumbPosition[index]}% - ${size === 'sm' ? '6px' : size === 'lg' ? '10px' : '8px'})` }"
-        tabindex="0"
+        :tabindex="disabled ? -1 : 0"
+        role="slider"
+        :aria-valuemin="thumbMin(index)"
+        :aria-valuemax="thumbMax(index)"
+        :aria-valuenow="internalValue[index]"
+        :aria-valuetext="formatValue(internalValue[index])"
+        aria-orientation="horizontal"
+        :aria-disabled="disabled"
+        :aria-label="thumbLabel(index)"
+        :aria-labelledby="!isRange && labelId ? labelId : undefined"
         @mousedown="handleThumbDrag(index, $event)"
         @touchstart="handleThumbDrag(index, $event)"
+        @keydown="handleThumbKeyDown(index, $event)"
       />
     </div>
   </div>

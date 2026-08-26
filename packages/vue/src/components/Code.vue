@@ -102,10 +102,11 @@ const blockClasses = computed(() =>
         class="flex items-center gap-2 px-4 py-2 bg-krds-gray-90 border-b border-krds-gray-70 rounded-t-lg"
       >
         <File class="w-3.5 h-3.5 text-krds-gray-40" />
-        <span class="text-xs text-krds-gray-40 font-mono">{{ fileName }}</span>
+        <span class="text-xs text-krds-gray-60 font-mono">{{ fileName }}</span>
       </div>
       <div class="relative">
         <button
+          type="button"
           @click="handleCopy"
           :class="cn(
             'absolute top-3 right-3 p-2 rounded-md transition-all z-10',
@@ -133,6 +134,7 @@ const blockClasses = computed(() =>
   <div v-else-if="variant === 'block'" class="relative group">
     <pre :class="blockClasses"><code><slot>{{ code }}</slot></code></pre>
     <button
+      type="button"
       @click="handleCopy"
       :class="cn(
         'absolute top-3 right-3 p-2 rounded-md transition-all z-10',

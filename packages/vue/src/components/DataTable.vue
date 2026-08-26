@@ -228,6 +228,7 @@ const canNextPage = computed(() => pageIndex.value < pageCount.value - 1);
             <!-- Selection Header -->
             <th
               v-if="enableRowSelection"
+              scope="col"
               class="h-12 px-4 text-left align-middle font-medium text-krds-gray-70 w-[50px]"
             >
               <Checkbox
@@ -241,6 +242,7 @@ const canNextPage = computed(() => pageIndex.value < pageCount.value - 1);
             <th
               v-for="column in columns"
               :key="String(column.key)"
+              scope="col"
               :class="
                 cn(
                   'h-12 px-4 align-middle font-medium text-krds-gray-70',

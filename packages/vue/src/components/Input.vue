@@ -4,8 +4,13 @@ import { cva } from 'class-variance-authority';
 import { Eye, EyeOff, X } from 'lucide-vue-next';
 import { cn } from '@/lib/utils';
 
+// 템플릿 루트가 래퍼 <div>라 기본 fallthrough면 소비자가 넘긴
+// id·aria-label·name·required 등이 <input>이 아니라 래퍼에 붙는다.
+// (그 결과 <Input aria-label="이름" />의 입력에 접근명이 생기지 않는다)
+defineOptions({ inheritAttrs: false });
+
 const inputVariants = cva(
-  'flex w-full rounded-md font-bold transition-colors placeholder:text-krds-gray-40 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 disabled:bg-krds-gray-10 read-only:bg-krds-gray-5 read-only:cursor-default',
+  'flex w-full rounded-md font-bold transition-colors placeholder:text-krds-gray-50 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 disabled:bg-krds-gray-10 read-only:bg-krds-gray-5 read-only:cursor-default',
   {
     variants: {
       variant: {
@@ -129,6 +134,7 @@ const hasRightAddon = computed(() => !!$slots.rightAddon || props.type === 'pass
       :placeholder="placeholder"
       :class="inputClasses"
       :aria-invalid="hasError ? true : undefined"
+      v-bind="$attrs"
       @input="handleInput"
     />
     <div
