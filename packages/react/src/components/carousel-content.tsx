@@ -321,5 +321,3 @@ export const ContentCarousel = React.forwardRef<
 );
 
 ContentCarousel.displayName = 'ContentCarousel';
-
-export default ContentCarousel;

@@ -400,5 +400,3 @@ export const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
 );
 
 Carousel.displayName = 'Carousel';
-
-export default Carousel;
