@@ -4,6 +4,10 @@ import tsParser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import vuePlugin from 'eslint-plugin-vue';
+import vueA11yPlugin from 'eslint-plugin-vuejs-accessibility';
+import vueParser from 'vue-eslint-parser';
+import tsParserForVue from '@typescript-eslint/parser';
 import globals from 'globals';
 
 export default [
@@ -89,6 +93,33 @@ export default [
       react: {
         version: 'detect',
       },
+    },
+  },
+
+  // Vue SFC
+  // React 쪽 jsx-a11y와 같은 접근성 기준을 .vue에도 적용한다.
+  ...vuePlugin.configs['flat/recommended'],
+  ...vueA11yPlugin.configs['flat/recommended'],
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tsParserForVue,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        extraFileExtensions: ['.vue'],
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.es2021,
+      },
+    },
+    rules: {
+      // 컴포넌트 파일명이 곧 컴포넌트 이름이라 단어 수 강제는 하지 않는다
+      'vue/multi-word-component-names': 'off',
+      // React 쪽과 동일하게 완화
+      'vuejs-accessibility/label-has-for': 'off',
     },
   },
 
