@@ -18,6 +18,8 @@ const props = withDefaults(
     status?: 'error' | 'success' | 'info';
     size?: 'lg' | 'md' | 'sm';
     label?: string;
+    /** 보이는 label 없이 접근명만 줄 때 사용 (Button.vue와 동일 관례) */
+    ariaLabel?: string;
     class?: string;
   }>(),
   {
@@ -202,6 +204,7 @@ const handleClickOutside = () => {
         isOpen && activeIndex >= 0 ? optionId(activeIndex) : undefined
       "
       :aria-labelledby="label ? labelId : undefined"
+      :aria-label="label ? undefined : ariaLabel"
       @click="isOpen ? closeList() : openList()"
       @keydown="handleKeyDown"
     >
@@ -231,6 +234,7 @@ const handleClickOutside = () => {
         :class="dropdownClasses"
         role="listbox"
         :aria-labelledby="label ? labelId : undefined"
+        :aria-label="label ? undefined : ariaLabel"
       >
         <div class="p-1">
           <!--
