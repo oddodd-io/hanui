@@ -33,4 +33,12 @@ describe('ErrorPage', () => {
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
+
+  it('h1은 하나여야 합니다', () => {
+    // 에러 코드를 Display 기본값(h1)으로 두면 페이지에 h1이 둘이 된다
+    const { container } = render(<ErrorPage code="404" />);
+    const h1s = container.querySelectorAll('h1');
+    expect(h1s).toHaveLength(1);
+    expect(h1s[0]).toHaveTextContent('페이지를 찾을 수 없습니다');
+  });
 });
