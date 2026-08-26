@@ -39,7 +39,7 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./styles.css": "./dist/vue.css"
+    "./styles.css": "./dist/vue-components.css"
   },
   "files": [
     "dist",
