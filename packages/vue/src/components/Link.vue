@@ -15,14 +15,14 @@ const linkVariants = cva(
           '[color:var(--krds-color-light-primary-50)] hover:[color:var(--krds-color-light-primary-60)] active:text-krds-primary-70 focus-visible:ring-krds-primary-60',
       },
       size: {
-        small: '[font-size:var(--krds-size-body-sm)]',
-        medium: '[font-size:var(--krds-size-body-md)]',
-        large: '[font-size:var(--krds-size-body-lg)]',
+        sm: '[font-size:var(--krds-size-body-sm)]',
+        md: '[font-size:var(--krds-size-body-md)]',
+        lg: '[font-size:var(--krds-size-body-lg)]',
       },
     },
     defaultVariants: {
       variant: 'default',
-      size: 'medium',
+      size: 'md',
     },
   }
 );
@@ -31,14 +31,14 @@ const props = withDefaults(
   defineProps<{
     href?: string;
     variant?: 'default' | 'primary';
-    size?: 'small' | 'medium' | 'large';
+    size?: 'sm' | 'md' | 'lg';
     underline?: boolean;
     external?: boolean;
     class?: string;
   }>(),
   {
     variant: 'default',
-    size: 'medium',
+    size: 'md',
     underline: false,
     external: false,
   }
@@ -61,7 +61,11 @@ const externalAttrs = computed(() =>
   <a :href="href" :class="classes" v-bind="externalAttrs">
     <slot />
     <template v-if="external">
-      <SquareArrowOutUpRight class="inline-block ml-1" :size="16" aria-hidden="true" />
+      <SquareArrowOutUpRight
+        class="inline-block ml-1"
+        :size="16"
+        aria-hidden="true"
+      />
       <span class="sr-only"> (새 창 열림)</span>
     </template>
   </a>
