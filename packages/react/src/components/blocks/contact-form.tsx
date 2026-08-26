@@ -40,6 +40,8 @@ export function ContactForm({
   const [email, setEmail] = React.useState('');
   const [subject, setSubject] = React.useState('');
   const [message, setMessage] = React.useState('');
+  // 한 페이지에 폼이 여러 개여도 label↔input 연결이 깨지지 않도록 한다
+  const uid = React.useId();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,9 +59,9 @@ export function ContactForm({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex gap-4">
             <div className="flex-1 space-y-2">
-              <Label htmlFor="contact-name">이름</Label>
+              <Label htmlFor={`${uid}-name`}>이름</Label>
               <Input
-                id="contact-name"
+                id={`${uid}-name`}
                 type="text"
                 placeholder="이름"
                 value={name}
@@ -69,9 +71,9 @@ export function ContactForm({
               />
             </div>
             <div className="flex-1 space-y-2">
-              <Label htmlFor="contact-email">이메일</Label>
+              <Label htmlFor={`${uid}-email`}>이메일</Label>
               <Input
-                id="contact-email"
+                id={`${uid}-email`}
                 type="email"
                 placeholder="이메일"
                 value={email}
@@ -83,9 +85,9 @@ export function ContactForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contact-subject">제목</Label>
+            <Label htmlFor={`${uid}-subject`}>제목</Label>
             <Input
-              id="contact-subject"
+              id={`${uid}-subject`}
               type="text"
               placeholder="문의 제목을 입력하세요"
               value={subject}
@@ -95,9 +97,9 @@ export function ContactForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contact-message">내용</Label>
+            <Label htmlFor={`${uid}-message`}>내용</Label>
             <Textarea
-              id="contact-message"
+              id={`${uid}-message`}
               placeholder="문의 내용을 입력하세요"
               value={message}
               onChange={(e) => setMessage(e.target.value)}

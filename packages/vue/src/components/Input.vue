@@ -85,12 +85,15 @@ const inputClasses = computed(() =>
   cn(
     inputVariants({ variant: props.variant, size: props.size }),
     statusClasses.value,
-    ($slots.leftAddon || props.type === 'password' || props.clearable) && 'pr-10',
+    ($slots.leftAddon || props.type === 'password' || props.clearable) &&
+      'pr-10',
     $slots.leftAddon && 'pl-10'
   )
 );
 
-const wrapperClasses = computed(() => cn('relative flex items-center', props.class));
+const wrapperClasses = computed(() =>
+  cn('relative flex items-center', props.class)
+);
 
 const handleInput = (e: Event) => {
   const target = e.target as HTMLInputElement;
@@ -114,7 +117,12 @@ const $slots = defineSlots<{
 }>();
 
 const hasLeftAddon = computed(() => !!$slots.leftAddon);
-const hasRightAddon = computed(() => !!$slots.rightAddon || props.type === 'password' || (props.clearable && hasValue.value));
+const hasRightAddon = computed(
+  () =>
+    !!$slots.rightAddon ||
+    props.type === 'password' ||
+    (props.clearable && hasValue.value)
+);
 </script>
 
 <template>
@@ -149,7 +157,7 @@ const hasRightAddon = computed(() => !!$slots.rightAddon || props.type === 'pass
         tabindex="-1"
         @click="handleClear"
       >
-        <X :size="16" />
+        <X :size="16" aria-hidden="true" />
       </button>
       <button
         v-if="type === 'password'"
@@ -159,8 +167,8 @@ const hasRightAddon = computed(() => !!$slots.rightAddon || props.type === 'pass
         tabindex="-1"
         @click="togglePassword"
       >
-        <EyeOff v-if="showPassword" :size="20" />
-        <Eye v-else :size="20" />
+        <EyeOff v-if="showPassword" :size="20" aria-hidden="true" />
+        <Eye v-else :size="20" aria-hidden="true" />
       </button>
       <slot name="rightAddon" />
     </div>

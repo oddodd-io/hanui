@@ -170,7 +170,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>( // KRDS 입
             className="cursor-pointer hover:text-krds-primary-60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-krds-primary-60 rounded"
             aria-label="입력 지우기"
           >
-            <X size={16} />
+            <X size={16} aria-hidden="true" />
           </button>
         );
       }
@@ -185,7 +185,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>( // KRDS 입
             className="cursor-pointer hover:text-krds-primary-60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-krds-primary-60 rounded"
             aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
           >
-            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            {showPassword ? (
+              <EyeOff size={20} aria-hidden="true" />
+            ) : (
+              <Eye size={20} aria-hidden="true" />
+            )}
           </button>
         );
       }

@@ -51,6 +51,7 @@ function FindIdForm({
 }) {
   const [name, setName] = React.useState('');
   const [phone, setPhone] = React.useState('');
+  const uid = React.useId();
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 숫자만 입력, 자동 하이픈
@@ -72,9 +73,9 @@ function FindIdForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="find-id-name">이름</Label>
+        <Label htmlFor={`${uid}-name`}>이름</Label>
         <Input
-          id="find-id-name"
+          id={`${uid}-name`}
           type="text"
           placeholder="이름을 입력하세요"
           value={name}
@@ -86,9 +87,9 @@ function FindIdForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="find-id-phone">휴대폰 번호</Label>
+        <Label htmlFor={`${uid}-phone`}>휴대폰 번호</Label>
         <Input
-          id="find-id-phone"
+          id={`${uid}-phone`}
           type="tel"
           placeholder="010-0000-0000"
           value={phone}
@@ -121,6 +122,7 @@ function ResetPasswordForm({
   onResetPassword?: (data: { email: string }) => void;
 }) {
   const [email, setEmail] = React.useState('');
+  const uid = React.useId();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,9 +132,9 @@ function ResetPasswordForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="reset-pw-email">이메일 (아이디)</Label>
+        <Label htmlFor={`${uid}-email`}>이메일 (아이디)</Label>
         <Input
-          id="reset-pw-email"
+          id={`${uid}-email`}
           type="email"
           placeholder="가입한 이메일을 입력하세요"
           value={email}
@@ -207,7 +209,9 @@ export function AccountRecovery({
             </Link>
           )}
           {showBackToLogin && showSignupLink && (
-            <span className="text-krds-gray-30">|</span>
+            <span className="text-krds-gray-60" aria-hidden>
+              |
+            </span>
           )}
           {showSignupLink && (
             <Link href={signupHref} variant="primary" size="sm">

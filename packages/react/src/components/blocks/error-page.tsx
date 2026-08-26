@@ -60,7 +60,8 @@ export function ErrorPage({
         className
       )}
     >
-      <Display size="lg" className="text-krds-gray-40">
+      {/* 에러 코드는 페이지 제목이 아니다. h1은 아래 title 하나만 둔다 */}
+      <Display as="div" size="lg" className="text-krds-gray-40">
         {code}
       </Display>
 

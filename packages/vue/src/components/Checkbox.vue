@@ -41,7 +41,9 @@ const props = withDefaults(
 );
 
 const generatedCheckboxId = useId();
-const checkboxId = computed(() => props.id || `checkbox-${generatedCheckboxId}`);
+const checkboxId = computed(
+  () => props.id || `checkbox-${generatedCheckboxId}`
+);
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean];
@@ -72,7 +74,10 @@ const iconSize = computed(() => {
 });
 
 const wrapperClasses = computed(() =>
-  cn('flex items-center gap-2', props.labelPosition === 'left' && 'flex-row-reverse')
+  cn(
+    'flex items-center gap-2',
+    props.labelPosition === 'left' && 'flex-row-reverse'
+  )
 );
 
 const labelClasses = computed(() =>
@@ -81,6 +86,16 @@ const labelClasses = computed(() =>
     props.disabled && 'cursor-not-allowed opacity-60'
   )
 );
+
+/**
+ * 레이블 안에 링크 같은 대화형 요소가 있으면 그것을 클릭한 것까지
+ * 체크 토글로 삼지 않는다.
+ */
+const handleLabelClick = (e: MouseEvent) => {
+  const target = e.target as HTMLElement | null;
+  if (target?.closest('a, button, input, select, textarea')) return;
+  handleClick();
+};
 
 const handleClick = () => {
   if (!props.disabled) {
@@ -97,7 +112,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-  <div v-if="label" :class="wrapperClasses">
+  <div v-if="label || $slots.label" :class="wrapperClasses">
     <button
       :id="checkboxId"
       type="button"
@@ -111,11 +126,20 @@ const handleKeyDown = (e: KeyboardEvent) => {
       @click="handleClick"
       @keydown="handleKeyDown"
     >
-      <span v-if="modelValue" class="flex items-center justify-center text-current">
+      <span
+        v-if="modelValue"
+        class="flex items-center justify-center text-current"
+      >
         <Check :size="iconSize" :stroke-width="3" aria-hidden="true" />
       </span>
     </button>
-    <span :id="`${checkboxId}-label`" :class="labelClasses" @click="handleClick">{{ label }}</span>
+    <span
+      :id="`${checkboxId}-label`"
+      :class="labelClasses"
+      @click="handleLabelClick"
+    >
+      <slot name="label">{{ label }}</slot>
+    </span>
   </div>
   <button
     v-else
@@ -131,7 +155,10 @@ const handleKeyDown = (e: KeyboardEvent) => {
     @click="handleClick"
     @keydown="handleKeyDown"
   >
-    <span v-if="modelValue" class="flex items-center justify-center text-current">
+    <span
+      v-if="modelValue"
+      class="flex items-center justify-center text-current"
+    >
       <Check :size="iconSize" :stroke-width="3" aria-hidden="true" />
     </span>
   </button>

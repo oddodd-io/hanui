@@ -171,67 +171,67 @@ export function SurveyForm({
           {questions.map((q, index) => {
             const questionId = `${formId}-q-${q.id}`;
             return (
-            <div key={q.id} className="space-y-3">
-              <Body size="sm" weight="medium" id={questionId}>
-                {index + 1}. {q.question}
-                {q.required && (
-                  <>
-                    <span className="text-red-500 ml-1" aria-hidden="true">
-                      *
-                    </span>
-                    <span className="sr-only">(필수)</span>
-                  </>
+              <div key={q.id} className="space-y-3">
+                <Body size="sm" weight="medium" id={questionId}>
+                  {index + 1}. {q.question}
+                  {q.required && (
+                    <>
+                      <span className="text-red-500 ml-1" aria-hidden="true">
+                        *
+                      </span>
+                      <span className="sr-only">(필수)</span>
+                    </>
+                  )}
+                </Body>
+
+                {q.type === 'rating' && (
+                  <RatingInput
+                    value={(answers[q.id] as number) || 0}
+                    onChange={(v) => updateAnswer(q.id, v)}
+                    labelledBy={questionId}
+                  />
                 )}
-              </Body>
 
-              {q.type === 'rating' && (
-                <RatingInput
-                  value={(answers[q.id] as number) || 0}
-                  onChange={(v) => updateAnswer(q.id, v)}
-                  labelledBy={questionId}
-                />
-              )}
+                {q.type === 'choice' && q.options && (
+                  <div
+                    className="space-y-2"
+                    role="radiogroup"
+                    aria-labelledby={questionId}
+                  >
+                    {q.options.map((option, optIndex) => (
+                      <label
+                        key={optIndex}
+                        className={cn(
+                          'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors',
+                          answers[q.id] === option
+                            ? 'border-krds-primary-base bg-krds-primary-5'
+                            : 'border-krds-gray-20 hover:border-krds-gray-30'
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name={`${formId}-q-${q.id}`}
+                          value={option}
+                          checked={answers[q.id] === option}
+                          onChange={() => updateAnswer(q.id, option)}
+                          className="accent-krds-primary-base"
+                        />
+                        <Body size="sm">{option}</Body>
+                      </label>
+                    ))}
+                  </div>
+                )}
 
-              {q.type === 'choice' && q.options && (
-                <div
-                  className="space-y-2"
-                  role="radiogroup"
-                  aria-labelledby={questionId}
-                >
-                  {q.options.map((option, optIndex) => (
-                    <label
-                      key={optIndex}
-                      className={cn(
-                        'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors',
-                        answers[q.id] === option
-                          ? 'border-krds-primary-base bg-krds-primary-5'
-                          : 'border-krds-gray-20 hover:border-krds-gray-30'
-                      )}
-                    >
-                      <input
-                        type="radio"
-                        name={`${formId}-q-${q.id}`}
-                        value={option}
-                        checked={answers[q.id] === option}
-                        onChange={() => updateAnswer(q.id, option)}
-                        className="accent-krds-primary-base"
-                      />
-                      <Body size="sm">{option}</Body>
-                    </label>
-                  ))}
-                </div>
-              )}
-
-              {q.type === 'text' && (
-                <Textarea
-                  placeholder="의견을 작성해주세요..."
-                  value={(answers[q.id] as string) || ''}
-                  onChange={(e) => updateAnswer(q.id, e.target.value)}
-                  rows={3}
-                  aria-labelledby={questionId}
-                />
-              )}
-            </div>
+                {q.type === 'text' && (
+                  <Textarea
+                    placeholder="의견을 작성해주세요..."
+                    value={(answers[q.id] as string) || ''}
+                    onChange={(e) => updateAnswer(q.id, e.target.value)}
+                    rows={3}
+                    aria-labelledby={questionId}
+                  />
+                )}
+              </div>
             );
           })}
         </CardBody>

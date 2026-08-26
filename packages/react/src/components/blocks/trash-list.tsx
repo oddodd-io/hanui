@@ -228,19 +228,34 @@ export function TrashList({
                     aria-label="전체 선택"
                   />
                 </th>
-                <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                <th
+                  scope="col"
+                  className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                >
                   제목
                 </th>
-                <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                <th
+                  scope="col"
+                  className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                >
                   유형
                 </th>
-                <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                <th
+                  scope="col"
+                  className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                >
                   삭제자
                 </th>
-                <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                <th
+                  scope="col"
+                  className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                >
                   삭제일
                 </th>
-                <th scope="col" className="text-right py-3 px-4 font-medium text-krds-gray-70">
+                <th
+                  scope="col"
+                  className="text-right py-3 px-4 font-medium text-krds-gray-70"
+                >
                   남은 일수
                 </th>
               </tr>

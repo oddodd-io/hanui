@@ -166,25 +166,25 @@ export default function LinkPage() {
               <Heading
                 level="h3"
                 title="Size"
-                description="링크는 세 가지 크기를 지원합니다: small(15px), medium(17px), large(19px)"
+                description="링크는 세 가지 크기를 지원합니다: sm(13px), md(15px, 기본), lg(17px)"
               />
               <ComponentPreview>
                 <div className="flex flex-col gap-4">
-                  <LinkComponent size="small" href="/small">
-                    Small 링크 (15px)
+                  <LinkComponent size="sm" href="/small">
+                    Small 링크 (13px)
                   </LinkComponent>
-                  <LinkComponent size="medium" href="/medium">
-                    Medium 링크 (17px - 기본)
+                  <LinkComponent size="md" href="/medium">
+                    Medium 링크 (15px - 기본)
                   </LinkComponent>
-                  <LinkComponent size="large" href="/large">
-                    Large 링크 (19px)
+                  <LinkComponent size="lg" href="/large">
+                    Large 링크 (17px)
                   </LinkComponent>
                 </div>
               </ComponentPreview>
               <Code variant="block" language="tsx">
-                {`<Link size="small" href="/small">Small 링크</Link>
-<Link size="medium" href="/medium">Medium 링크 (기본)</Link>
-<Link size="large" href="/large">Large 링크</Link>`}
+                {`<Link size="sm" href="/small">Small 링크</Link>
+<Link size="md" href="/medium">Medium 링크 (기본)</Link>
+<Link size="lg" href="/large">Large 링크</Link>`}
               </Code>
             </Subsection>
 

@@ -58,6 +58,8 @@ export function GovLogin({
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [rememberMe, setRememberMe] = React.useState(false);
+  // 한 페이지에 폼이 여러 개여도 label↔input 연결이 깨지지 않도록 한다
+  const uid = React.useId();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,9 +91,9 @@ export function GovLogin({
           <TabsContent value="id-pw">
             <form onSubmit={handleLogin} className="space-y-4 pt-4">
               <div className="space-y-2">
-                <Label htmlFor="gov-username">아이디</Label>
+                <Label htmlFor={`${uid}-username`}>아이디</Label>
                 <Input
-                  id="gov-username"
+                  id={`${uid}-username`}
                   type="text"
                   placeholder="아이디를 입력하세요"
                   value={username}
@@ -102,9 +104,9 @@ export function GovLogin({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="gov-password">비밀번호</Label>
+                <Label htmlFor={`${uid}-password`}>비밀번호</Label>
                 <Input
-                  id="gov-password"
+                  id={`${uid}-password`}
                   type="password"
                   placeholder="비밀번호를 입력하세요"
                   value={password}
@@ -114,7 +116,7 @@ export function GovLogin({
               </div>
 
               <Checkbox
-                id="gov-remember"
+                id={`${uid}-remember`}
                 size="sm"
                 label="아이디 저장"
                 checked={rememberMe}

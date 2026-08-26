@@ -224,35 +224,46 @@ export function Sidebar({
                     )}
                   </>
                 ) : (
-                  <a
-                    href={item.href}
-                    onClick={(e) => handleMenuClick(e, item.href)}
-                    className={cn(
-                      'flex items-center w-full px-4 py-3 gap-3',
-                      'text-krds-body-md text-krds-gray-70 no-underline',
-                      'hover:bg-krds-primary-5 hover:text-krds-gray-90',
-                      'focus-visible:outline focus-visible:outline-2 focus-visible:outline-krds-blue-60 focus-visible:outline-offset-[-2px]',
-                      'transition-colors',
-                      collapsed && 'justify-center px-0',
-                      isActive &&
-                        'text-krds-primary-base font-bold bg-krds-primary-5'
-                    )}
-                    aria-current={item.active ? 'page' : undefined}
-                    aria-label={collapsed ? item.label : undefined}
-                    title={collapsed ? item.label : undefined}
-                  >
-                    {item.icon && (
-                      <span
-                        className="flex-shrink-0 w-5 h-5"
-                        aria-hidden="true"
-                      >
-                        {item.icon}
-                      </span>
-                    )}
-                    {!collapsed && (
-                      <span className="flex-1 truncate">{item.label}</span>
-                    )}
-                  </a>
+                  // href가 없으면 <a>는 링크가 아니라서 aria-label을 쓸 수 없다
+                  // (axe aria-prohibited-attr). 그런 항목은 button으로 렌더한다.
+                  React.createElement(
+                    item.href ? 'a' : 'button',
+                    {
+                      href: item.href,
+                      type: item.href ? undefined : 'button',
+                      onClick: (e: React.MouseEvent<HTMLElement>) =>
+                        handleMenuClick(
+                          e as React.MouseEvent<HTMLAnchorElement>,
+                          item.href
+                        ),
+                      className: cn(
+                        'flex items-center w-full px-4 py-3 gap-3',
+                        'text-krds-body-md text-krds-gray-70 no-underline text-left',
+                        'hover:bg-krds-primary-5 hover:text-krds-gray-90',
+                        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-krds-blue-60 focus-visible:outline-offset-[-2px]',
+                        'transition-colors cursor-pointer border-0 bg-transparent',
+                        collapsed && 'justify-center px-0',
+                        isActive &&
+                          'text-krds-primary-base font-bold bg-krds-primary-5'
+                      ),
+                      'aria-current': item.active ? 'page' : undefined,
+                      'aria-label': collapsed ? item.label : undefined,
+                      title: collapsed ? item.label : undefined,
+                    },
+                    <>
+                      {item.icon && (
+                        <span
+                          className="flex-shrink-0 w-5 h-5"
+                          aria-hidden="true"
+                        >
+                          {item.icon}
+                        </span>
+                      )}
+                      {!collapsed && (
+                        <span className="flex-1 truncate">{item.label}</span>
+                      )}
+                    </>
+                  )
                 )}
               </li>
             );

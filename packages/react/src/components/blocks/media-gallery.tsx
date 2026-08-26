@@ -313,19 +313,34 @@ export function MediaGallery({
                   <caption className="sr-only">미디어 파일 목록</caption>
                   <thead>
                     <tr className="border-b border-krds-gray-20 bg-krds-gray-5">
-                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         파일명
                       </th>
-                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         유형
                       </th>
-                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         크기
                       </th>
-                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         업로드일
                       </th>
-                      <th scope="col" className="text-right py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-right py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         관리
                       </th>
                     </tr>

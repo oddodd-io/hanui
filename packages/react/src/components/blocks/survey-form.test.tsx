@@ -5,7 +5,12 @@ import { axe } from '../../test/setup';
 import { SurveyForm, type SurveyQuestion } from './survey-form';
 
 const QUESTIONS: SurveyQuestion[] = [
-  { id: 1, question: '전반적으로 만족하셨나요?', type: 'rating', required: true },
+  {
+    id: 1,
+    question: '전반적으로 만족하셨나요?',
+    type: 'rating',
+    required: true,
+  },
   {
     id: 2,
     question: '가장 유용했던 기능은?',
@@ -113,7 +118,10 @@ describe('SurveyForm', () => {
 
   it('접근성 위반이 없어야 합니다', async () => {
     const { container } = render(
-      <SurveyForm questions={QUESTIONS} description="서비스 개선에 활용됩니다" />
+      <SurveyForm
+        questions={QUESTIONS}
+        description="서비스 개선에 활용됩니다"
+      />
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();

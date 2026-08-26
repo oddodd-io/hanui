@@ -45,6 +45,8 @@ const props = withDefaults(
     size?: 'sm' | 'md' | 'lg' | 'xl';
     variant?: 'default' | 'primary' | 'success' | 'warning' | 'error';
     label?: string;
+    /** 보이는 label 없이 접근명만 줄 때 사용 (Button.vue와 동일 관례) */
+    ariaLabel?: string;
     showValue?: boolean;
     class?: string;
   }>(),
@@ -56,7 +58,9 @@ const props = withDefaults(
   }
 );
 
-const isIndeterminate = computed(() => props.value === null || props.value === undefined);
+const isIndeterminate = computed(
+  () => props.value === null || props.value === undefined
+);
 
 const normalizedValue = computed(() =>
   isIndeterminate.value ? 0 : Math.min(Math.max(props.value!, 0), props.max)
@@ -69,7 +73,10 @@ const progressClasses = computed(() =>
 );
 
 const indicatorClasses = computed(() =>
-  cn(indicatorVariants({ variant: props.variant }), isIndeterminate.value && 'w-1/3')
+  cn(
+    indicatorVariants({ variant: props.variant }),
+    isIndeterminate.value && 'w-1/3'
+  )
 );
 
 const indicatorStyle = computed(() =>
@@ -104,7 +111,10 @@ onMounted(() => {
   <div class="w-full">
     <div v-if="label || showValue" class="flex justify-between mb-1.5 text-sm">
       <span v-if="label" class="text-krds-gray-70">{{ label }}</span>
-      <span v-if="showValue && !isIndeterminate" class="text-krds-gray-60 tabular-nums">
+      <span
+        v-if="showValue && !isIndeterminate"
+        class="text-krds-gray-60 tabular-nums"
+      >
         {{ formatValue(normalizedValue, max) }}
       </span>
     </div>
@@ -113,7 +123,7 @@ onMounted(() => {
       :aria-valuenow="isIndeterminate ? undefined : normalizedValue"
       :aria-valuemin="0"
       :aria-valuemax="max"
-      :aria-label="label || '진행률'"
+      :aria-label="label || ariaLabel || '진행률'"
       :aria-busy="isIndeterminate"
       :class="progressClasses"
     >

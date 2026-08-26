@@ -17,8 +17,11 @@ export { default as CardFooter } from './components/CardFooter.vue';
 export { default as Input } from './components/Input.vue';
 export { default as Textarea } from './components/Textarea.vue';
 export { default as Checkbox } from './components/Checkbox.vue';
+export { default as CopyButton } from './components/CopyButton.vue';
 export { default as Radio } from './components/Radio.vue';
 export { default as RadioGroup } from './components/RadioGroup.vue';
+export { default as Sidebar } from './components/Sidebar.vue';
+export type { SidebarMenuItem } from './components/Sidebar.vue';
 export { default as Switch } from './components/Switch.vue';
 export { default as Label } from './components/Label.vue';
 export { default as Slider } from './components/Slider.vue';
@@ -184,3 +187,32 @@ export { useSteps } from './composables/useSteps';
 
 // Utils
 export { cn } from './lib/utils';
+
+// ============================================================================
+// Blocks — Component를 조합한 완성된 UI 패턴
+// ============================================================================
+export { default as AccountRecovery } from './components/blocks/AccountRecovery.vue';
+export { default as ContactForm } from './components/blocks/ContactForm.vue';
+export type { ContactFormValues } from './components/blocks/ContactForm.vue';
+export { default as EmptyState } from './components/blocks/EmptyState.vue';
+export { default as ErrorPage } from './components/blocks/ErrorPage.vue';
+export { default as FileDownload } from './components/blocks/FileDownload.vue';
+export type { FileItem } from './components/blocks/FileDownload.vue';
+export { default as GovLogin } from './components/blocks/GovLogin.vue';
+export type {
+  GovLoginValues,
+  SimpleAuthMethod,
+} from './components/blocks/GovLogin.vue';
+export { default as LoginForm } from './components/blocks/LoginForm.vue';
+export type { LoginFormValues } from './components/blocks/LoginForm.vue';
+export { default as OtpVerify } from './components/blocks/OtpVerify.vue';
+export { default as ProfileCard } from './components/blocks/ProfileCard.vue';
+export { default as SignupForm } from './components/blocks/SignupForm.vue';
+export type {
+  SignupFormValues,
+  SnsProvider,
+} from './components/blocks/SignupForm.vue';
+export { default as SearchBar } from './components/blocks/SearchBar.vue';
+export type { SearchCategory } from './components/blocks/SearchBar.vue';
+export { default as StatsCard } from './components/blocks/StatsCard.vue';
+export type { StatItem } from './components/blocks/StatsCard.vue';
