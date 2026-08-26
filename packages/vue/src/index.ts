@@ -191,10 +191,21 @@ export { cn } from './lib/utils';
 // ============================================================================
 // Blocks — Component를 조합한 완성된 UI 패턴
 // ============================================================================
+export { default as AccountRecovery } from './components/blocks/AccountRecovery.vue';
+export { default as ContactForm } from './components/blocks/ContactForm.vue';
+export type { ContactFormValues } from './components/blocks/ContactForm.vue';
 export { default as EmptyState } from './components/blocks/EmptyState.vue';
 export { default as ErrorPage } from './components/blocks/ErrorPage.vue';
 export { default as FileDownload } from './components/blocks/FileDownload.vue';
 export type { FileItem } from './components/blocks/FileDownload.vue';
+export { default as GovLogin } from './components/blocks/GovLogin.vue';
+export type {
+  GovLoginValues,
+  SimpleAuthMethod,
+} from './components/blocks/GovLogin.vue';
+export { default as LoginForm } from './components/blocks/LoginForm.vue';
+export type { LoginFormValues } from './components/blocks/LoginForm.vue';
+export { default as OtpVerify } from './components/blocks/OtpVerify.vue';
 export { default as ProfileCard } from './components/blocks/ProfileCard.vue';
 export { default as SearchBar } from './components/blocks/SearchBar.vue';
 export type { SearchCategory } from './components/blocks/SearchBar.vue';

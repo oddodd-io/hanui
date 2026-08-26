@@ -11,6 +11,23 @@
       { "path": "components/AccordionContent.vue", "type": "component" }
     ]
   },
+  "account-recovery": {
+    "name": "account-recovery",
+    "type": "block",
+    "description": "계정 찾기 블록 (아이디 찾기 + 비밀번호 찾기 탭)",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": [
+      "card",
+      "input",
+      "button",
+      "label",
+      "link",
+      "tabs"
+    ],
+    "files": [
+      { "path": "components/blocks/AccountRecovery.vue", "type": "component" }
+    ]
+  },
   "alert": {
     "name": "alert",
     "type": "ui",
@@ -155,6 +172,16 @@
     "dependencies": ["clsx", "tailwind-merge", "lucide-vue-next"],
     "files": [{ "path": "components/Combobox.vue", "type": "component" }]
   },
+  "contact-form": {
+    "name": "contact-form",
+    "type": "block",
+    "description": "문의 폼 블록",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": ["card", "input", "textarea", "button", "label"],
+    "files": [
+      { "path": "components/blocks/ContactForm.vue", "type": "component" }
+    ]
+  },
   "container": {
     "name": "container",
     "type": "ui",
@@ -262,6 +289,22 @@
       { "path": "components/FormError.vue", "type": "component" },
       { "path": "components/FormHelperText.vue", "type": "component" }
     ]
+  },
+  "gov-login": {
+    "name": "gov-login",
+    "type": "block",
+    "description": "정부24 스타일 로그인 블록 (아이디/간편인증/공동인증서)",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": [
+      "card",
+      "input",
+      "button",
+      "label",
+      "checkbox",
+      "body",
+      "tabs"
+    ],
+    "files": [{ "path": "components/blocks/GovLogin.vue", "type": "component" }]
   },
   "grid": {
     "name": "grid",
@@ -409,6 +452,23 @@
       { "path": "components/ListItem.vue", "type": "component" }
     ]
   },
+  "login-form": {
+    "name": "login-form",
+    "type": "block",
+    "description": "로그인 폼 블록 (아이디, 비밀번호, 아이디 저장, 자동 로그인)",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": [
+      "card",
+      "input",
+      "button",
+      "checkbox",
+      "label",
+      "link"
+    ],
+    "files": [
+      { "path": "components/blocks/LoginForm.vue", "type": "component" }
+    ]
+  },
   "logo": {
     "name": "logo",
     "type": "ui",
@@ -455,6 +515,16 @@
       { "path": "components/ModalTitle.vue", "type": "component" },
       { "path": "components/ModalBody.vue", "type": "component" },
       { "path": "components/ModalFooter.vue", "type": "component" }
+    ]
+  },
+  "otp-verify": {
+    "name": "otp-verify",
+    "type": "block",
+    "description": "인증번호 입력 블록 (타이머, 자동 제출, 재전송)",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "registryDependencies": ["card", "input", "button", "body"],
+    "files": [
+      { "path": "components/blocks/OtpVerify.vue", "type": "component" }
     ]
   },
   "pagination": {
