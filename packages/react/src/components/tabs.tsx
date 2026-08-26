@@ -130,6 +130,8 @@ interface TabsContextValue {
   onValueChange: (value: string) => void;
   variant: 'default' | 'pills';
   size: 'sm' | 'default';
+  /** Tabs 인스턴스별 고유 접두사 (id 충돌 방지) */
+  baseId: string;
 }
 
 const TabsContext = React.createContext<TabsContextValue | undefined>(
@@ -182,6 +184,8 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
     const [internalValue, setInternalValue] = React.useState(
       defaultValue || ''
     );
+    // 한 페이지에 Tabs가 여러 개 있어도 tab/panel id가 겹치지 않도록 인스턴스별 접두사 생성
+    const baseId = React.useId();
 
     const value =
       controlledValue !== undefined ? controlledValue : internalValue;
@@ -198,7 +202,13 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
 
     return (
       <TabsContext.Provider
-        value={{ value, onValueChange: handleValueChange, variant, size }}
+        value={{
+          value,
+          onValueChange: handleValueChange,
+          variant,
+          size,
+          baseId,
+        }}
       >
         <div ref={ref} className={cn('w-full mt-8', className)} {...props}>
           {children}
@@ -434,19 +444,23 @@ export const TabsTrigger = React.forwardRef<
       onValueChange,
       variant: contextVariant,
       size: contextSize,
+      baseId,
     } = useTabsContext();
     const variant = variantProp || contextVariant;
     const size = sizeProp || contextSize;
     const isActive = value === triggerValue;
-    const panelId = `tabpanel-${triggerValue}`;
+    const tabId = `${baseId}-tab-${triggerValue}`;
+    const panelId = `${baseId}-panel-${triggerValue}`;
 
     return (
       <button
         ref={ref}
+        id={tabId}
         role="tab"
         type="button"
         aria-selected={isActive}
-        aria-controls={panelId}
+        // 비활성 패널은 언마운트되므로 활성일 때만 참조한다 (존재하지 않는 id 참조 방지)
+        aria-controls={isActive ? panelId : undefined}
         data-state={isActive ? 'active' : 'inactive'}
         disabled={disabled}
         className={cn(tabsTriggerVariants({ variant, size }), className)}
@@ -468,9 +482,9 @@ TabsTrigger.displayName = 'TabsTrigger';
  */
 export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
   ({ value: contentValue, children, className, ...props }, ref) => {
-    const { value } = useTabsContext();
+    const { value, baseId } = useTabsContext();
     const isActive = value === contentValue;
-    const panelId = `tabpanel-${contentValue}`;
+    const panelId = `${baseId}-panel-${contentValue}`;
 
     if (!isActive) return null;
 
@@ -479,7 +493,7 @@ export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
         ref={ref}
         role="tabpanel"
         id={panelId}
-        aria-labelledby={`tab-${contentValue}`}
+        aria-labelledby={`${baseId}-tab-${contentValue}`}
         className={cn('pt-10 focus-visible:outline-none', className)}
         {...props}
       >

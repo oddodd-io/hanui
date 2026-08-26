@@ -60,7 +60,7 @@ export function ErrorPage({
         className
       )}
     >
-      <Display size="lg" className="text-krds-gray-20">
+      <Display size="lg" className="text-krds-gray-40">
         {code}
       </Display>
 

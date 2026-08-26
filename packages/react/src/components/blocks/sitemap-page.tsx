@@ -107,7 +107,7 @@ export function SitemapPage({
                           <li key={grandchild.href}>
                             <LinkComponent
                               href={grandchild.href}
-                              className="text-xs text-krds-gray-40 hover:text-krds-primary-base hover:underline"
+                              className="text-xs text-krds-gray-60 hover:text-krds-primary-base hover:underline"
                             >
                               {grandchild.label}
                             </LinkComponent>

@@ -132,8 +132,11 @@ export function BoardForm({ post, onSuccess, onCancel }: BoardFormProps) {
 
       {/* 첨부파일 */}
       <div>
-        <label className="block font-medium mb-1">첨부파일</label>
+        <label htmlFor="board-form-files" className="block font-medium mb-1">
+          첨부파일
+        </label>
         <input
+          id="board-form-files"
           type="file"
           multiple
           onChange={handleFileChange}

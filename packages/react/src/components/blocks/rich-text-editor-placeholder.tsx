@@ -143,9 +143,10 @@ export function RichTextEditorPlaceholder({
 
       {/* 에디터 본문 */}
       <textarea
-        className="block w-full resize-none bg-white p-4 text-krds-body-md text-krds-gray-90 placeholder:text-krds-gray-40 focus:outline-none"
+        className="block w-full resize-none bg-white p-4 text-krds-body-md text-krds-gray-90 placeholder:text-krds-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-krds-primary-60"
         style={{ minHeight }}
         placeholder={placeholder}
+        aria-label="본문 내용"
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
       />

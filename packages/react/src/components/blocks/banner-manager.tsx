@@ -138,7 +138,7 @@ export function BannerManager({
           {(['banner', 'popup'] as BannerType[]).map((type) => {
             const count = items.filter((i) => i.type === type).length;
             return (
-              <button
+              <button type="button"
                 key={type}
                 onClick={() => setActiveTab(type)}
                 className={cn(
@@ -180,7 +180,7 @@ export function BannerManager({
                   )}
                 >
                   {/* 드래그 핸들 */}
-                  <button
+                  <button type="button"
                     className="cursor-grab text-krds-gray-40 hover:text-krds-gray-60"
                     aria-label="순서 변경"
                   >

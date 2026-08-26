@@ -287,7 +287,7 @@ export const TwoFactorSetup = React.forwardRef<
                 />
               ) : (
                 <div className="w-48 h-48 bg-krds-gray-10 rounded flex items-center justify-center">
-                  <span className="text-krds-gray-40">QR 코드 로딩 중...</span>
+                  <span className="text-krds-gray-60">QR 코드 로딩 중...</span>
                 </div>
               )}
             </div>

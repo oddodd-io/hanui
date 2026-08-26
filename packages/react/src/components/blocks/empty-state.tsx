@@ -68,7 +68,7 @@ export function EmptyState({
   return (
     <Card variant="outlined" className={cn('w-full', className)}>
       <CardBody className="flex flex-col items-center text-center py-16 space-y-4">
-        <div className="text-krds-gray-30">{icon || <DefaultIcon />}</div>
+        <div className="text-krds-gray-50">{icon || <DefaultIcon />}</div>
 
         <div className="space-y-2">
           <h3 className="text-lg font-bold text-krds-gray-80">{title}</h3>

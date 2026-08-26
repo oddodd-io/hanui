@@ -11,7 +11,7 @@ import { Check, ChevronsUpDown, Search, X } from 'lucide-react';
  * Combobox 스타일 variants
  */
 const comboboxTriggerVariants = cva(
-  'flex h-10 w-full items-center justify-between rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-krds-gray-40 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+  'flex h-10 w-full items-center justify-between rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-krds-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       variant: {
@@ -316,7 +316,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
             {isMultiple ? (
               <span className="flex-1 flex flex-wrap gap-1 items-center text-left min-w-0">
                 {selectedOptions.length === 0 ? (
-                  <span className="text-krds-gray-40">{placeholder}</span>
+                  <span className="text-krds-gray-50">{placeholder}</span>
                 ) : (
                   <>
                     {selectedOptions.slice(0, maxDisplayedItems).map((opt) => (
@@ -351,7 +351,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
               <span
                 className={cn(
                   'flex-1 truncate text-left',
-                  !singleSelectedOption && 'text-krds-gray-40'
+                  !singleSelectedOption && 'text-krds-gray-50'
                 )}
               >
                 {singleSelectedOption
@@ -405,7 +405,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, ComboboxProps>(
                   value={search}
                   onValueChange={handleSearchChange}
                   placeholder={searchPlaceholder}
-                  className="flex h-10 w-full bg-transparent py-3 text-sm outline-none placeholder:text-krds-gray-40 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-10 w-full bg-transparent py-3 text-sm outline-none placeholder:text-krds-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
 

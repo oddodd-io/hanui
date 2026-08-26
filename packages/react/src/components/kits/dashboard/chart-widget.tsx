@@ -62,6 +62,10 @@ const SimpleBarChart: React.FC<{
   title: string;
   unit?: string;
 }> = ({ data, height, type, title, unit }) => {
+  // 한 화면에 차트가 여러 개일 때 title/desc id가 겹치지 않도록 인스턴스별 id 생성
+  const chartId = React.useId();
+  const titleId = `${chartId}-title`;
+  const descId = `${chartId}-desc`;
   const maxValue = Math.max(...data.map((d) => d.value), 1);
   const barColors = [
     'var(--krds-primary-50)',
@@ -80,11 +84,11 @@ const SimpleBarChart: React.FC<{
         width="100%"
         height={chartHeight}
         role="img"
-        aria-labelledby="chart-title chart-desc"
+        aria-labelledby={`${titleId} ${descId}`}
         className="overflow-visible"
       >
-        <title id="chart-title">{title} 차트</title>
-        <desc id="chart-desc">
+        <title id={titleId}>{title} 차트</title>
+        <desc id={descId}>
           {data.map((d) => `${d.label}: ${d.value}${unit || ''}`).join(', ')}
         </desc>
         {data.map((point, index) => {
@@ -138,10 +142,10 @@ const SimpleBarChart: React.FC<{
       viewBox={`0 0 ${chartWidth} ${height}`}
       preserveAspectRatio="xMidYMid meet"
       role="img"
-      aria-labelledby="chart-title chart-desc"
+      aria-labelledby={`${titleId} ${descId}`}
     >
-      <title id="chart-title">{title} 차트</title>
-      <desc id="chart-desc">
+      <title id={titleId}>{title} 차트</title>
+      <desc id={descId}>
         {data.map((d) => `${d.label}: ${d.value}${unit || ''}`).join(', ')}
       </desc>
       {data.map((point, index) => {

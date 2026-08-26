@@ -151,7 +151,7 @@ export function PublicFooter({
         </div>
 
         {/* 저작권 */}
-        <Body size="xs" className="text-krds-gray-40 mt-6">
+        <Body size="xs" className="text-krds-gray-60 mt-6">
           {copyrightText}
         </Body>
       </div>

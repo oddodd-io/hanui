@@ -42,13 +42,13 @@ export function BoardDeleteModal({ onConfirm }: BoardDeleteModalProps) {
         </p>
 
         <div className="flex justify-end gap-2">
-          <button
+          <button type="button"
             onClick={closeDeleteModal}
             className="px-4 py-2 border rounded-md hover:bg-gray-50"
           >
             취소
           </button>
-          <button
+          <button type="button"
             onClick={handleConfirm}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >

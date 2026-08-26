@@ -133,16 +133,16 @@ const ActionButton: React.FC<{
       {badge !== undefined && badge > 0 && (
         <span
           className="flex-shrink-0 inline-flex items-center justify-center min-w-5 h-5 px-1.5 text-xs font-bold text-white bg-krds-danger-base rounded-full"
-          aria-label={`${badge}개 알림`}
         >
           {badge > 99 ? '99+' : badge}
+          <span className="sr-only">개 알림</span>
         </span>
       )}
       {shortcut && layout !== 'grid' && (
         <kbd
-          className="flex-shrink-0 hidden sm:inline-flex items-center px-1.5 py-0.5 text-xs font-mono text-krds-gray-50 bg-krds-gray-10 rounded"
-          aria-label={`단축키: ${shortcut}`}
+          className="flex-shrink-0 hidden sm:inline-flex items-center px-1.5 py-0.5 text-xs font-mono text-krds-gray-70 bg-krds-gray-10 rounded"
         >
+          <span className="sr-only">단축키 </span>
           {shortcut}
         </kbd>
       )}

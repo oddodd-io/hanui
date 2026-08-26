@@ -102,7 +102,7 @@ function MenuItemRow({
         style={{ paddingLeft: `${depth * 24 + 12}px` }}
       >
         {/* 드래그 핸들 */}
-        <button
+        <button type="button"
           className="cursor-grab text-krds-gray-30 hover:text-krds-gray-60 opacity-0 group-hover:opacity-100 transition-opacity"
           aria-label="순서 변경"
         >
@@ -111,7 +111,7 @@ function MenuItemRow({
 
         {/* 확장/축소 */}
         {hasChildren ? (
-          <button
+          <button type="button"
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-krds-gray-50 hover:text-krds-gray-80"
             aria-label={isExpanded ? '접기' : '펼치기'}

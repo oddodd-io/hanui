@@ -261,9 +261,10 @@ export function BoardManagement({
               {/* 게시글 테이블 */}
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
+                  <caption className="sr-only">게시판 목록</caption>
                   <thead>
                     <tr className="border-b border-krds-gray-20 bg-krds-gray-5">
-                      <th className="w-12 py-3 px-4">
+                      <th scope="col" className="w-12 py-3 px-4">
                         <Checkbox
                           size="sm"
                           checked={allSelected}
@@ -271,22 +272,22 @@ export function BoardManagement({
                           aria-label="전체 선택"
                         />
                       </th>
-                      <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                         제목
                       </th>
-                      <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                         작성자
                       </th>
-                      <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                         상태
                       </th>
-                      <th className="text-right py-3 px-4 font-medium text-krds-gray-70">
+                      <th scope="col" className="text-right py-3 px-4 font-medium text-krds-gray-70">
                         조회수
                       </th>
-                      <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                         작성일
                       </th>
-                      <th className="text-right py-3 px-4 font-medium text-krds-gray-70">
+                      <th scope="col" className="text-right py-3 px-4 font-medium text-krds-gray-70">
                         관리
                       </th>
                     </tr>

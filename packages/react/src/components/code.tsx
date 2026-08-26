@@ -88,13 +88,13 @@ export const Code = React.forwardRef<HTMLElement, CodeProps>( // KRDS 코드 컴
           {fileName && (
             <div className="flex items-center gap-2 px-4 py-2 bg-krds-gray-90 border-b border-krds-gray-70 rounded-t-lg">
               <File className="w-3.5 h-3.5 text-krds-gray-40" />
-              <span className="text-krds-body-xs text-krds-gray-40 font-mono">
+              <span className="text-krds-body-xs text-krds-gray-60 font-mono">
                 {fileName}
               </span>
             </div>
           )}
           <div className="relative">
-            <button
+            <button type="button"
               onClick={handleCopy}
               className={cn(
                 'absolute top-4 right-3 p-2 rounded-md transition-all z-10',
@@ -140,7 +140,7 @@ export const Code = React.forwardRef<HTMLElement, CodeProps>( // KRDS 코드 컴
           >
             <code>{children}</code>
           </pre>
-          <button
+          <button type="button"
             onClick={handleCopy}
             className={cn(
               'absolute top-4 right-3 p-2 rounded-md transition-all z-10',

@@ -180,9 +180,12 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
     const calendarGridRef = React.useRef<HTMLTableElement>(null);
 
     // 년도 옵션
+    // today는 매 렌더 새 Date 객체라 의존성으로 쓰면 메모가 걸리지 않는다.
+    // 실제로 바뀌는 값(연도)만 의존성으로 둔다.
+    const currentYear = today.getFullYear();
     const yearOptions = React.useMemo(
-      () => generateYearOptions(today.getFullYear()),
-      [today]
+      () => generateYearOptions(currentYear),
+      [currentYear]
     );
 
     // 이전 달로 이동
@@ -366,6 +369,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
           'krds-calendar-area bg-white border border-krds-gray-30 rounded-lg shadow-lg',
           className
         )}
+        role="group"
         aria-label="달력"
       >
         <div className="calendar-wrap p-4">

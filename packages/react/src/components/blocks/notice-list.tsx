@@ -136,7 +136,7 @@ export function NoticeList({
               </div>
               <Body
                 size="sm"
-                className="text-krds-gray-40 shrink-0 tabular-nums"
+                className="text-krds-gray-60 shrink-0 tabular-nums"
               >
                 {item.date}
               </Body>

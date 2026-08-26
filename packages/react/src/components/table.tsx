@@ -75,6 +75,11 @@ export interface TableHeadProps
    * Sort click handler
    */
   onSort?: () => void;
+  /**
+   * 헤더 셀의 적용 범위 (WCAG 1.3.1)
+   * @default 'col'
+   */
+  scope?: 'col' | 'row' | 'colgroup' | 'rowgroup';
 }
 
 /**
@@ -268,10 +273,20 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
       sortable,
       sortDirection,
       onSort,
+      scope = 'col',
       ...props
     },
     ref
   ) => {
+    // aria-sort로 현재 정렬 상태를 보조기기에 전달한다 (WCAG 1.3.1)
+    const ariaSort = sortable
+      ? sortDirection === 'asc'
+        ? 'ascending'
+        : sortDirection === 'desc'
+          ? 'descending'
+          : 'none'
+      : undefined;
+
     const content = (
       <>
         <span>{children}</span>
@@ -286,6 +301,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
               )}
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" />
             </svg>
@@ -298,6 +314,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
               )}
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" />
             </svg>
@@ -309,18 +326,34 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
     return (
       <th
         ref={ref}
+        scope={scope}
+        aria-sort={ariaSort}
         className={cn(
-          'px-4 py-2 align-middle text-[15px] font-bold text-krds-gray-95',
+          'align-middle text-[15px] font-bold text-krds-gray-95',
+          // 정렬 가능할 때는 내부 버튼이 패딩을 갖는다
+          sortable ? 'p-0' : 'px-4 py-2',
           alignmentClasses[align],
           '[&:has([role=checkbox])]:pr-0',
-          sortable && 'cursor-pointer select-none hover:bg-krds-primary-5',
           className
         )}
-        onClick={sortable ? onSort : undefined}
         {...props}
       >
         {sortable ? (
-          <div className="flex items-center">{content}</div>
+          // th에 onClick만 두면 키보드로 정렬할 수 없다 (WCAG 2.1.1).
+          // 실제 조작은 네이티브 button이 담당한다.
+          <button
+            type="button"
+            onClick={onSort}
+            className={cn(
+              'flex w-full items-center px-4 py-2 select-none',
+              'cursor-pointer hover:bg-krds-primary-5',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-krds-primary-60 focus-visible:ring-inset',
+              align === 'center' && 'justify-center',
+              align === 'right' && 'justify-end'
+            )}
+          >
+            {content}
+          </button>
         ) : (
           children
         )}

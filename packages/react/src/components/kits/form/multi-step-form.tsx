@@ -194,7 +194,7 @@ function StepIndicator({
                     ],
                   !isCurrent &&
                     !isCompleted && [
-                      'bg-krds-gray-20 text-krds-gray-60',
+                      'bg-krds-gray-20 text-krds-gray-70',
                       'cursor-not-allowed',
                     ]
                 )}

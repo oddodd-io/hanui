@@ -144,7 +144,7 @@ export function SiteSettings({
                 </div>
               ) : (
                 <div className="w-24 h-24 rounded-md border border-dashed border-krds-gray-30 flex items-center justify-center bg-krds-gray-5">
-                  <span className="text-xs text-krds-gray-40">로고 없음</span>
+                  <span className="text-xs text-krds-gray-60">로고 없음</span>
                 </div>
               )}
               <div className="space-y-2">

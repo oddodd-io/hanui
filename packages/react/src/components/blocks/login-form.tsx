@@ -140,7 +140,7 @@ export function LoginForm({
             </Link>
           )}
           {showForgotPassword && showSignupLink && (
-            <Body as="span" size="sm" className="text-krds-gray-30">
+            <Body as="span" size="sm" className="text-krds-gray-60">
               |
             </Body>
           )}

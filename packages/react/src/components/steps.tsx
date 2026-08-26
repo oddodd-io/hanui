@@ -98,7 +98,7 @@ const stepsIndicatorVariants = cva(
         completed: 'bg-krds-gray-50 border-krds-gray-50 text-white',
         current:
           'bg-white border-krds-primary-base text-krds-primary-base ring-4 ring-krds-primary-20',
-        upcoming: 'bg-krds-gray-10 border-krds-gray-20 text-krds-gray-50',
+        upcoming: 'bg-krds-gray-10 border-krds-gray-20 text-krds-gray-70',
       },
       size: {
         sm: 'w-6 h-6 text-krds-body-xs',
@@ -137,7 +137,7 @@ const stepsDescriptionVariants = cva('transition-colors', {
     status: {
       completed: 'text-krds-gray-50',
       current: 'text-krds-gray-70',
-      upcoming: 'text-krds-gray-40',
+      upcoming: 'text-krds-gray-60',
     },
     size: {
       sm: 'text-krds-body-xs',

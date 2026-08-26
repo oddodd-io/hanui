@@ -271,7 +271,7 @@ const DropdownMenuItem = React.forwardRef<
       {children}
       {shortcut && (
         <span
-          className="ml-auto text-[15px] tracking-widest text-krds-gray-40"
+          className="ml-auto text-[15px] tracking-widest text-krds-gray-60"
           aria-hidden="true"
         >
           {shortcut}
@@ -394,7 +394,7 @@ const DropdownMenuShortcut = ({
   return (
     <span
       className={cn(
-        'ml-auto text-xs tracking-widest text-krds-gray-40',
+        'ml-auto text-xs tracking-widest text-krds-gray-60',
         className
       )}
       aria-hidden="true"

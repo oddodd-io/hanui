@@ -74,7 +74,7 @@ function IssueRow({ issue }: { issue: A11yIssue }) {
 
   return (
     <div className="border-b border-krds-gray-10 last:border-b-0">
-      <button
+      <button type="button"
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-start gap-3 py-3 px-4 text-left hover:bg-krds-gray-5 transition-colors"
       >
@@ -142,7 +142,7 @@ function PageGroup({ page }: { page: A11yPageGroup }) {
 
   return (
     <div className="border border-krds-gray-20 rounded-lg overflow-hidden">
-      <button
+      <button type="button"
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center gap-3 px-4 py-3 bg-krds-gray-5 hover:bg-krds-gray-10 transition-colors"
       >
