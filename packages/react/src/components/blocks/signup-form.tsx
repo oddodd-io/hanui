@@ -453,6 +453,7 @@ function DefaultForm({
   privacyHref: string;
   handleSubmit: (e: React.FormEvent) => void;
 }) {
+  const uid = React.useId();
   const isComplete =
     name &&
     email &&
@@ -465,9 +466,9 @@ function DefaultForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="signup-name">이름</Label>
+        <Label htmlFor={`${uid}-name`}>이름</Label>
         <Input
-          id="signup-name"
+          id={`${uid}-name`}
           type="text"
           placeholder="이름을 입력하세요"
           value={name}
@@ -479,9 +480,9 @@ function DefaultForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="signup-email">이메일</Label>
+        <Label htmlFor={`${uid}-email`}>이메일</Label>
         <Input
-          id="signup-email"
+          id={`${uid}-email`}
           type="email"
           placeholder="이메일을 입력하세요"
           value={email}
@@ -558,6 +559,7 @@ function SteppedForm({
   privacyHref: string;
   onSubmit?: SignupFormProps['onSubmit'];
 }) {
+  const uid = React.useId();
   const stepper = useSteps({ count: 3 });
 
   const handleStep2Submit = (e: React.FormEvent) => {
@@ -593,9 +595,9 @@ function SteppedForm({
           className="space-y-4"
         >
           <div className="space-y-2">
-            <Label htmlFor="signup-step-name">이름</Label>
+            <Label htmlFor={`${uid}-name`}>이름</Label>
             <Input
-              id="signup-step-name"
+              id={`${uid}-name`}
               type="text"
               placeholder="이름을 입력하세요"
               value={name}
@@ -607,9 +609,9 @@ function SteppedForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="signup-step-email">이메일</Label>
+            <Label htmlFor={`${uid}-email`}>이메일</Label>
             <Input
-              id="signup-step-email"
+              id={`${uid}-email`}
               type="email"
               placeholder="이메일을 입력하세요"
               value={email}

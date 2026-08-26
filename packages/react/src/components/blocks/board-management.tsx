@@ -272,22 +272,40 @@ export function BoardManagement({
                           aria-label="전체 선택"
                         />
                       </th>
-                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         제목
                       </th>
-                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         작성자
                       </th>
-                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         상태
                       </th>
-                      <th scope="col" className="text-right py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-right py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         조회수
                       </th>
-                      <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-left py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         작성일
                       </th>
-                      <th scope="col" className="text-right py-3 px-4 font-medium text-krds-gray-70">
+                      <th
+                        scope="col"
+                        className="text-right py-3 px-4 font-medium text-krds-gray-70"
+                      >
                         관리
                       </th>
                     </tr>

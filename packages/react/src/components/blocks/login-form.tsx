@@ -60,6 +60,8 @@ export function LoginForm({
   const [username, setUsername] = React.useState(defaultValues?.username ?? '');
   const [password, setPassword] = React.useState(defaultValues?.password ?? '');
   const [rememberMe, setRememberMe] = React.useState(false);
+  // 한 페이지에 폼이 여러 개여도 label↔input 연결이 깨지지 않도록 한다
+  const uid = React.useId();
   const [autoLogin, setAutoLogin] = React.useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -77,9 +79,9 @@ export function LoginForm({
       <CardBody>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="login-username">아이디</Label>
+            <Label htmlFor={`${uid}-username`}>아이디</Label>
             <Input
-              id="login-username"
+              id={`${uid}-username`}
               type="text"
               placeholder="아이디를 입력하세요"
               value={username}
@@ -90,9 +92,9 @@ export function LoginForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="login-password">비밀번호</Label>
+            <Label htmlFor={`${uid}-password`}>비밀번호</Label>
             <Input
-              id="login-password"
+              id={`${uid}-password`}
               type="password"
               placeholder="비밀번호를 입력하세요"
               value={password}
@@ -105,14 +107,14 @@ export function LoginForm({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <Checkbox
-                id="login-remember"
+                id={`${uid}-remember`}
                 label="아이디 저장"
                 size="sm"
                 checked={rememberMe}
                 onCheckedChange={(checked) => setRememberMe(checked === true)}
               />
               <Checkbox
-                id="login-auto"
+                id={`${uid}-auto`}
                 label="자동 로그인"
                 size="sm"
                 checked={autoLogin}
@@ -140,7 +142,7 @@ export function LoginForm({
             </Link>
           )}
           {showForgotPassword && showSignupLink && (
-            <Body as="span" size="sm" className="text-krds-gray-60">
+            <Body as="span" size="sm" className="text-krds-gray-60" aria-hidden>
               |
             </Body>
           )}

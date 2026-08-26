@@ -213,8 +213,8 @@ export function OtpVerify({
                   expired
                     ? 'text-krds-danger-base'
                     : remainingTime <= 30
-                      ? 'text-krds-warning-base'
-                      : 'text-krds-gray-50'
+                      ? 'text-krds-warning-60'
+                      : 'text-krds-gray-60'
                 )}
                 aria-live="polite"
               >
