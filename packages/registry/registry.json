@@ -1,4 +1,24 @@
 {
+  "a11y-report": {
+    "name": "a11y-report",
+    "type": "block",
+    "description": "접근성 검사 리포트 블록",
+    "dependencies": ["lucide-react"],
+    "registryDependencies": ["badge", "body", "button", "card"],
+    "files": [
+      { "path": "components/blocks/a11y-report.tsx", "type": "component" }
+    ]
+  },
+  "a11y-score": {
+    "name": "a11y-score",
+    "type": "block",
+    "description": "접근성 점수 표시 블록",
+    "dependencies": [],
+    "registryDependencies": ["badge", "body", "card"],
+    "files": [
+      { "path": "components/blocks/a11y-score.tsx", "type": "component" }
+    ]
+  },
   "accordion": {
     "name": "accordion",
     "type": "ui",
@@ -14,6 +34,16 @@
         "path": "components/accordion.tsx",
         "type": "component"
       }
+    ]
+  },
+  "banner-manager": {
+    "name": "banner-manager",
+    "type": "block",
+    "description": "배너 관리 블록",
+    "dependencies": ["lucide-react"],
+    "registryDependencies": ["badge", "body", "button", "card", "switch"],
+    "files": [
+      { "path": "components/blocks/banner-manager.tsx", "type": "component" }
     ]
   },
   "body": {
@@ -50,6 +80,16 @@
         "path": "components/breadcrumb.tsx",
         "type": "component"
       }
+    ]
+  },
+  "bulk-actions-bar": {
+    "name": "bulk-actions-bar",
+    "type": "block",
+    "description": "일괄 작업 바",
+    "dependencies": ["lucide-react"],
+    "registryDependencies": ["badge", "button", "dropdown-menu"],
+    "files": [
+      { "path": "components/blocks/bulk-actions-bar.tsx", "type": "component" }
     ]
   },
   "button": {
@@ -108,6 +148,26 @@
     "dependencies": ["clsx", "tailwind-merge", "swiper", "lucide-react"],
     "files": [
       { "path": "components/carousel-preview.tsx", "type": "component" }
+    ]
+  },
+  "cms-header": {
+    "name": "cms-header",
+    "type": "block",
+    "description": "CMS 관리자 헤더",
+    "dependencies": ["lucide-react"],
+    "registryDependencies": ["badge", "button", "dropdown-menu"],
+    "files": [
+      { "path": "components/blocks/cms-header.tsx", "type": "component" }
+    ]
+  },
+  "content-filter": {
+    "name": "content-filter",
+    "type": "block",
+    "description": "콘텐츠 필터 블록",
+    "dependencies": ["lucide-react"],
+    "registryDependencies": ["button", "date-input", "input", "select"],
+    "files": [
+      { "path": "components/blocks/content-filter.tsx", "type": "component" }
     ]
   },
   "copy-button": {
@@ -190,6 +250,24 @@
         "path": "components/display.tsx",
         "type": "component"
       }
+    ]
+  },
+  "faq-list": {
+    "name": "faq-list",
+    "type": "block",
+    "description": "FAQ 목록 블록",
+    "dependencies": [],
+    "registryDependencies": ["accordion", "badge"],
+    "files": [{ "path": "components/blocks/faq-list.tsx", "type": "component" }]
+  },
+  "file-download": {
+    "name": "file-download",
+    "type": "block",
+    "description": "첨부파일 다운로드 목록",
+    "dependencies": [],
+    "registryDependencies": ["badge", "body", "button"],
+    "files": [
+      { "path": "components/blocks/file-download.tsx", "type": "component" }
     ]
   },
   "file-upload": {
@@ -386,6 +464,16 @@
       }
     ]
   },
+  "menu-manager": {
+    "name": "menu-manager",
+    "type": "block",
+    "description": "메뉴 관리 블록",
+    "dependencies": ["lucide-react"],
+    "registryDependencies": ["body", "button", "card", "input"],
+    "files": [
+      { "path": "components/blocks/menu-manager.tsx", "type": "component" }
+    ]
+  },
   "menu-mega": {
     "name": "menu-mega",
     "type": "ui",
@@ -469,6 +557,26 @@
       }
     ]
   },
+  "notice-list": {
+    "name": "notice-list",
+    "type": "block",
+    "description": "공지사항 목록 블록",
+    "dependencies": [],
+    "registryDependencies": ["badge", "body"],
+    "files": [
+      { "path": "components/blocks/notice-list.tsx", "type": "component" }
+    ]
+  },
+  "org-chart": {
+    "name": "org-chart",
+    "type": "block",
+    "description": "조직도 블록",
+    "dependencies": [],
+    "registryDependencies": ["body", "card"],
+    "files": [
+      { "path": "components/blocks/org-chart.tsx", "type": "component" }
+    ]
+  },
   "pagination": {
     "name": "pagination",
     "type": "ui",
@@ -477,6 +585,56 @@
     "files": [
       {
         "path": "components/pagination.tsx",
+        "type": "component"
+      }
+    ]
+  },
+  "public-footer": {
+    "name": "public-footer",
+    "type": "block",
+    "description": "공공 사이트 푸터",
+    "dependencies": [],
+    "registryDependencies": ["body"],
+    "files": [
+      { "path": "components/blocks/public-footer.tsx", "type": "component" }
+    ]
+  },
+  "public-hero": {
+    "name": "public-hero",
+    "type": "block",
+    "description": "공공 사이트 히어로 영역",
+    "dependencies": [],
+    "registryDependencies": ["body", "button"],
+    "files": [
+      { "path": "components/blocks/public-hero.tsx", "type": "component" }
+    ]
+  },
+  "publish-settings": {
+    "name": "publish-settings",
+    "type": "block",
+    "description": "발행 설정 블록",
+    "dependencies": ["lucide-react"],
+    "registryDependencies": [
+      "badge",
+      "button",
+      "card",
+      "date-input",
+      "input",
+      "select",
+      "switch"
+    ],
+    "files": [
+      { "path": "components/blocks/publish-settings.tsx", "type": "component" }
+    ]
+  },
+  "rich-text-editor-placeholder": {
+    "name": "rich-text-editor-placeholder",
+    "type": "block",
+    "description": "리치 텍스트 에디터 자리표시자",
+    "dependencies": ["lucide-react"],
+    "files": [
+      {
+        "path": "components/blocks/rich-text-editor-placeholder.tsx",
         "type": "component"
       }
     ]
@@ -565,6 +723,15 @@
       }
     ]
   },
+  "sitemap-page": {
+    "name": "sitemap-page",
+    "type": "block",
+    "description": "사이트맵 페이지 블록",
+    "dependencies": [],
+    "files": [
+      { "path": "components/blocks/sitemap-page.tsx", "type": "component" }
+    ]
+  },
   "skip-link": {
     "name": "skip-link",
     "type": "ui",
@@ -594,9 +761,7 @@
     "type": "ui",
     "description": "단계 표시 컴포넌트",
     "dependencies": ["clsx", "tailwind-merge", "class-variance-authority"],
-    "files": [
-      { "path": "components/step-indicator.tsx", "type": "component" }
-    ]
+    "files": [{ "path": "components/step-indicator.tsx", "type": "component" }]
   },
   "steps": {
     "name": "steps",
@@ -609,6 +774,16 @@
       "@radix-ui/react-slot"
     ],
     "files": [{ "path": "components/steps.tsx", "type": "component" }]
+  },
+  "survey-form": {
+    "name": "survey-form",
+    "type": "block",
+    "description": "설문 폼 블록",
+    "dependencies": [],
+    "registryDependencies": ["body", "button", "card", "textarea"],
+    "files": [
+      { "path": "components/blocks/survey-form.tsx", "type": "component" }
+    ]
   },
   "table": {
     "name": "table",
@@ -657,6 +832,14 @@
       "lucide-react"
     ],
     "files": [{ "path": "components/tag.tsx", "type": "component" }]
+  },
+  "timeline": {
+    "name": "timeline",
+    "type": "block",
+    "description": "타임라인 블록",
+    "dependencies": [],
+    "registryDependencies": ["body"],
+    "files": [{ "path": "components/blocks/timeline.tsx", "type": "component" }]
   },
   "tooltip": {
     "name": "tooltip",
