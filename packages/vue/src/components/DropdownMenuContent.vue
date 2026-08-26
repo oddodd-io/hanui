@@ -13,26 +13,21 @@ const props = withDefaults(
 </script>
 
 <template>
-  <Transition
-    enter-active-class="transition ease-out duration-100"
-    enter-from-class="opacity-0 scale-95"
-    enter-to-class="opacity-100 scale-100"
-    leave-active-class="transition ease-in duration-75"
-    leave-from-class="opacity-100 scale-100"
-    leave-to-class="opacity-0 scale-95"
+  <!--
+    이전에는 <Transition>으로 감싸고 있었으나 내부에 v-if/v-show 토글이 없어
+    전환이 한 번도 실행되지 않았다 (열고 닫는 주체는 부모다). 죽은 래퍼라 제거했다.
+  -->
+  <div
+    :class="
+      cn(
+        'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border border-krds-gray-20 bg-white p-1 text-krds-gray-95 shadow-md',
+        'top-full left-0',
+        props.class
+      )
+    "
+    :style="{ marginTop: `${sideOffset}px` }"
+    role="menu"
   >
-    <div
-      :class="
-        cn(
-          'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border border-krds-gray-20 bg-white p-1 text-krds-gray-95 shadow-md',
-          'top-full left-0',
-          props.class
-        )
-      "
-      :style="{ marginTop: `${sideOffset}px` }"
-      role="menu"
-    >
-      <slot />
-    </div>
-  </Transition>
+    <slot />
+  </div>
 </template>

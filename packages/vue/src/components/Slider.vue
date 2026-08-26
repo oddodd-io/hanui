@@ -42,7 +42,8 @@ const colorClasses = {
   },
   success: {
     range: 'bg-krds-func-success-base',
-    thumb: 'border-krds-func-success-base focus-visible:ring-krds-func-success-base',
+    thumb:
+      'border-krds-func-success-base focus-visible:ring-krds-func-success-base',
   },
   danger: {
     range: 'bg-krds-danger-base',
@@ -107,7 +108,10 @@ const percentage = computed(() => {
     const end = ((internalValue.value[1] - props.min) / range) * 100;
     return { start, end };
   }
-  return { start: 0, end: ((internalValue.value[0] - props.min) / range) * 100 };
+  return {
+    start: 0,
+    end: ((internalValue.value[0] - props.min) / range) * 100,
+  };
 });
 
 const rangeStyle = computed(() => ({
@@ -129,8 +133,13 @@ const handleThumbDrag = (index: number, event: MouseEvent | TouchEvent) => {
   const rect = track.getBoundingClientRect();
 
   const updateValue = (clientX: number) => {
-    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    const value = Math.round((percent * (props.max - props.min) + props.min) / props.step) * props.step;
+    const percent = Math.max(
+      0,
+      Math.min(1, (clientX - rect.left) / rect.width)
+    );
+    const value =
+      Math.round((percent * (props.max - props.min) + props.min) / props.step) *
+      props.step;
 
     const newValues = [...internalValue.value];
     newValues[index] = Math.max(props.min, Math.min(props.max, value));
@@ -240,7 +249,9 @@ const handleTrackClick = (event: MouseEvent) => {
   const track = event.currentTarget as HTMLElement;
   const rect = track.getBoundingClientRect();
   const percent = (event.clientX - rect.left) / rect.width;
-  const value = Math.round((percent * (props.max - props.min) + props.min) / props.step) * props.step;
+  const value =
+    Math.round((percent * (props.max - props.min) + props.min) / props.step) *
+    props.step;
   const clampedValue = Math.max(props.min, Math.min(props.max, value));
 
   if (isRange.value) {
@@ -261,13 +272,18 @@ const handleTrackClick = (event: MouseEvent) => {
   }
 };
 
-const classes = computed(() => cn(sliderVariants({ size: props.size }), props.class));
+const classes = computed(() =>
+  cn(sliderVariants({ size: props.size }), props.class)
+);
 </script>
 
 <template>
   <div class="w-full">
     <!-- Label and value display -->
-    <div v-if="label || showValue" class="mb-2 flex items-center justify-between">
+    <div
+      v-if="label || showValue"
+      class="mb-2 flex items-center justify-between"
+    >
       <label
         v-if="label"
         :id="labelId"
@@ -277,7 +293,8 @@ const classes = computed(() => cn(sliderVariants({ size: props.size }), props.cl
       </label>
       <span v-if="showValue" class="text-sm text-krds-gray-50">
         <template v-if="isRange">
-          {{ formatValue(internalValue[0]) }} - {{ formatValue(internalValue[internalValue.length - 1]) }}
+          {{ formatValue(internalValue[0]) }} -
+          {{ formatValue(internalValue[internalValue.length - 1]) }}
         </template>
         <template v-else>
           {{ formatValue(internalValue[0]) }}
@@ -295,10 +312,12 @@ const classes = computed(() => cn(sliderVariants({ size: props.size }), props.cl
     >
       <!-- Track -->
       <div
-        :class="cn(
-          'relative grow overflow-hidden rounded-full bg-krds-gray-20',
-          trackSizes[size]
-        )"
+        :class="
+          cn(
+            'relative grow overflow-hidden rounded-full bg-krds-gray-20',
+            trackSizes[size]
+          )
+        "
         @click="handleTrackClick"
       >
         <!-- Range -->
@@ -309,18 +328,24 @@ const classes = computed(() => cn(sliderVariants({ size: props.size }), props.cl
       </div>
 
       <!-- Thumbs -->
+      <!-- tabindex를 바인딩으로 주고 있어 규칙이 정적으로 판별하지 못한다 -->
+      <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus -->
       <div
         v-for="(_, index) in internalValue"
         :key="index"
-        :class="cn(
-          'absolute block rounded-full border-2 bg-white shadow-md transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-          'cursor-pointer',
-          disabled && 'pointer-events-none opacity-50',
-          thumbSizes[size],
-          colorClasses[color].thumb
-        )"
-        :style="{ left: `calc(${thumbPosition[index]}% - ${size === 'sm' ? '6px' : size === 'lg' ? '10px' : '8px'})` }"
+        :class="
+          cn(
+            'absolute block rounded-full border-2 bg-white shadow-md transition-colors',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+            'cursor-pointer',
+            disabled && 'pointer-events-none opacity-50',
+            thumbSizes[size],
+            colorClasses[color].thumb
+          )
+        "
+        :style="{
+          left: `calc(${thumbPosition[index]}% - ${size === 'sm' ? '6px' : size === 'lg' ? '10px' : '8px'})`,
+        }"
         :tabindex="disabled ? -1 : 0"
         role="slider"
         :aria-valuemin="thumbMin(index)"

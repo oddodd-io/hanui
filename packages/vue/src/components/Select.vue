@@ -44,7 +44,8 @@ const optionId = (index: number) => `${selectId}-option-${index}`;
 const activeIndex = ref(-1);
 const listboxRef = ref<HTMLElement | null>(null);
 
-const isSelectable = (i: number) => !!props.options[i] && !props.options[i].disabled;
+const isSelectable = (i: number) =>
+  !!props.options[i] && !props.options[i].disabled;
 
 /** from에서 step 방향으로 선택 가능한 다음 옵션을 찾는다 (양끝에서 순환) */
 const findNext = (from: number, step: number) => {
@@ -82,9 +83,8 @@ const closeList = () => {
 watch(activeIndex, async (i) => {
   if (i < 0 || !isOpen.value) return;
   await nextTick();
-  listboxRef.value
-    ?.querySelector(`#${CSS.escape(optionId(i))}`)
-    ?.scrollIntoView({ block: 'nearest' });
+  // CSS.escape는 환경에 따라 없을 수 있다. id 조회에는 이스케이프가 필요 없다.
+  document.getElementById(optionId(i))?.scrollIntoView({ block: 'nearest' });
 });
 
 const sizeClasses = {
@@ -93,7 +93,9 @@ const sizeClasses = {
   sm: 'h-10',
 } as const;
 
-const selectedOption = computed(() => props.options.find((opt) => opt.value === props.modelValue));
+const selectedOption = computed(() =>
+  props.options.find((opt) => opt.value === props.modelValue)
+);
 
 const hasError = computed(() => props.status === 'error');
 
@@ -151,7 +153,8 @@ const handleKeyDown = (e: KeyboardEvent) => {
     case ' ':
       e.preventDefault();
       if (!isOpen.value) openList();
-      else if (activeIndex.value >= 0) handleSelect(props.options[activeIndex.value]);
+      else if (activeIndex.value >= 0)
+        handleSelect(props.options[activeIndex.value]);
       else closeList();
       break;
     case 'Escape':
@@ -172,7 +175,10 @@ const handleClickOutside = () => {
 </script>
 
 <template>
-  <div :class="cn('relative', props.class)" v-click-outside="handleClickOutside">
+  <div
+    :class="cn('relative', props.class)"
+    v-click-outside="handleClickOutside"
+  >
     <!-- Label -->
     <label
       v-if="label"
@@ -227,6 +233,11 @@ const handleClickOutside = () => {
         :aria-labelledby="label ? labelId : undefined"
       >
         <div class="p-1">
+          <!--
+            aria-activedescendant 패턴에서는 포커스가 트리거에 머무르고
+            옵션은 포커스를 받지 않는다. 키보드 조작은 트리거의 keydown이 담당한다.
+          -->
+          <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus -->
           <div
             v-for="(option, index) in options"
             :id="optionId(index)"

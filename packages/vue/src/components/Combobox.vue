@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, useId } from 'vue';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Check, ChevronsUpDown, Search, X, Loader2 } from 'lucide-vue-next';
 import { cn } from '@/lib/utils';
+
+const listboxId = `${useId()}-listbox`;
 
 const comboboxTriggerVariants = cva(
   'flex h-10 w-full items-center justify-between rounded-md border bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-krds-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
@@ -201,6 +203,7 @@ onUnmounted(() => {
       type="button"
       role="combobox"
       :aria-expanded="isOpen"
+      :aria-controls="isOpen ? listboxId : undefined"
       aria-haspopup="listbox"
       :disabled="disabled"
       :class="cn(comboboxTriggerVariants({ variant, size }), props.class)"
@@ -209,7 +212,10 @@ onUnmounted(() => {
     >
       <span
         :class="
-          cn('flex-1 truncate text-left', !selectedOption && 'text-krds-gray-50')
+          cn(
+            'flex-1 truncate text-left',
+            !selectedOption && 'text-krds-gray-50'
+          )
         "
       >
         {{ selectedOption ? selectedOption.label : placeholder }}
@@ -245,7 +251,10 @@ onUnmounted(() => {
     >
       <!-- Search Input -->
       <div class="flex items-center border-b border-krds-gray-20 px-3">
-        <Search class="mr-2 h-4 w-4 shrink-0 text-krds-gray-40" aria-hidden="true" />
+        <Search
+          class="mr-2 h-4 w-4 shrink-0 text-krds-gray-40"
+          aria-hidden="true"
+        />
         <input
           type="text"
           :value="search"
@@ -265,6 +274,7 @@ onUnmounted(() => {
       <!-- Options List -->
       <div
         v-else
+        :id="listboxId"
         role="listbox"
         class="overflow-auto p-2"
         :style="{ maxHeight: `${maxHeight}px` }"
@@ -278,7 +288,10 @@ onUnmounted(() => {
         </div>
 
         <!-- Ungrouped Options -->
-        <template v-for="(option, index) in groupedOptions.ungrouped" :key="option.value">
+        <template
+          v-for="(option, index) in groupedOptions.ungrouped"
+          :key="option.value"
+        >
           <button
             type="button"
             role="option"
@@ -293,6 +306,7 @@ onUnmounted(() => {
               )
             "
             @click="handleSelect(option.value)"
+            @focus="highlightedIndex = index"
             @mouseenter="highlightedIndex = index"
           >
             <span
@@ -315,7 +329,10 @@ onUnmounted(() => {
         </template>
 
         <!-- Grouped Options -->
-        <template v-for="[groupName, groupOptions] in groupedOptions.groups" :key="groupName">
+        <template
+          v-for="[groupName, groupOptions] in groupedOptions.groups"
+          :key="groupName"
+        >
           <div class="px-2 py-1.5">
             <div class="mb-1 text-xs font-medium text-krds-gray-50">
               {{ groupName }}
@@ -348,7 +365,10 @@ onUnmounted(() => {
               </span>
               <div class="flex flex-col">
                 <span>{{ option.label }}</span>
-                <span v-if="option.description" class="text-xs text-krds-gray-50">
+                <span
+                  v-if="option.description"
+                  class="text-xs text-krds-gray-50"
+                >
                   {{ option.description }}
                 </span>
               </div>

@@ -8,7 +8,8 @@ const tabsListVariants = cva('flex', {
   variants: {
     variant: {
       default: 'border-b border-krds-gray-20',
-      pills: 'overflow-hidden w-full rounded-lg bg-krds-white border border-krds-gray-20',
+      pills:
+        'overflow-hidden w-full rounded-lg bg-krds-white border border-krds-gray-20',
     },
   },
   defaultVariants: {
@@ -31,7 +32,9 @@ const tabsContext = inject<{
   variant: 'default' | 'pills';
 }>('tabsContext');
 
-const variant = computed(() => props.variant || tabsContext?.variant || 'default');
+const variant = computed(
+  () => props.variant || tabsContext?.variant || 'default'
+);
 
 const scrollContainerRef = ref<HTMLDivElement | null>(null);
 const canScrollLeft = ref(false);
@@ -62,7 +65,9 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (!container) return;
 
   const tabs = Array.from(
-    container.querySelectorAll<HTMLButtonElement>('[role="tab"]:not([disabled])')
+    container.querySelectorAll<HTMLButtonElement>(
+      '[role="tab"]:not([disabled])'
+    )
   );
   const currentIndex = tabs.findIndex((tab) => tab === event.target);
 
@@ -119,7 +124,9 @@ onUnmounted(() => {
   }
 });
 
-const classes = computed(() => cn(tabsListVariants({ variant: variant.value }), props.class));
+const classes = computed(() =>
+  cn(tabsListVariants({ variant: variant.value }), props.class)
+);
 </script>
 
 <template>
@@ -130,26 +137,35 @@ const classes = computed(() => cn(tabsListVariants({ variant: variant.value }), 
       @click="scroll('left')"
       :disabled="!canScrollLeft"
       aria-label="이전 탭 보기"
-      :class="cn(
-        'absolute left-0 top-1/2 -translate-y-1/2',
-        'flex-shrink-0 flex items-center justify-center',
-        'w-10 h-10 rounded-full',
-        'bg-krds-gray-90 text-white',
-        'hover:bg-krds-gray-80',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-krds-func-info',
-        'disabled:opacity-0 disabled:pointer-events-none',
-        'transition-opacity'
-      )"
+      :class="
+        cn(
+          'absolute left-0 top-1/2 -translate-y-1/2',
+          'flex-shrink-0 flex items-center justify-center',
+          'w-10 h-10 rounded-full',
+          'bg-krds-gray-90 text-white',
+          'hover:bg-krds-gray-80',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-krds-func-info',
+          'disabled:opacity-0 disabled:pointer-events-none',
+          'transition-opacity'
+        )
+      "
     >
       <ChevronLeft class="w-5 h-5" aria-hidden="true" />
     </button>
 
+    <!-- tablist 자체는 포커스 대상이 아니다. 포커스는 내부의 각 탭이 받는다 -->
+    <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus -->
     <div
       ref="scrollContainerRef"
       role="tablist"
       :tabindex="-1"
       @keydown="handleKeyDown"
-      :class="cn('flex-1 overflow-x-auto scrollbar-hide', tabsListVariants({ variant: variant }))"
+      :class="
+        cn(
+          'flex-1 overflow-x-auto scrollbar-hide',
+          tabsListVariants({ variant: variant })
+        )
+      "
       :style="{ scrollbarWidth: 'none', msOverflowStyle: 'none' }"
     >
       <slot />
@@ -160,22 +176,26 @@ const classes = computed(() => cn(tabsListVariants({ variant: variant.value }), 
       @click="scroll('right')"
       :disabled="!canScrollRight"
       aria-label="다음 탭 보기"
-      :class="cn(
-        'absolute right-0 top-1/2 -translate-y-1/2',
-        'flex-shrink-0 flex items-center justify-center',
-        'w-10 h-10 rounded-full',
-        'bg-krds-gray-90 text-white',
-        'hover:bg-krds-gray-80',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-krds-func-info',
-        'disabled:opacity-0 disabled:pointer-events-none',
-        'transition-opacity'
-      )"
+      :class="
+        cn(
+          'absolute right-0 top-1/2 -translate-y-1/2',
+          'flex-shrink-0 flex items-center justify-center',
+          'w-10 h-10 rounded-full',
+          'bg-krds-gray-90 text-white',
+          'hover:bg-krds-gray-80',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-krds-func-info',
+          'disabled:opacity-0 disabled:pointer-events-none',
+          'transition-opacity'
+        )
+      "
     >
       <ChevronRight class="w-5 h-5" aria-hidden="true" />
     </button>
   </div>
 
   <!-- Normal tabs -->
+  <!-- tablist 자체는 포커스 대상이 아니다. 포커스는 내부의 각 탭이 받는다 -->
+  <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus -->
   <div
     v-else
     role="tablist"
