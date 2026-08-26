@@ -42,7 +42,8 @@ const colorClasses = {
   },
   success: {
     range: 'bg-krds-func-success-base',
-    thumb: 'border-krds-func-success-base focus-visible:ring-krds-func-success-base',
+    thumb:
+      'border-krds-func-success-base focus-visible:ring-krds-func-success-base',
   },
   danger: {
     range: 'bg-krds-danger-base',
@@ -107,7 +108,10 @@ const percentage = computed(() => {
     const end = ((internalValue.value[1] - props.min) / range) * 100;
     return { start, end };
   }
-  return { start: 0, end: ((internalValue.value[0] - props.min) / range) * 100 };
+  return {
+    start: 0,
+    end: ((internalValue.value[0] - props.min) / range) * 100,
+  };
 });
 
 const rangeStyle = computed(() => ({
@@ -129,8 +133,13 @@ const handleThumbDrag = (index: number, event: MouseEvent | TouchEvent) => {
   const rect = track.getBoundingClientRect();
 
   const updateValue = (clientX: number) => {
-    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    const value = Math.round((percent * (props.max - props.min) + props.min) / props.step) * props.step;
+    const percent = Math.max(
+      0,
+      Math.min(1, (clientX - rect.left) / rect.width)
+    );
+    const value =
+      Math.round((percent * (props.max - props.min) + props.min) / props.step) *
+      props.step;
 
     const newValues = [...internalValue.value];
     newValues[index] = Math.max(props.min, Math.min(props.max, value));
@@ -166,13 +175,83 @@ const handleThumbDrag = (index: number, event: MouseEvent | TouchEvent) => {
   document.addEventListener('touchend', handleEnd);
 };
 
+/** index번 thumb을 value로 옮긴다 (범위·경계 클램프 포함) */
+const commitValue = (index: number, value: number) => {
+  const stepped =
+    Math.round((value - props.min) / props.step) * props.step + props.min;
+  let next = Math.max(props.min, Math.min(props.max, stepped));
+
+  // 범위 슬라이더에서 두 thumb이 서로를 지나치지 않게 한다
+  if (isRange.value) {
+    if (index === 0) next = Math.min(next, internalValue.value[1]);
+    else next = Math.max(next, internalValue.value[0]);
+  }
+
+  const newValues = [...internalValue.value];
+  newValues[index] = next;
+  internalValue.value = newValues;
+  emit('update:modelValue', isRange.value ? newValues : newValues[0]);
+};
+
+/**
+ * role="slider"는 키보드로 값을 바꿀 수 있어야 한다 (WCAG 2.1.1).
+ * WAI-ARIA Slider 패턴: 화살표 ±step, PageUp/Down ±10step, Home/End 양끝.
+ */
+const handleThumbKeyDown = (index: number, e: KeyboardEvent) => {
+  if (props.disabled) return;
+  const current = internalValue.value[index];
+  const big = props.step * 10;
+  let next: number | null = null;
+
+  switch (e.key) {
+    case 'ArrowRight':
+    case 'ArrowUp':
+      next = current + props.step;
+      break;
+    case 'ArrowLeft':
+    case 'ArrowDown':
+      next = current - props.step;
+      break;
+    case 'PageUp':
+      next = current + big;
+      break;
+    case 'PageDown':
+      next = current - big;
+      break;
+    case 'Home':
+      next = props.min;
+      break;
+    case 'End':
+      next = props.max;
+      break;
+    default:
+      return;
+  }
+
+  e.preventDefault();
+  commitValue(index, next);
+};
+
+/** 범위 슬라이더에서 각 thumb이 움직일 수 있는 한계 */
+const thumbMin = (index: number) =>
+  isRange.value && index === 1 ? internalValue.value[0] : props.min;
+const thumbMax = (index: number) =>
+  isRange.value && index === 0 ? internalValue.value[1] : props.max;
+
+const thumbLabel = (index: number) => {
+  if (!isRange.value) return props.label;
+  return index === 0 ? '최솟값' : '최댓값';
+};
+
 const handleTrackClick = (event: MouseEvent) => {
   if (props.disabled) return;
 
   const track = event.currentTarget as HTMLElement;
   const rect = track.getBoundingClientRect();
   const percent = (event.clientX - rect.left) / rect.width;
-  const value = Math.round((percent * (props.max - props.min) + props.min) / props.step) * props.step;
+  const value =
+    Math.round((percent * (props.max - props.min) + props.min) / props.step) *
+    props.step;
   const clampedValue = Math.max(props.min, Math.min(props.max, value));
 
   if (isRange.value) {
@@ -193,13 +272,18 @@ const handleTrackClick = (event: MouseEvent) => {
   }
 };
 
-const classes = computed(() => cn(sliderVariants({ size: props.size }), props.class));
+const classes = computed(() =>
+  cn(sliderVariants({ size: props.size }), props.class)
+);
 </script>
 
 <template>
   <div class="w-full">
     <!-- Label and value display -->
-    <div v-if="label || showValue" class="mb-2 flex items-center justify-between">
+    <div
+      v-if="label || showValue"
+      class="mb-2 flex items-center justify-between"
+    >
       <label
         v-if="label"
         :id="labelId"
@@ -209,7 +293,8 @@ const classes = computed(() => cn(sliderVariants({ size: props.size }), props.cl
       </label>
       <span v-if="showValue" class="text-sm text-krds-gray-50">
         <template v-if="isRange">
-          {{ formatValue(internalValue[0]) }} - {{ formatValue(internalValue[internalValue.length - 1]) }}
+          {{ formatValue(internalValue[0]) }} -
+          {{ formatValue(internalValue[internalValue.length - 1]) }}
         </template>
         <template v-else>
           {{ formatValue(internalValue[0]) }}
@@ -220,19 +305,19 @@ const classes = computed(() => cn(sliderVariants({ size: props.size }), props.cl
     <!-- Slider -->
     <div
       :class="classes"
-      role="slider"
-      :aria-valuemin="min"
-      :aria-valuemax="max"
-      :aria-valuenow="isRange ? undefined : internalValue[0]"
+      role="group"
       :aria-disabled="disabled"
       :aria-labelledby="labelId"
+      :aria-label="labelId ? undefined : label"
     >
       <!-- Track -->
       <div
-        :class="cn(
-          'relative grow overflow-hidden rounded-full bg-krds-gray-20',
-          trackSizes[size]
-        )"
+        :class="
+          cn(
+            'relative grow overflow-hidden rounded-full bg-krds-gray-20',
+            trackSizes[size]
+          )
+        "
         @click="handleTrackClick"
       >
         <!-- Range -->
@@ -243,21 +328,37 @@ const classes = computed(() => cn(sliderVariants({ size: props.size }), props.cl
       </div>
 
       <!-- Thumbs -->
+      <!-- tabindex를 바인딩으로 주고 있어 규칙이 정적으로 판별하지 못한다 -->
+      <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus -->
       <div
         v-for="(_, index) in internalValue"
         :key="index"
-        :class="cn(
-          'absolute block rounded-full border-2 bg-white shadow-md transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-          'cursor-pointer',
-          disabled && 'pointer-events-none opacity-50',
-          thumbSizes[size],
-          colorClasses[color].thumb
-        )"
-        :style="{ left: `calc(${thumbPosition[index]}% - ${size === 'sm' ? '6px' : size === 'lg' ? '10px' : '8px'})` }"
-        tabindex="0"
+        :class="
+          cn(
+            'absolute block rounded-full border-2 bg-white shadow-md transition-colors',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+            'cursor-pointer',
+            disabled && 'pointer-events-none opacity-50',
+            thumbSizes[size],
+            colorClasses[color].thumb
+          )
+        "
+        :style="{
+          left: `calc(${thumbPosition[index]}% - ${size === 'sm' ? '6px' : size === 'lg' ? '10px' : '8px'})`,
+        }"
+        :tabindex="disabled ? -1 : 0"
+        role="slider"
+        :aria-valuemin="thumbMin(index)"
+        :aria-valuemax="thumbMax(index)"
+        :aria-valuenow="internalValue[index]"
+        :aria-valuetext="formatValue(internalValue[index])"
+        aria-orientation="horizontal"
+        :aria-disabled="disabled"
+        :aria-label="thumbLabel(index)"
+        :aria-labelledby="!isRange && labelId ? labelId : undefined"
         @mousedown="handleThumbDrag(index, $event)"
         @touchstart="handleThumbDrag(index, $event)"
+        @keydown="handleThumbKeyDown(index, $event)"
       />
     </div>
   </div>

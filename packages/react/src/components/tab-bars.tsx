@@ -152,9 +152,9 @@ export function TabBars({
                       'bg-krds-red-base rounded-full',
                       'leading-none'
                     )}
-                    aria-label={`${item.badge} notifications`}
                   >
                     {item.badge > 99 ? '99+' : item.badge}
+                    <span className="sr-only">개 알림</span>
                   </span>
                 )}
               </div>

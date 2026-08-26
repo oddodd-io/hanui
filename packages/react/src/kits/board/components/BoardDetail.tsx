@@ -66,20 +66,20 @@ export function BoardDetail({ postId, onBack, onEdit }: BoardDetailProps) {
     <div className="space-y-6">
       {/* 헤더 */}
       <div className="flex items-center justify-between">
-        <button
+        <button type="button"
           onClick={onBack}
           className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
         >
           ← 목록으로
         </button>
         <div className="flex items-center gap-2">
-          <button
+          <button type="button"
             onClick={() => onEdit?.(post)}
             className="px-4 py-2 border rounded-md hover:bg-gray-50"
           >
             수정
           </button>
-          <button
+          <button type="button"
             onClick={() => openDeleteModal(postId)}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >

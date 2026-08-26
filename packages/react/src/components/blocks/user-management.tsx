@@ -181,21 +181,22 @@ export function UserManagement({
         <CardBody className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
+              <caption className="sr-only">사용자 목록</caption>
               <thead>
                 <tr className="border-b border-krds-gray-20 bg-krds-gray-5">
-                  <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                  <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                     이름
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                  <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                     아이디
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                  <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                     역할
                   </th>
-                  <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                  <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                     최종 로그인
                   </th>
-                  <th className="text-right py-3 px-4 font-medium text-krds-gray-70">
+                  <th scope="col" className="text-right py-3 px-4 font-medium text-krds-gray-70">
                     관리
                   </th>
                 </tr>

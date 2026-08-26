@@ -14,7 +14,7 @@ const inputVariants = cva(
     'rounded-md',
     'font-bold',
     'transition-colors',
-    'placeholder:text-krds-gray-40',
+    'placeholder:text-krds-gray-50',
     'focus-visible:outline-none',
     'disabled:cursor-not-allowed',
     'disabled:opacity-60',

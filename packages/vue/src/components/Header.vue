@@ -290,6 +290,7 @@ onUnmounted(() => {
             <input
               v-model="searchQuery"
               type="search"
+              aria-label="검색어"
               placeholder="검색어를 입력하세요"
               class="flex-1 border-b border-krds-gray-30 py-2 text-lg focus:outline-none focus:border-krds-primary-60"
               @keydown.enter="handleSearch"

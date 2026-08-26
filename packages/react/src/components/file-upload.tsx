@@ -211,6 +211,8 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
     const [files, setFiles] = React.useState<UploadedFile[]>([]);
     const [isDragging, setIsDragging] = React.useState(false);
     const inputRef = React.useRef<HTMLInputElement>(null);
+    // 한 페이지에 FileUpload가 여러 개여도 id가 겹치지 않도록 인스턴스별 id 생성
+    const inputId = React.useId();
     const dragCounter = React.useRef(0);
 
     /**
@@ -486,8 +488,11 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
             onChange={handleFileChange}
             disabled={disabled}
             className="sr-only"
+            // 실제 조작은 아래 '파일 선택' 버튼이 담당한다.
+            // aria-hidden을 쓰는 이상 포커스도 받지 않아야 한다 (axe aria-hidden-focus).
+            tabIndex={-1}
             aria-hidden="true"
-            id="file-upload-input"
+            id={inputId}
           />
 
           <p className="[font-size:var(--krds-body-md)] text-krds-gray-70 mb-4">
@@ -500,7 +505,6 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
             iconLeft={<Upload size={16} />}
             onClick={handleUploadClick}
             disabled={disabled}
-            aria-label="파일 선택"
           >
             {uploadButtonText}
           </Button>

@@ -26,7 +26,7 @@ const tagVariants = cva(
         primary: 'bg-krds-primary-5 text-krds-primary-60',
         secondary: 'bg-krds-gray-5 text-krds-gray-70',
         success: 'bg-krds-success-5 text-krds-success-base',
-        warning: 'bg-krds-warning-5 text-krds-warning-40',
+        warning: 'bg-krds-warning-5 text-krds-warning-60',
         error: 'bg-krds-danger-5 text-krds-danger-base',
         info: 'bg-krds-info-5 text-krds-info-base',
         // 아웃라인 (KRDS 기본 스타일)
@@ -39,7 +39,7 @@ const tagVariants = cva(
         'outline-success':
           'bg-white border border-krds-success-30 text-krds-success-base hover:bg-krds-success-5',
         'outline-warning':
-          'bg-white border border-krds-warning-30 text-krds-warning-40 hover:bg-krds-warning-5',
+          'bg-white border border-krds-warning-30 text-krds-warning-60 hover:bg-krds-warning-5',
         'outline-error':
           'bg-white border border-krds-danger-30 text-krds-danger-base hover:bg-krds-danger-5',
         'outline-info':

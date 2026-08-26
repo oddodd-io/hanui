@@ -58,15 +58,18 @@ export interface SurveyFormProps {
 function RatingInput({
   value,
   onChange,
+  labelledBy,
 }: {
   value: number;
   onChange: (v: number) => void;
+  /** 이 평점이 답하는 질문의 id */
+  labelledBy?: string;
 }) {
   const labels = ['매우 불만족', '불만족', '보통', '만족', '매우 만족'];
 
   return (
     <div className="space-y-2">
-      <div className="flex gap-2">
+      <div className="flex gap-2" role="group" aria-labelledby={labelledBy}>
         {[1, 2, 3, 4, 5].map((n) => (
           <button
             key={n}
@@ -79,6 +82,7 @@ function RatingInput({
                 : 'border-krds-gray-20 text-krds-gray-60 hover:border-krds-primary-base hover:text-krds-primary-base'
             )}
             aria-label={`${n}점 - ${labels[n - 1]}`}
+            aria-pressed={value === n}
           >
             {n}
           </button>
@@ -111,6 +115,8 @@ export function SurveyForm({
     {}
   );
   const [submitted, setSubmitted] = React.useState(false);
+  // 한 페이지에 설문이 여러 개여도 질문 id와 라디오 name이 겹치지 않도록 한다
+  const formId = React.useId();
 
   const updateAnswer = (questionId: number, value: string | number) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -162,14 +168,19 @@ export function SurveyForm({
 
       <form onSubmit={handleSubmit}>
         <CardBody className="space-y-8">
-          {questions.map((q, index) => (
+          {questions.map((q, index) => {
+            const questionId = `${formId}-q-${q.id}`;
+            return (
             <div key={q.id} className="space-y-3">
-              <Body size="sm" weight="medium">
+              <Body size="sm" weight="medium" id={questionId}>
                 {index + 1}. {q.question}
                 {q.required && (
-                  <span className="text-red-500 ml-1" aria-label="필수">
-                    *
-                  </span>
+                  <>
+                    <span className="text-red-500 ml-1" aria-hidden="true">
+                      *
+                    </span>
+                    <span className="sr-only">(필수)</span>
+                  </>
                 )}
               </Body>
 
@@ -177,11 +188,16 @@ export function SurveyForm({
                 <RatingInput
                   value={(answers[q.id] as number) || 0}
                   onChange={(v) => updateAnswer(q.id, v)}
+                  labelledBy={questionId}
                 />
               )}
 
               {q.type === 'choice' && q.options && (
-                <div className="space-y-2">
+                <div
+                  className="space-y-2"
+                  role="radiogroup"
+                  aria-labelledby={questionId}
+                >
                   {q.options.map((option, optIndex) => (
                     <label
                       key={optIndex}
@@ -194,7 +210,7 @@ export function SurveyForm({
                     >
                       <input
                         type="radio"
-                        name={`q-${q.id}`}
+                        name={`${formId}-q-${q.id}`}
                         value={option}
                         checked={answers[q.id] === option}
                         onChange={() => updateAnswer(q.id, option)}
@@ -212,10 +228,12 @@ export function SurveyForm({
                   value={(answers[q.id] as string) || ''}
                   onChange={(e) => updateAnswer(q.id, e.target.value)}
                   rows={3}
+                  aria-labelledby={questionId}
                 />
               )}
             </div>
-          ))}
+            );
+          })}
         </CardBody>
 
         <CardFooter className="flex justify-end">

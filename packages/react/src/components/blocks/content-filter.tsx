@@ -152,7 +152,7 @@ export function ContentFilter({
               placeholder="YYYY-MM-DD"
             />
           </div>
-          <span className="mb-2 text-krds-gray-40">~</span>
+          <span className="mb-2 text-krds-gray-60">~</span>
           <div>
             <label className="mb-1 block text-xs font-medium text-krds-gray-60">
               종료일

@@ -331,10 +331,12 @@ const chipCheckboxVariants = cva(
     'cursor-pointer',
     'select-none',
     'transition-colors',
-    'focus-visible:outline-none',
-    'focus-visible:ring-2',
-    'focus-visible:ring-krds-primary-base',
-    'focus-visible:ring-offset-2',
+    // 실제 포커스는 내부의 네이티브 checkbox가 받는다.
+    // (peer는 형제만 대상으로 하므로 부모인 label에서는 :has()를 쓴다)
+    '[&:has(:focus-visible)]:outline-none',
+    '[&:has(:focus-visible)]:ring-2',
+    '[&:has(:focus-visible)]:ring-krds-primary-base',
+    '[&:has(:focus-visible)]:ring-offset-2',
   ].join(' '),
   {
     variants: {
@@ -369,6 +371,8 @@ export interface ChipCheckboxProps
   disabled?: boolean;
   /** 체크박스 값 */
   value?: string;
+  /** 폼 제출용 필드 이름 */
+  name?: string;
 }
 
 export const ChipCheckbox = React.forwardRef<
@@ -383,6 +387,7 @@ export const ChipCheckbox = React.forwardRef<
       onCheckedChange,
       disabled = false,
       value,
+      name,
       className,
       ...props
     },
@@ -393,40 +398,34 @@ export const ChipCheckbox = React.forwardRef<
     const isControlled = controlledChecked !== undefined;
     const isChecked = isControlled ? controlledChecked : internalChecked;
 
-    const handleClick = () => {
-      if (disabled) return;
-
-      const newChecked = !isChecked;
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newChecked = e.target.checked;
       if (!isControlled) {
         setInternalChecked(newChecked);
       }
       onCheckedChange?.(newChecked);
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        handleClick();
-      }
-    };
-
     return (
-      /* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
       <label
         ref={ref}
         className={cn(
           chipCheckboxVariants({ checked: isChecked, disabled }),
           className
         )}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        tabIndex={disabled ? -1 : 0}
-        role="checkbox"
-        aria-checked={isChecked}
-        aria-disabled={disabled}
         data-state={isChecked ? 'checked' : 'unchecked'}
         {...props}
       >
+        {/* 네이티브 checkbox가 역할·키보드·폼 제출을 모두 담당한다 */}
+        <input
+          type="checkbox"
+          name={name}
+          value={value}
+          checked={isChecked}
+          disabled={disabled}
+          onChange={handleChange}
+          className="sr-only"
+        />
         <Check
           size={16}
           strokeWidth={2.5}
@@ -437,17 +436,6 @@ export const ChipCheckbox = React.forwardRef<
           )}
         />
         <span className="text-base">{label}</span>
-        {value && (
-          <input
-            type="checkbox"
-            value={value}
-            checked={isChecked}
-            disabled={disabled}
-            onChange={() => {}}
-            className="sr-only"
-            tabIndex={-1}
-          />
-        )}
       </label>
     );
   }

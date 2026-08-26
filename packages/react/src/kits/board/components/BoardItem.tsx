@@ -39,6 +39,7 @@ export function BoardItem({
       {/* 체크박스 */}
       <input
         type="checkbox"
+        aria-label={`${post.title} 선택`}
         checked={isSelected}
         onChange={(e) => {
           e.stopPropagation();

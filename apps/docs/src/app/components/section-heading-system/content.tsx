@@ -7,8 +7,6 @@ import {
   Subsection,
   PageNavigation,
 } from '@/components/content';
-import { Installation } from '@/components/content/Installation';
-import { ComponentPreview } from '@/components/content/ComponentPreview';
 
 // UI components - from @hanui/react
 import {
@@ -84,11 +82,6 @@ export default function HeadingSystemPage() {
   <Body>본문 내용...</Body>
 </Section>`}
             </Code>
-          </Section>
-
-          {/* 2. 설치 */}
-          <Section level="h2">
-            <Installation componentName="section-heading-system" />
           </Section>
 
           {/* 3. 사용법 */}

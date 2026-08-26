@@ -16,6 +16,24 @@ export default defineConfig({
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
         charts: resolve(__dirname, 'src/charts/index.ts'),
+        // package.json의 "./kits/*" 서브패스 export가 가리키는 산출물.
+        // 여기에 없으면 dist/kits/**가 생성되지 않아 import가 그대로 실패한다.
+        'kits/authentication/index': resolve(
+          __dirname,
+          'src/components/kits/authentication/index.ts'
+        ),
+        'kits/dashboard/index': resolve(
+          __dirname,
+          'src/components/kits/dashboard/index.ts'
+        ),
+        'kits/form/index': resolve(
+          __dirname,
+          'src/components/kits/form/index.ts'
+        ),
+        'kits/settings/index': resolve(
+          __dirname,
+          'src/components/kits/settings/index.ts'
+        ),
       },
       name: 'HanuiReact',
       formats: ['es', 'cjs'],

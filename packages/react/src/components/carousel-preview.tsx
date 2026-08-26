@@ -301,5 +301,3 @@ export const PreviewCarousel = React.forwardRef<
 );
 
 PreviewCarousel.displayName = 'PreviewCarousel';
-
-export default PreviewCarousel;

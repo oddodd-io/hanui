@@ -103,7 +103,7 @@ export function FileDownload({
               <span className="text-sm text-krds-gray-80 truncate">
                 {file.name}
               </span>
-              <Body size="xs" className="text-krds-gray-40 shrink-0">
+              <Body size="xs" className="text-krds-gray-60 shrink-0">
                 ({file.size})
               </Body>
             </div>

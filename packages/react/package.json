@@ -78,13 +78,14 @@
       "import": "./dist/kits/settings/index.mjs",
       "require": "./dist/kits/settings/index.js"
     },
-    "./styles.css": "./dist/react.css",
-    "./react.css": "./dist/react.css",
+    "./styles.css": "./src/styles.css",
+    "./react.css": "./src/styles.css",
     "./variables.css": "./src/variables.css",
     "./tailwind.preset": "./tailwind.preset.ts"
   },
   "files": [
     "dist",
+    "src/styles.css",
     "src/variables.css",
     "tailwind.preset.ts",
     "README.md",

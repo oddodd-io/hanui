@@ -1,6 +1,6 @@
 'use client';
 
-import { Heading, PageNavigation } from '@/components/content';
+import { Heading, PageNavigation, PlannedNotice } from '@/components/content';
 import { FrameworkContent } from '@/components/content/FrameworkCodeBlock';
 import { ReactTableContent } from './_react';
 import { VueTableContent } from './_vue';
@@ -13,6 +13,8 @@ export default function TableKitPage() {
         title="Table Kit"
         description="데이터 테이블 키트. 정렬, 필터, 페이지네이션, CSV 내보내기를 지원합니다."
       />
+
+      <PlannedNotice name="Table Kit" />
 
       <FrameworkContent
         react={<ReactTableContent />}

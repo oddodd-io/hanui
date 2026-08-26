@@ -57,7 +57,7 @@ export function StatsCard({
                 {item.label}
               </Body>
               {item.icon && (
-                <Body as="span" className="text-krds-gray-40">
+                <Body as="span" className="text-krds-gray-60">
                   {item.icon}
                 </Body>
               )}

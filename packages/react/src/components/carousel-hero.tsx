@@ -308,5 +308,3 @@ export const HeroCarousel = React.forwardRef<HTMLDivElement, HeroCarouselProps>(
 );
 
 HeroCarousel.displayName = 'HeroCarousel';
-
-export default HeroCarousel;

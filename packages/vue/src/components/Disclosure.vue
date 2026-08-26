@@ -4,7 +4,7 @@
  * KRDS 디스클로저 - 부가적인 정보를 표시하거나 숨기는 컴포넌트
  * Accordion과 달리 단독으로 사용되며, 여러 개를 동시에 열 수 있음
  */
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, useId } from 'vue';
 import { cn } from '@/lib/utils';
 
 const props = withDefaults(
@@ -51,7 +51,7 @@ function handleToggle() {
 }
 
 // 고유 ID 생성
-const id = Math.random().toString(36).substring(2, 9);
+const id = useId();
 const triggerId = `disclosure-trigger-${id}`;
 const contentId = `disclosure-content-${id}`;
 </script>

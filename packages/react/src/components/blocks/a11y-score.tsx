@@ -78,7 +78,11 @@ function ScoreRing({ score }: { score: number }) {
 
   return (
     <div className="relative w-36 h-36">
-      <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
+      <svg
+        viewBox="0 0 120 120"
+        className="w-full h-full -rotate-90"
+        aria-hidden="true"
+      >
         {/* 배경 원 */}
         <circle
           cx="60"

@@ -106,11 +106,14 @@ export function SortableHeader({
     >
       <span>{children}</span>
       {sorted === 'asc' ? (
-        <ChevronUp className="h-4 w-4" />
+        <ChevronUp className="h-4 w-4" aria-hidden="true" />
       ) : sorted === 'desc' ? (
-        <ChevronDown className="h-4 w-4" />
+        <ChevronDown className="h-4 w-4" aria-hidden="true" />
       ) : (
-        <ChevronsUpDown className="h-4 w-4 text-krds-gray-40" />
+        <ChevronsUpDown
+          className="h-4 w-4 text-krds-gray-40"
+          aria-hidden="true"
+        />
       )}
     </button>
   );
@@ -292,10 +295,20 @@ export function DataTable<TData, TValue>({
                       | { align?: 'left' | 'center' | 'right' }
                       | undefined
                   )?.align;
+                  const sorted = header.column.getIsSorted();
                   return (
                     <TableHead
                       key={header.id}
                       align={align}
+                      aria-sort={
+                        header.column.getCanSort()
+                          ? sorted === 'asc'
+                            ? 'ascending'
+                            : sorted === 'desc'
+                              ? 'descending'
+                              : 'none'
+                          : undefined
+                      }
                       style={{
                         width:
                           header.getSize() !== 150

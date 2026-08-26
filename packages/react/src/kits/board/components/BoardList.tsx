@@ -65,6 +65,7 @@ export function BoardList({ onItemClick, onWriteClick }: BoardListProps) {
           {/* 검색 입력 */}
           <input
             type="text"
+            aria-label="검색어"
             placeholder="검색어를 입력하세요"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
@@ -73,6 +74,7 @@ export function BoardList({ onItemClick, onWriteClick }: BoardListProps) {
 
           {/* 정렬 선택 */}
           <select
+            aria-label="정렬 기준"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
             className="px-3 py-2 border rounded-md"
@@ -84,7 +86,7 @@ export function BoardList({ onItemClick, onWriteClick }: BoardListProps) {
         </div>
 
         {/* 글쓰기 버튼 */}
-        <button
+        <button type="button"
           onClick={onWriteClick}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
@@ -98,6 +100,7 @@ export function BoardList({ onItemClick, onWriteClick }: BoardListProps) {
         <div className="flex items-center gap-4 px-4 py-3 bg-gray-50 border-b font-medium">
           <input
             type="checkbox"
+            aria-label="전체 선택"
             checked={posts.length > 0 && selectedIds.length === posts.length}
             onChange={handleSelectAll}
             className="w-4 h-4"
@@ -132,7 +135,7 @@ export function BoardList({ onItemClick, onWriteClick }: BoardListProps) {
       {pagination && pagination.totalPages > 1 && (
         <div className="flex justify-center">
           <nav className="flex items-center gap-1">
-            <button
+            <button type="button"
               onClick={() => setPage(page - 1)}
               disabled={page === 1}
               className="px-3 py-1 border rounded disabled:opacity-50"
@@ -141,7 +144,7 @@ export function BoardList({ onItemClick, onWriteClick }: BoardListProps) {
             </button>
             {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
               (p) => (
-                <button
+                <button type="button"
                   key={p}
                   onClick={() => setPage(p)}
                   className={`px-3 py-1 border rounded ${
@@ -152,7 +155,7 @@ export function BoardList({ onItemClick, onWriteClick }: BoardListProps) {
                 </button>
               )
             )}
-            <button
+            <button type="button"
               onClick={() => setPage(page + 1)}
               disabled={page === pagination.totalPages}
               className="px-3 py-1 border rounded disabled:opacity-50"
@@ -167,13 +170,13 @@ export function BoardList({ onItemClick, onWriteClick }: BoardListProps) {
       {selectedIds.length > 0 && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-gray-800 text-white rounded-lg shadow-lg flex items-center gap-4">
           <span>{selectedIds.length}개 선택됨</span>
-          <button
+          <button type="button"
             onClick={clearSelection}
             className="px-3 py-1 bg-gray-600 rounded hover:bg-gray-700"
           >
             선택 해제
           </button>
-          <button className="px-3 py-1 bg-red-600 rounded hover:bg-red-700">
+          <button type="button" className="px-3 py-1 bg-red-600 rounded hover:bg-red-700">
             삭제
           </button>
         </div>

@@ -217,9 +217,10 @@ export function TrashList({
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
+            <caption className="sr-only">휴지통 항목 목록</caption>
             <thead>
               <tr className="border-b border-krds-gray-20 bg-krds-gray-5">
-                <th className="w-12 py-3 px-4">
+                <th scope="col" className="w-12 py-3 px-4">
                   <Checkbox
                     size="sm"
                     checked={allSelected}
@@ -227,19 +228,19 @@ export function TrashList({
                     aria-label="전체 선택"
                   />
                 </th>
-                <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                   제목
                 </th>
-                <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                   유형
                 </th>
-                <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                   삭제자
                 </th>
-                <th className="text-left py-3 px-4 font-medium text-krds-gray-70">
+                <th scope="col" className="text-left py-3 px-4 font-medium text-krds-gray-70">
                   삭제일
                 </th>
-                <th className="text-right py-3 px-4 font-medium text-krds-gray-70">
+                <th scope="col" className="text-right py-3 px-4 font-medium text-krds-gray-70">
                   남은 일수
                 </th>
               </tr>

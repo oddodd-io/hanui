@@ -103,6 +103,7 @@ function MenuItemRow({
       >
         {/* 드래그 핸들 */}
         <button
+          type="button"
           className="cursor-grab text-krds-gray-30 hover:text-krds-gray-60 opacity-0 group-hover:opacity-100 transition-opacity"
           aria-label="순서 변경"
         >
@@ -112,6 +113,7 @@ function MenuItemRow({
         {/* 확장/축소 */}
         {hasChildren ? (
           <button
+            type="button"
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-krds-gray-50 hover:text-krds-gray-80"
             aria-label={isExpanded ? '접기' : '펼치기'}
@@ -136,6 +138,9 @@ function MenuItemRow({
               onKeyDown={handleKeyDown}
               placeholder="메뉴 이름"
               className="w-32"
+              // 사용자가 '이름 변경'을 누른 직후에만 렌더되는 입력이라
+              // 포커스를 옮기는 것이 기대 동작이다.
+              // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
             />
             <Input
