@@ -6,3 +6,6 @@ coverage
 pnpm-lock.yaml
 *.log
 .DS_Store
+packages/vue/vendor/
+storybook-static
+.playwright-mcp

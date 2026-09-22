@@ -1,9 +1,12 @@
+
 @charset "utf-8";
 
 /* Do not edit directly */
 /* Generated on Mon, Dec 9, 2024, 10:32:10 AM GMT+9 */
 
+
 :root {
+
   /* PRIMITIVE */
   --krds-color-light-primary-5: #ecf2fe;
   --krds-color-light-primary-10: #d8e5fd;
@@ -253,15 +256,11 @@
   --krds-light-color-surface-gray-subtle: var(--krds-color-light-gray-10);
   --krds-light-color-surface-disabled: var(--krds-color-light-gray-20);
   --krds-light-color-surface-primary-subtler: var(--krds-color-light-primary-5);
-  --krds-light-color-surface-secondary-subtler: var(
-    --krds-color-light-secondary-5
-  );
+  --krds-light-color-surface-secondary-subtler: var(--krds-color-light-secondary-5);
   --krds-light-color-surface-danger-subtler: var(--krds-color-light-danger-5);
   --krds-light-color-surface-warning-subtler: var(--krds-color-light-warning-5);
   --krds-light-color-surface-success-subtler: var(--krds-color-light-success-5);
-  --krds-light-color-surface-information-subtler: var(
-    --krds-color-light-information-5
-  );
+  --krds-light-color-surface-information-subtler: var(--krds-color-light-information-5);
   --krds-light-color-surface-point-subtler: var(--krds-color-light-point-5);
   --krds-light-color-surface-white: var(--krds-color-light-gray-0);
   --krds-light-color-surface-inverse: var(--krds-color-light-gray-90);
@@ -271,18 +270,14 @@
   --krds-light-color-surface-white-subtler: var(--krds-color-light-gray-0);
   --krds-light-color-border-gray-light: var(--krds-color-light-gray-20);
   --krds-light-color-border-gray: var(--krds-color-light-gray-30);
-  --krds-light-color-border-secondary-light: var(
-    --krds-color-light-secondary-10
-  );
+  --krds-light-color-border-secondary-light: var(--krds-color-light-secondary-10);
   --krds-light-color-border-danger-light: var(--krds-color-light-danger-10);
   --krds-light-color-border-danger: var(--krds-color-light-danger-50);
   --krds-light-color-border-warning-light: var(--krds-color-light-warning-10);
   --krds-light-color-border-warning: var(--krds-color-light-warning-50);
   --krds-light-color-border-success-light: var(--krds-color-light-success-10);
   --krds-light-color-border-success: var(--krds-color-light-success-50);
-  --krds-light-color-border-information-light: var(
-    --krds-color-light-information-10
-  );
+  --krds-light-color-border-information-light: var(--krds-color-light-information-10);
   --krds-light-color-border-information: var(--krds-color-light-information-50);
   --krds-light-color-border-gray-dark: var(--krds-color-light-gray-60);
   --krds-light-color-border-primary: var(--krds-color-light-primary-50);
@@ -298,9 +293,7 @@
   --krds-light-color-divider-gray: var(--krds-color-light-gray-40);
   --krds-light-color-divider-gray-dark: var(--krds-color-light-gray-50);
   --krds-light-color-divider-primary: var(--krds-color-light-primary-50);
-  --krds-light-color-divider-secondary-light: var(
-    --krds-color-light-secondary-10
-  );
+  --krds-light-color-divider-secondary-light: var(--krds-color-light-secondary-10);
   --krds-light-color-divider-secondary: var(--krds-color-light-secondary-70);
   --krds-light-color-divider-error: var(--krds-color-light-danger-50);
   --krds-light-color-divider-primary-light: var(--krds-color-light-primary-10);
@@ -339,51 +332,31 @@
   --krds-light-color-icon-disabled-on: var(--krds-color-light-gray-50);
   --krds-light-color-icon-inverse-static: var(--krds-color-light-gray-0);
   --krds-light-color-icon-primary-static: var(--krds-color-light-primary-50);
-  --krds-light-color-icon-secondary-static: var(
-    --krds-color-light-secondary-80
-  );
+  --krds-light-color-icon-secondary-static: var(--krds-color-light-secondary-80);
   --krds-light-color-icon-point-static: var(--krds-color-light-point-50);
   --krds-light-color-icon-danger-static: var(--krds-color-light-danger-50);
   --krds-light-color-icon-warning-static: var(--krds-color-light-warning-50);
   --krds-light-color-icon-success-static: var(--krds-color-light-success-50);
-  --krds-light-color-icon-information-static: var(
-    --krds-color-light-information-50
-  );
+  --krds-light-color-icon-information-static: var(--krds-color-light-information-50);
   --krds-light-color-icon-gray-static: var(--krds-color-light-gray-80);
   --krds-light-color-link-default: var(--krds-color-light-primary-50);
   --krds-light-color-link-hover: var(--krds-color-light-primary-60);
   --krds-light-color-link-pressed: var(--krds-color-light-primary-70);
   --krds-light-color-link-visited: #5917b8;
   --krds-light-color-button-primary-fill: var(--krds-color-light-primary-50);
-  --krds-light-color-button-primary-fill-hover: var(
-    --krds-color-light-primary-60
-  );
-  --krds-light-color-button-primary-fill-pressed: var(
-    --krds-color-light-primary-70
-  );
+  --krds-light-color-button-primary-fill-hover: var(--krds-color-light-primary-60);
+  --krds-light-color-button-primary-fill-pressed: var(--krds-color-light-primary-70);
   --krds-light-color-button-secondary-fill: var(--krds-color-light-primary-5);
-  --krds-light-color-button-secondary-fill-hover: var(
-    --krds-color-light-primary-10
-  );
-  --krds-light-color-button-secondary-fill-pressed: var(
-    --krds-color-light-primary-20
-  );
-  --krds-light-color-button-secondary-border: var(
-    --krds-color-light-primary-50
-  );
+  --krds-light-color-button-secondary-fill-hover: var(--krds-color-light-primary-10);
+  --krds-light-color-button-secondary-fill-pressed: var(--krds-color-light-primary-20);
+  --krds-light-color-button-secondary-border: var(--krds-color-light-primary-50);
   --krds-light-color-button-tertiary-fill: var(--krds-color-light-alpha-white0);
   --krds-light-color-button-tertiary-fill-hover: var(--krds-color-light-gray-5);
-  --krds-light-color-button-tertiary-fill-pressed: var(
-    --krds-color-light-gray-10
-  );
+  --krds-light-color-button-tertiary-fill-pressed: var(--krds-color-light-gray-10);
   --krds-light-color-button-tertiary-border: var(--krds-color-light-gray-60);
   --krds-light-color-button-disabled-fill: var(--krds-color-light-gray-20);
-  --krds-light-color-button-text-fill-hover: var(
-    --krds-color-light-secondary-5
-  );
-  --krds-light-color-button-text-fill-pressed: var(
-    --krds-color-light-secondary-10
-  );
+  --krds-light-color-button-text-fill-hover: var(--krds-color-light-secondary-5);
+  --krds-light-color-button-text-fill-pressed: var(--krds-color-light-secondary-10);
   --krds-light-color-button-text-fill: var(--krds-color-light-alpha-white0);
   --krds-light-color-button-text-border: var(--krds-color-light-alpha-black0);
   --krds-light-color-button-disabled-border: var(--krds-color-light-gray-30);
@@ -400,12 +373,8 @@
   --krds-light-color-element-primary-lighter: var(--krds-color-light-primary-5);
   --krds-light-color-element-primary-light: var(--krds-color-light-primary-10);
   --krds-light-color-element-primary: var(--krds-color-light-primary-50);
-  --krds-light-color-element-secondary-lighter: var(
-    --krds-color-light-secondary-5
-  );
-  --krds-light-color-element-secondary-light: var(
-    --krds-color-light-secondary-10
-  );
+  --krds-light-color-element-secondary-lighter: var(--krds-color-light-secondary-5);
+  --krds-light-color-element-secondary-light: var(--krds-color-light-secondary-10);
   --krds-light-color-element-secondary: var(--krds-color-light-secondary-70);
   --krds-light-color-element-point-lighter: var(--krds-color-light-point-5);
   --krds-light-color-element-point-light: var(--krds-color-light-point-10);
@@ -416,12 +385,8 @@
   --krds-light-color-element-warning: var(--krds-color-light-warning-30);
   --krds-light-color-element-success-lighter: var(--krds-color-light-success-5);
   --krds-light-color-element-success: var(--krds-color-light-success-50);
-  --krds-light-color-element-information-lighter: var(
-    --krds-color-light-information-5
-  );
-  --krds-light-color-element-information: var(
-    --krds-color-light-information-50
-  );
+  --krds-light-color-element-information-lighter: var(--krds-color-light-information-5);
+  --krds-light-color-element-information: var(--krds-color-light-information-50);
   --krds-light-color-element-inverse: var(--krds-color-light-gray-0);
   --krds-light-color-element-gray-dark: var(--krds-color-light-gray-60);
   --krds-light-color-element-inverse-static: var(--krds-color-light-gray-0);
@@ -430,26 +395,14 @@
   --krds-light-color-action-primary-hover: var(--krds-color-light-primary-5);
   --krds-light-color-action-primary-pressed: var(--krds-color-light-primary-10);
   --krds-light-color-action-secondary: var(--krds-color-light-alpha-white0);
-  --krds-light-color-action-secondary-hover: var(
-    --krds-color-light-secondary-5
-  );
-  --krds-light-color-action-secondary-pressed: var(
-    --krds-color-light-secondary-10
-  );
-  --krds-light-color-action-secondary-selected: var(
-    --krds-color-light-secondary-5
-  );
+  --krds-light-color-action-secondary-hover: var(--krds-color-light-secondary-5);
+  --krds-light-color-action-secondary-pressed: var(--krds-color-light-secondary-10);
+  --krds-light-color-action-secondary-selected: var(--krds-color-light-secondary-5);
   --krds-light-color-action-secondary-on: var(--krds-color-light-alpha-white0);
   --krds-light-color-action-secondary-on-hover: var(--krds-color-light-gray-0);
-  --krds-light-color-action-secondary-on-pressed: var(
-    --krds-color-light-secondary-10
-  );
-  --krds-light-color-action-secondary-on-selected: var(
-    --krds-color-light-gray-0
-  );
-  --krds-light-color-action-secondary-active: var(
-    --krds-color-light-secondary-70
-  );
+  --krds-light-color-action-secondary-on-pressed: var(--krds-color-light-secondary-10);
+  --krds-light-color-action-secondary-on-selected: var(--krds-color-light-gray-0);
+  --krds-light-color-action-secondary-active: var(--krds-color-light-secondary-70);
   --krds-light-color-action-primary-active: var(--krds-color-light-primary-50);
   --krds-light-color-action-disabled: var(--krds-color-light-gray-20);
   --krds-light-color-action-primary-selected: var(--krds-color-light-primary-5);
@@ -468,15 +421,11 @@
   --krds-light-color-graphic-red-subtle: var(--krds-color-light-point-10);
   --krds-light-color-graphic-red: var(--krds-color-high-contrast-point-20);
   --krds-light-color-graphic-red-dark: var(--krds-color-high-contrast-point-40);
-  --krds-light-color-graphic-red-darker: var(
-    --krds-color-high-contrast-point-70
-  );
+  --krds-light-color-graphic-red-darker: var(--krds-color-high-contrast-point-70);
   --krds-light-color-graphic-brand: var(--krds-color-light-primary-50);
   --krds-light-color-alpha-base100: var(--krds-color-light-alpha-white100);
   --krds-light-color-alpha-base50: var(--krds-color-light-alpha-white50);
-  --krds-light-color-alpha-base25: var(
-    --krds-color-high-contrast-alpha-white25
-  );
+  --krds-light-color-alpha-base25: var(--krds-color-high-contrast-alpha-white25);
   --krds-light-color-alpha-base0: var(--krds-color-light-alpha-white0);
   --krds-light-color-alpha-inverse100: var(--krds-color-light-alpha-black100);
   --krds-light-color-alpha-inverse50: var(--krds-color-light-alpha-black50);
@@ -485,9 +434,7 @@
   --krds-light-color-alpha-base75: var(--krds-color-light-alpha-white75);
   --krds-light-color-alpha-inverse75: var(--krds-color-light-alpha-black75);
   --krds-light-color-alpha-inverse10: var(--krds-color-light-alpha-black10);
-  --krds-light-color-alpha-base10: var(
-    --krds-color-high-contrast-alpha-white10
-  );
+  --krds-light-color-alpha-base10: var(--krds-color-high-contrast-alpha-white10);
   --krds-light-color-alpha-shadow1: #0000000d;
   --krds-light-color-alpha-shadow2: #00000014;
   --krds-light-color-alpha-shadow3: #0000001f;
@@ -497,545 +444,189 @@
   --krds-light-border-width-static-medium: 0.2rem;
 
   /* MODE-HIGH-CONTRAST */
-  --krds-high-contrast-color-surface-gray-subtler: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-surface-gray-subtle: var(
-    --krds-color-high-contrast-gray-90
-  );
-  --krds-high-contrast-color-surface-disabled: var(
-    --krds-color-high-contrast-gray-70
-  );
-  --krds-high-contrast-color-surface-primary-subtler: var(
-    --krds-color-high-contrast-primary-95
-  );
-  --krds-high-contrast-color-surface-secondary-subtler: var(
-    --krds-color-high-contrast-secondary-95
-  );
-  --krds-high-contrast-color-surface-danger-subtler: var(
-    --krds-color-high-contrast-danger-95
-  );
-  --krds-high-contrast-color-surface-warning-subtler: var(
-    --krds-color-high-contrast-warning-95
-  );
-  --krds-high-contrast-color-surface-success-subtler: var(
-    --krds-color-high-contrast-success-95
-  );
-  --krds-high-contrast-color-surface-information-subtler: var(
-    --krds-color-high-contrast-information-95
-  );
-  --krds-high-contrast-color-surface-point-subtler: var(
-    --krds-color-high-contrast-point-95
-  );
-  --krds-high-contrast-color-surface-white: var(
-    --krds-color-high-contrast-gray-100
-  );
-  --krds-high-contrast-color-surface-inverse: var(
-    --krds-color-high-contrast-gray-10
-  );
-  --krds-high-contrast-color-surface-white-static: var(
-    --krds-color-high-contrast-gray-0
-  );
-  --krds-high-contrast-color-surface-inverse-static: var(
-    --krds-color-high-contrast-gray-90
-  );
-  --krds-high-contrast-color-surface-white-subtle: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-surface-white-subtler: var(
-    --krds-color-high-contrast-gray-90
-  );
-  --krds-high-contrast-color-border-gray-light: var(
-    --krds-color-high-contrast-gray-80
-  );
-  --krds-high-contrast-color-border-gray: var(
-    --krds-color-high-contrast-gray-70
-  );
-  --krds-high-contrast-color-border-secondary-light: var(
-    --krds-color-high-contrast-secondary-90
-  );
-  --krds-high-contrast-color-border-danger-light: var(
-    --krds-color-high-contrast-danger-90
-  );
-  --krds-high-contrast-color-border-danger: var(
-    --krds-color-high-contrast-danger-50
-  );
-  --krds-high-contrast-color-border-warning-light: var(
-    --krds-color-high-contrast-warning-90
-  );
-  --krds-high-contrast-color-border-warning: var(
-    --krds-color-high-contrast-warning-50
-  );
-  --krds-high-contrast-color-border-success-light: var(
-    --krds-color-high-contrast-success-90
-  );
-  --krds-high-contrast-color-border-success: var(
-    --krds-color-high-contrast-success-50
-  );
-  --krds-high-contrast-color-border-information-light: var(
-    --krds-color-high-contrast-information-90
-  );
-  --krds-high-contrast-color-border-information: var(
-    --krds-color-high-contrast-information-50
-  );
-  --krds-high-contrast-color-border-gray-dark: var(
-    --krds-color-high-contrast-gray-40
-  );
-  --krds-high-contrast-color-border-primary: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-border-disabled: var(
-    --krds-color-high-contrast-gray-70
-  );
-  --krds-high-contrast-color-border-gray-darker: var(
-    --krds-color-high-contrast-gray-10
-  );
-  --krds-high-contrast-color-border-secondary: var(
-    --krds-color-high-contrast-secondary-60
-  );
-  --krds-high-contrast-color-border-inverse: var(
-    --krds-color-high-contrast-gray-100
-  );
-  --krds-high-contrast-color-border-transparency: var(
-    --krds-color-high-contrast-alpha-white25
-  );
-  --krds-high-contrast-color-border-primary-light: var(
-    --krds-color-high-contrast-primary-90
-  );
-  --krds-high-contrast-color-border-point: var(
-    --krds-color-high-contrast-point-50
-  );
-  --krds-high-contrast-color-border-point-light: var(
-    --krds-color-high-contrast-point-90
-  );
-  --krds-high-contrast-color-divider-gray-light: var(
-    --krds-color-high-contrast-gray-80
-  );
-  --krds-high-contrast-color-divider-gray: var(
-    --krds-color-high-contrast-gray-70
-  );
-  --krds-high-contrast-color-divider-gray-dark: var(
-    --krds-color-high-contrast-gray-50
-  );
-  --krds-high-contrast-color-divider-primary: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-divider-secondary-light: var(
-    --krds-color-high-contrast-secondary-90
-  );
-  --krds-high-contrast-color-divider-secondary: var(
-    --krds-color-high-contrast-secondary-60
-  );
-  --krds-high-contrast-color-divider-error: var(
-    --krds-color-high-contrast-danger-50
-  );
-  --krds-high-contrast-color-divider-primary-light: var(
-    --krds-color-high-contrast-primary-90
-  );
-  --krds-high-contrast-color-divider-inverse: var(
-    --krds-color-high-contrast-gray-100
-  );
-  --krds-high-contrast-color-divider-gray-darker: var(
-    --krds-color-high-contrast-gray-10
-  );
-  --krds-high-contrast-color-divider-point: var(
-    --krds-color-high-contrast-point-50
-  );
-  --krds-high-contrast-color-text-bolder: var(
-    --krds-color-high-contrast-gray-10
-  );
-  --krds-high-contrast-color-text-subtle: var(
-    --krds-color-high-contrast-gray-20
-  );
-  --krds-high-contrast-color-text-disabled: var(
-    --krds-color-high-contrast-gray-60
-  );
-  --krds-high-contrast-color-text-disabled-on: var(
-    --krds-color-high-contrast-gray-50
-  );
-  --krds-high-contrast-color-text-primary: var(
-    --krds-color-high-contrast-primary-20
-  );
-  --krds-high-contrast-color-text-secondary: var(
-    --krds-color-high-contrast-secondary-20
-  );
-  --krds-high-contrast-color-text-danger: var(
-    --krds-color-high-contrast-danger-20
-  );
-  --krds-high-contrast-color-text-warning: var(
-    --krds-color-high-contrast-warning-20
-  );
-  --krds-high-contrast-color-text-success: var(
-    --krds-color-high-contrast-success-20
-  );
-  --krds-high-contrast-color-text-information: var(
-    --krds-color-high-contrast-information-20
-  );
+  --krds-high-contrast-color-surface-gray-subtler: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-surface-gray-subtle: var(--krds-color-high-contrast-gray-90);
+  --krds-high-contrast-color-surface-disabled: var(--krds-color-high-contrast-gray-70);
+  --krds-high-contrast-color-surface-primary-subtler: var(--krds-color-high-contrast-primary-95);
+  --krds-high-contrast-color-surface-secondary-subtler: var(--krds-color-high-contrast-secondary-95);
+  --krds-high-contrast-color-surface-danger-subtler: var(--krds-color-high-contrast-danger-95);
+  --krds-high-contrast-color-surface-warning-subtler: var(--krds-color-high-contrast-warning-95);
+  --krds-high-contrast-color-surface-success-subtler: var(--krds-color-high-contrast-success-95);
+  --krds-high-contrast-color-surface-information-subtler: var(--krds-color-high-contrast-information-95);
+  --krds-high-contrast-color-surface-point-subtler: var(--krds-color-high-contrast-point-95);
+  --krds-high-contrast-color-surface-white: var(--krds-color-high-contrast-gray-100);
+  --krds-high-contrast-color-surface-inverse: var(--krds-color-high-contrast-gray-10);
+  --krds-high-contrast-color-surface-white-static: var(--krds-color-high-contrast-gray-0);
+  --krds-high-contrast-color-surface-inverse-static: var(--krds-color-high-contrast-gray-90);
+  --krds-high-contrast-color-surface-white-subtle: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-surface-white-subtler: var(--krds-color-high-contrast-gray-90);
+  --krds-high-contrast-color-border-gray-light: var(--krds-color-high-contrast-gray-80);
+  --krds-high-contrast-color-border-gray: var(--krds-color-high-contrast-gray-70);
+  --krds-high-contrast-color-border-secondary-light: var(--krds-color-high-contrast-secondary-90);
+  --krds-high-contrast-color-border-danger-light: var(--krds-color-high-contrast-danger-90);
+  --krds-high-contrast-color-border-danger: var(--krds-color-high-contrast-danger-50);
+  --krds-high-contrast-color-border-warning-light: var(--krds-color-high-contrast-warning-90);
+  --krds-high-contrast-color-border-warning: var(--krds-color-high-contrast-warning-50);
+  --krds-high-contrast-color-border-success-light: var(--krds-color-high-contrast-success-90);
+  --krds-high-contrast-color-border-success: var(--krds-color-high-contrast-success-50);
+  --krds-high-contrast-color-border-information-light: var(--krds-color-high-contrast-information-90);
+  --krds-high-contrast-color-border-information: var(--krds-color-high-contrast-information-50);
+  --krds-high-contrast-color-border-gray-dark: var(--krds-color-high-contrast-gray-40);
+  --krds-high-contrast-color-border-primary: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-border-disabled: var(--krds-color-high-contrast-gray-70);
+  --krds-high-contrast-color-border-gray-darker: var(--krds-color-high-contrast-gray-10);
+  --krds-high-contrast-color-border-secondary: var(--krds-color-high-contrast-secondary-60);
+  --krds-high-contrast-color-border-inverse: var(--krds-color-high-contrast-gray-100);
+  --krds-high-contrast-color-border-transparency: var(--krds-color-high-contrast-alpha-white25);
+  --krds-high-contrast-color-border-primary-light: var(--krds-color-high-contrast-primary-90);
+  --krds-high-contrast-color-border-point: var(--krds-color-high-contrast-point-50);
+  --krds-high-contrast-color-border-point-light: var(--krds-color-high-contrast-point-90);
+  --krds-high-contrast-color-divider-gray-light: var(--krds-color-high-contrast-gray-80);
+  --krds-high-contrast-color-divider-gray: var(--krds-color-high-contrast-gray-70);
+  --krds-high-contrast-color-divider-gray-dark: var(--krds-color-high-contrast-gray-50);
+  --krds-high-contrast-color-divider-primary: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-divider-secondary-light: var(--krds-color-high-contrast-secondary-90);
+  --krds-high-contrast-color-divider-secondary: var(--krds-color-high-contrast-secondary-60);
+  --krds-high-contrast-color-divider-error: var(--krds-color-high-contrast-danger-50);
+  --krds-high-contrast-color-divider-primary-light: var(--krds-color-high-contrast-primary-90);
+  --krds-high-contrast-color-divider-inverse: var(--krds-color-high-contrast-gray-100);
+  --krds-high-contrast-color-divider-gray-darker: var(--krds-color-high-contrast-gray-10);
+  --krds-high-contrast-color-divider-point: var(--krds-color-high-contrast-point-50);
+  --krds-high-contrast-color-text-bolder: var(--krds-color-high-contrast-gray-10);
+  --krds-high-contrast-color-text-subtle: var(--krds-color-high-contrast-gray-20);
+  --krds-high-contrast-color-text-disabled: var(--krds-color-high-contrast-gray-60);
+  --krds-high-contrast-color-text-disabled-on: var(--krds-color-high-contrast-gray-50);
+  --krds-high-contrast-color-text-primary: var(--krds-color-high-contrast-primary-20);
+  --krds-high-contrast-color-text-secondary: var(--krds-color-high-contrast-secondary-20);
+  --krds-high-contrast-color-text-danger: var(--krds-color-high-contrast-danger-20);
+  --krds-high-contrast-color-text-warning: var(--krds-color-high-contrast-warning-20);
+  --krds-high-contrast-color-text-success: var(--krds-color-high-contrast-success-20);
+  --krds-high-contrast-color-text-information: var(--krds-color-high-contrast-information-20);
   --krds-high-contrast-color-text-basic: var(--krds-color-high-contrast-gray-5);
-  --krds-high-contrast-color-text-point: var(
-    --krds-color-high-contrast-point-20
-  );
-  --krds-high-contrast-color-text-bolder-inverse: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-text-basic-inverse: var(
-    --krds-color-high-contrast-gray-90
-  );
-  --krds-high-contrast-color-text-subtle-inverse: var(
-    --krds-color-high-contrast-gray-70
-  );
-  --krds-high-contrast-color-text-inverse-static: var(
-    --krds-color-high-contrast-gray-0
-  );
-  --krds-high-contrast-color-text-static: var(
-    --krds-color-high-contrast-gray-90
-  );
+  --krds-high-contrast-color-text-point: var(--krds-color-high-contrast-point-20);
+  --krds-high-contrast-color-text-bolder-inverse: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-text-basic-inverse: var(--krds-color-high-contrast-gray-90);
+  --krds-high-contrast-color-text-subtle-inverse: var(--krds-color-high-contrast-gray-70);
+  --krds-high-contrast-color-text-inverse-static: var(--krds-color-high-contrast-gray-0);
+  --krds-high-contrast-color-text-static: var(--krds-color-high-contrast-gray-90);
   --krds-high-contrast-color-icon-gray: var(--krds-color-high-contrast-gray-5);
-  --krds-high-contrast-color-icon-gray-fill: var(
-    --krds-color-high-contrast-gray-70
-  );
-  --krds-high-contrast-color-icon-inverse: var(
-    --krds-color-high-contrast-gray-90
-  );
-  --krds-high-contrast-color-icon-primary: var(
-    --krds-color-high-contrast-primary-20
-  );
-  --krds-high-contrast-color-icon-secondary: var(
-    --krds-color-high-contrast-secondary-20
-  );
-  --krds-high-contrast-color-icon-point: var(
-    --krds-color-high-contrast-point-20
-  );
-  --krds-high-contrast-color-icon-danger: var(
-    --krds-color-high-contrast-danger-20
-  );
-  --krds-high-contrast-color-icon-warning: var(
-    --krds-color-high-contrast-warning-20
-  );
-  --krds-high-contrast-color-icon-success: var(
-    --krds-color-high-contrast-success-20
-  );
-  --krds-high-contrast-color-icon-information: var(
-    --krds-color-high-contrast-information-20
-  );
-  --krds-high-contrast-color-icon-gray-light: var(
-    --krds-color-high-contrast-gray-20
-  );
-  --krds-high-contrast-color-icon-disabled: var(
-    --krds-color-high-contrast-gray-60
-  );
-  --krds-high-contrast-color-icon-disabled-on: var(
-    --krds-color-high-contrast-gray-50
-  );
-  --krds-high-contrast-color-icon-inverse-static: var(
-    --krds-color-high-contrast-gray-0
-  );
-  --krds-high-contrast-color-icon-primary-static: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-icon-secondary-static: var(
-    --krds-color-high-contrast-secondary-80
-  );
-  --krds-high-contrast-color-icon-point-static: var(
-    --krds-color-high-contrast-point-50
-  );
-  --krds-high-contrast-color-icon-danger-static: var(
-    --krds-color-high-contrast-danger-50
-  );
-  --krds-high-contrast-color-icon-warning-static: var(
-    --krds-color-high-contrast-warning-50
-  );
-  --krds-high-contrast-color-icon-success-static: var(
-    --krds-color-high-contrast-success-50
-  );
-  --krds-high-contrast-color-icon-information-static: var(
-    --krds-color-high-contrast-information-50
-  );
-  --krds-high-contrast-color-icon-gray-static: var(
-    --krds-color-high-contrast-gray-80
-  );
-  --krds-high-contrast-color-link-default: var(
-    --krds-color-high-contrast-primary-30
-  );
-  --krds-high-contrast-color-link-hover: var(
-    --krds-color-high-contrast-primary-20
-  );
-  --krds-high-contrast-color-link-pressed: var(
-    --krds-color-high-contrast-primary-10
-  );
+  --krds-high-contrast-color-icon-gray-fill: var(--krds-color-high-contrast-gray-70);
+  --krds-high-contrast-color-icon-inverse: var(--krds-color-high-contrast-gray-90);
+  --krds-high-contrast-color-icon-primary: var(--krds-color-high-contrast-primary-20);
+  --krds-high-contrast-color-icon-secondary: var(--krds-color-high-contrast-secondary-20);
+  --krds-high-contrast-color-icon-point: var(--krds-color-high-contrast-point-20);
+  --krds-high-contrast-color-icon-danger: var(--krds-color-high-contrast-danger-20);
+  --krds-high-contrast-color-icon-warning: var(--krds-color-high-contrast-warning-20);
+  --krds-high-contrast-color-icon-success: var(--krds-color-high-contrast-success-20);
+  --krds-high-contrast-color-icon-information: var(--krds-color-high-contrast-information-20);
+  --krds-high-contrast-color-icon-gray-light: var(--krds-color-high-contrast-gray-20);
+  --krds-high-contrast-color-icon-disabled: var(--krds-color-high-contrast-gray-60);
+  --krds-high-contrast-color-icon-disabled-on: var(--krds-color-high-contrast-gray-50);
+  --krds-high-contrast-color-icon-inverse-static: var(--krds-color-high-contrast-gray-0);
+  --krds-high-contrast-color-icon-primary-static: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-icon-secondary-static: var(--krds-color-high-contrast-secondary-80);
+  --krds-high-contrast-color-icon-point-static: var(--krds-color-high-contrast-point-50);
+  --krds-high-contrast-color-icon-danger-static: var(--krds-color-high-contrast-danger-50);
+  --krds-high-contrast-color-icon-warning-static: var(--krds-color-high-contrast-warning-50);
+  --krds-high-contrast-color-icon-success-static: var(--krds-color-high-contrast-success-50);
+  --krds-high-contrast-color-icon-information-static: var(--krds-color-high-contrast-information-50);
+  --krds-high-contrast-color-icon-gray-static: var(--krds-color-high-contrast-gray-80);
+  --krds-high-contrast-color-link-default: var(--krds-color-high-contrast-primary-30);
+  --krds-high-contrast-color-link-hover: var(--krds-color-high-contrast-primary-20);
+  --krds-high-contrast-color-link-pressed: var(--krds-color-high-contrast-primary-10);
   --krds-high-contrast-color-link-visited: #c49ff9;
-  --krds-high-contrast-color-button-primary-fill: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-button-primary-fill-hover: var(
-    --krds-color-high-contrast-primary-60
-  );
-  --krds-high-contrast-color-button-primary-fill-pressed: var(
-    --krds-color-high-contrast-primary-70
-  );
-  --krds-high-contrast-color-button-secondary-fill: var(
-    --krds-color-high-contrast-primary-95
-  );
-  --krds-high-contrast-color-button-secondary-fill-hover: var(
-    --krds-color-high-contrast-primary-90
-  );
-  --krds-high-contrast-color-button-secondary-fill-pressed: var(
-    --krds-color-high-contrast-primary-80
-  );
-  --krds-high-contrast-color-button-secondary-border: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-button-tertiary-fill: var(
-    --krds-color-high-contrast-alpha-black0
-  );
-  --krds-high-contrast-color-button-tertiary-fill-hover: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-button-tertiary-fill-pressed: var(
-    --krds-color-high-contrast-gray-80
-  );
-  --krds-high-contrast-color-button-tertiary-border: var(
-    --krds-color-high-contrast-gray-40
-  );
-  --krds-high-contrast-color-button-disabled-fill: var(
-    --krds-color-high-contrast-gray-80
-  );
-  --krds-high-contrast-color-button-text-fill-hover: var(
-    --krds-color-high-contrast-secondary-95
-  );
-  --krds-high-contrast-color-button-text-fill-pressed: var(
-    --krds-color-high-contrast-secondary-90
-  );
-  --krds-high-contrast-color-button-text-fill: var(
-    --krds-color-high-contrast-alpha-black0
-  );
-  --krds-high-contrast-color-button-text-border: var(
-    --krds-color-high-contrast-alpha-white50
-  );
-  --krds-high-contrast-color-button-disabled-border: var(
-    --krds-color-high-contrast-gray-70
-  );
-  --krds-high-contrast-color-background-white: var(
-    --krds-color-high-contrast-gray-100
-  );
-  --krds-high-contrast-color-background-inverse: var(
-    --krds-color-high-contrast-gray-10
-  );
-  --krds-high-contrast-color-background-gray-subtler: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-background-gray-subtle: var(
-    --krds-color-high-contrast-gray-90
-  );
-  --krds-high-contrast-color-background-dim: var(
-    --krds-color-high-contrast-alpha-black75
-  );
-  --krds-high-contrast-color-element-disabled-light: var(
-    --krds-color-high-contrast-gray-80
-  );
-  --krds-high-contrast-color-element-disabled-dark: var(
-    --krds-color-high-contrast-gray-60
-  );
-  --krds-high-contrast-color-element-gray-lighter: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-element-gray-light: var(
-    --krds-color-high-contrast-gray-90
-  );
-  --krds-high-contrast-color-element-gray: var(
-    --krds-color-high-contrast-gray-50
-  );
-  --krds-high-contrast-color-element-primary-lighter: var(
-    --krds-color-high-contrast-primary-95
-  );
-  --krds-high-contrast-color-element-primary-light: var(
-    --krds-color-high-contrast-primary-90
-  );
-  --krds-high-contrast-color-element-primary: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-element-secondary-lighter: var(
-    --krds-color-high-contrast-secondary-95
-  );
-  --krds-high-contrast-color-element-secondary-light: var(
-    --krds-color-high-contrast-secondary-90
-  );
-  --krds-high-contrast-color-element-secondary: var(
-    --krds-color-high-contrast-secondary-60
-  );
-  --krds-high-contrast-color-element-point-lighter: var(
-    --krds-color-high-contrast-point-95
-  );
-  --krds-high-contrast-color-element-point-light: var(
-    --krds-color-high-contrast-point-90
-  );
-  --krds-high-contrast-color-element-point: var(
-    --krds-color-high-contrast-point-50
-  );
-  --krds-high-contrast-color-element-danger-lighter: var(
-    --krds-color-high-contrast-danger-95
-  );
-  --krds-high-contrast-color-element-danger: var(
-    --krds-color-high-contrast-danger-50
-  );
-  --krds-high-contrast-color-element-warning-lighter: var(
-    --krds-color-high-contrast-warning-95
-  );
-  --krds-high-contrast-color-element-warning: var(
-    --krds-color-high-contrast-warning-30
-  );
-  --krds-high-contrast-color-element-success-lighter: var(
-    --krds-color-high-contrast-success-95
-  );
-  --krds-high-contrast-color-element-success: var(
-    --krds-color-high-contrast-success-50
-  );
-  --krds-high-contrast-color-element-information-lighter: var(
-    --krds-color-high-contrast-information-95
-  );
-  --krds-high-contrast-color-element-information: var(
-    --krds-color-high-contrast-information-50
-  );
-  --krds-high-contrast-color-element-inverse: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-element-gray-dark: var(
-    --krds-color-high-contrast-gray-40
-  );
-  --krds-high-contrast-color-element-inverse-static: var(
-    --krds-color-high-contrast-gray-0
-  );
+  --krds-high-contrast-color-button-primary-fill: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-button-primary-fill-hover: var(--krds-color-high-contrast-primary-60);
+  --krds-high-contrast-color-button-primary-fill-pressed: var(--krds-color-high-contrast-primary-70);
+  --krds-high-contrast-color-button-secondary-fill: var(--krds-color-high-contrast-primary-95);
+  --krds-high-contrast-color-button-secondary-fill-hover: var(--krds-color-high-contrast-primary-90);
+  --krds-high-contrast-color-button-secondary-fill-pressed: var(--krds-color-high-contrast-primary-80);
+  --krds-high-contrast-color-button-secondary-border: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-button-tertiary-fill: var(--krds-color-high-contrast-alpha-black0);
+  --krds-high-contrast-color-button-tertiary-fill-hover: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-button-tertiary-fill-pressed: var(--krds-color-high-contrast-gray-80);
+  --krds-high-contrast-color-button-tertiary-border: var(--krds-color-high-contrast-gray-40);
+  --krds-high-contrast-color-button-disabled-fill: var(--krds-color-high-contrast-gray-80);
+  --krds-high-contrast-color-button-text-fill-hover: var(--krds-color-high-contrast-secondary-95);
+  --krds-high-contrast-color-button-text-fill-pressed: var(--krds-color-high-contrast-secondary-90);
+  --krds-high-contrast-color-button-text-fill: var(--krds-color-high-contrast-alpha-black0);
+  --krds-high-contrast-color-button-text-border: var(--krds-color-high-contrast-alpha-white50);
+  --krds-high-contrast-color-button-disabled-border: var(--krds-color-high-contrast-gray-70);
+  --krds-high-contrast-color-background-white: var(--krds-color-high-contrast-gray-100);
+  --krds-high-contrast-color-background-inverse: var(--krds-color-high-contrast-gray-10);
+  --krds-high-contrast-color-background-gray-subtler: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-background-gray-subtle: var(--krds-color-high-contrast-gray-90);
+  --krds-high-contrast-color-background-dim: var(--krds-color-high-contrast-alpha-black75);
+  --krds-high-contrast-color-element-disabled-light: var(--krds-color-high-contrast-gray-80);
+  --krds-high-contrast-color-element-disabled-dark: var(--krds-color-high-contrast-gray-60);
+  --krds-high-contrast-color-element-gray-lighter: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-element-gray-light: var(--krds-color-high-contrast-gray-90);
+  --krds-high-contrast-color-element-gray: var(--krds-color-high-contrast-gray-50);
+  --krds-high-contrast-color-element-primary-lighter: var(--krds-color-high-contrast-primary-95);
+  --krds-high-contrast-color-element-primary-light: var(--krds-color-high-contrast-primary-90);
+  --krds-high-contrast-color-element-primary: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-element-secondary-lighter: var(--krds-color-high-contrast-secondary-95);
+  --krds-high-contrast-color-element-secondary-light: var(--krds-color-high-contrast-secondary-90);
+  --krds-high-contrast-color-element-secondary: var(--krds-color-high-contrast-secondary-60);
+  --krds-high-contrast-color-element-point-lighter: var(--krds-color-high-contrast-point-95);
+  --krds-high-contrast-color-element-point-light: var(--krds-color-high-contrast-point-90);
+  --krds-high-contrast-color-element-point: var(--krds-color-high-contrast-point-50);
+  --krds-high-contrast-color-element-danger-lighter: var(--krds-color-high-contrast-danger-95);
+  --krds-high-contrast-color-element-danger: var(--krds-color-high-contrast-danger-50);
+  --krds-high-contrast-color-element-warning-lighter: var(--krds-color-high-contrast-warning-95);
+  --krds-high-contrast-color-element-warning: var(--krds-color-high-contrast-warning-30);
+  --krds-high-contrast-color-element-success-lighter: var(--krds-color-high-contrast-success-95);
+  --krds-high-contrast-color-element-success: var(--krds-color-high-contrast-success-50);
+  --krds-high-contrast-color-element-information-lighter: var(--krds-color-high-contrast-information-95);
+  --krds-high-contrast-color-element-information: var(--krds-color-high-contrast-information-50);
+  --krds-high-contrast-color-element-inverse: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-element-gray-dark: var(--krds-color-high-contrast-gray-40);
+  --krds-high-contrast-color-element-inverse-static: var(--krds-color-high-contrast-gray-0);
   --krds-high-contrast-color-action-white: var(--krds-color-light-gray-100);
-  --krds-high-contrast-color-action-primary: var(
-    --krds-color-high-contrast-alpha-black0
-  );
-  --krds-high-contrast-color-action-primary-hover: var(
-    --krds-color-high-contrast-primary-95
-  );
-  --krds-high-contrast-color-action-primary-pressed: var(
-    --krds-color-high-contrast-primary-90
-  );
-  --krds-high-contrast-color-action-secondary: var(
-    --krds-color-light-alpha-black0
-  );
-  --krds-high-contrast-color-action-secondary-hover: var(
-    --krds-color-high-contrast-secondary-95
-  );
-  --krds-high-contrast-color-action-secondary-pressed: var(
-    --krds-color-high-contrast-secondary-90
-  );
-  --krds-high-contrast-color-action-secondary-selected: var(
-    --krds-color-high-contrast-secondary-95
-  );
-  --krds-high-contrast-color-action-secondary-on: var(
-    --krds-color-high-contrast-alpha-black0
-  );
-  --krds-high-contrast-color-action-secondary-on-hover: var(
-    --krds-color-high-contrast-gray-100
-  );
-  --krds-high-contrast-color-action-secondary-on-pressed: var(
-    --krds-color-high-contrast-secondary-90
-  );
-  --krds-high-contrast-color-action-secondary-on-selected: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-action-secondary-active: var(
-    --krds-color-high-contrast-secondary-60
-  );
-  --krds-high-contrast-color-action-primary-active: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-action-disabled: var(
-    --krds-color-high-contrast-gray-80
-  );
-  --krds-high-contrast-color-action-primary-selected: var(
-    --krds-color-high-contrast-primary-95
-  );
-  --krds-high-contrast-color-input-border: var(
-    --krds-color-high-contrast-gray-40
-  );
-  --krds-high-contrast-color-input-border-disabled: var(
-    --krds-color-high-contrast-gray-70
-  );
-  --krds-high-contrast-color-input-border-active: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-input-border-error: var(
-    --krds-color-high-contrast-danger-50
-  );
-  --krds-high-contrast-color-input-surface: var(
-    --krds-color-high-contrast-gray-90
-  );
-  --krds-high-contrast-color-input-surface-disabled: var(
-    --krds-color-high-contrast-gray-95
-  );
-  --krds-high-contrast-color-graphic-blue-subtler: var(
-    --krds-color-high-contrast-graphic-10
-  );
-  --krds-high-contrast-color-graphic-blue-subtle: var(
-    --krds-color-high-contrast-graphic-30
-  );
-  --krds-high-contrast-color-graphic-blue: var(
-    --krds-color-high-contrast-graphic-50
-  );
-  --krds-high-contrast-color-graphic-blue-dark: var(
-    --krds-color-high-contrast-graphic-70
-  );
-  --krds-high-contrast-color-graphic-blue-darker: var(
-    --krds-color-high-contrast-graphic-90
-  );
-  --krds-high-contrast-color-graphic-red-subtler: var(
-    --krds-color-high-contrast-point-5
-  );
-  --krds-high-contrast-color-graphic-red-subtle: var(
-    --krds-color-high-contrast-point-10
-  );
-  --krds-high-contrast-color-graphic-red: var(
-    --krds-color-high-contrast-point-20
-  );
-  --krds-high-contrast-color-graphic-red-dark: var(
-    --krds-color-high-contrast-point-40
-  );
-  --krds-high-contrast-color-graphic-red-darker: var(
-    --krds-color-high-contrast-point-70
-  );
-  --krds-high-contrast-color-graphic-brand: var(
-    --krds-color-high-contrast-primary-50
-  );
-  --krds-high-contrast-color-alpha-base100: var(
-    --krds-color-high-contrast-alpha-black100
-  );
-  --krds-high-contrast-color-alpha-base50: var(
-    --krds-color-high-contrast-alpha-black50
-  );
-  --krds-high-contrast-color-alpha-base25: var(
-    --krds-color-high-contrast-alpha-black25
-  );
+  --krds-high-contrast-color-action-primary: var(--krds-color-high-contrast-alpha-black0);
+  --krds-high-contrast-color-action-primary-hover: var(--krds-color-high-contrast-primary-95);
+  --krds-high-contrast-color-action-primary-pressed: var(--krds-color-high-contrast-primary-90);
+  --krds-high-contrast-color-action-secondary: var(--krds-color-light-alpha-black0);
+  --krds-high-contrast-color-action-secondary-hover: var(--krds-color-high-contrast-secondary-95);
+  --krds-high-contrast-color-action-secondary-pressed: var(--krds-color-high-contrast-secondary-90);
+  --krds-high-contrast-color-action-secondary-selected: var(--krds-color-high-contrast-secondary-95);
+  --krds-high-contrast-color-action-secondary-on: var(--krds-color-high-contrast-alpha-black0);
+  --krds-high-contrast-color-action-secondary-on-hover: var(--krds-color-high-contrast-gray-100);
+  --krds-high-contrast-color-action-secondary-on-pressed: var(--krds-color-high-contrast-secondary-90);
+  --krds-high-contrast-color-action-secondary-on-selected: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-action-secondary-active: var(--krds-color-high-contrast-secondary-60);
+  --krds-high-contrast-color-action-primary-active: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-action-disabled: var(--krds-color-high-contrast-gray-80);
+  --krds-high-contrast-color-action-primary-selected: var(--krds-color-high-contrast-primary-95);
+  --krds-high-contrast-color-input-border: var(--krds-color-high-contrast-gray-40);
+  --krds-high-contrast-color-input-border-disabled: var(--krds-color-high-contrast-gray-70);
+  --krds-high-contrast-color-input-border-active: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-input-border-error: var(--krds-color-high-contrast-danger-50);
+  --krds-high-contrast-color-input-surface: var(--krds-color-high-contrast-gray-90);
+  --krds-high-contrast-color-input-surface-disabled: var(--krds-color-high-contrast-gray-95);
+  --krds-high-contrast-color-graphic-blue-subtler: var(--krds-color-high-contrast-graphic-10);
+  --krds-high-contrast-color-graphic-blue-subtle: var(--krds-color-high-contrast-graphic-30);
+  --krds-high-contrast-color-graphic-blue: var(--krds-color-high-contrast-graphic-50);
+  --krds-high-contrast-color-graphic-blue-dark: var(--krds-color-high-contrast-graphic-70);
+  --krds-high-contrast-color-graphic-blue-darker: var(--krds-color-high-contrast-graphic-90);
+  --krds-high-contrast-color-graphic-red-subtler: var(--krds-color-high-contrast-point-5);
+  --krds-high-contrast-color-graphic-red-subtle: var(--krds-color-high-contrast-point-10);
+  --krds-high-contrast-color-graphic-red: var(--krds-color-high-contrast-point-20);
+  --krds-high-contrast-color-graphic-red-dark: var(--krds-color-high-contrast-point-40);
+  --krds-high-contrast-color-graphic-red-darker: var(--krds-color-high-contrast-point-70);
+  --krds-high-contrast-color-graphic-brand: var(--krds-color-high-contrast-primary-50);
+  --krds-high-contrast-color-alpha-base100: var(--krds-color-high-contrast-alpha-black100);
+  --krds-high-contrast-color-alpha-base50: var(--krds-color-high-contrast-alpha-black50);
+  --krds-high-contrast-color-alpha-base25: var(--krds-color-high-contrast-alpha-black25);
   --krds-high-contrast-color-alpha-base0: var(--krds-color-light-alpha-black0);
-  --krds-high-contrast-color-alpha-inverse100: var(
-    --krds-color-high-contrast-alpha-white100
-  );
-  --krds-high-contrast-color-alpha-inverse50: var(
-    --krds-color-high-contrast-alpha-white50
-  );
-  --krds-high-contrast-color-alpha-inverse25: var(
-    --krds-color-high-contrast-alpha-white25
-  );
-  --krds-high-contrast-color-alpha-inverse0: var(
-    --krds-color-high-contrast-alpha-white0
-  );
-  --krds-high-contrast-color-alpha-base75: var(
-    --krds-color-high-contrast-alpha-black75
-  );
-  --krds-high-contrast-color-alpha-inverse75: var(
-    --krds-color-high-contrast-alpha-white75
-  );
-  --krds-high-contrast-color-alpha-inverse10: var(
-    --krds-color-high-contrast-alpha-black25
-  );
-  --krds-high-contrast-color-alpha-base10: var(
-    --krds-color-high-contrast-alpha-black10
-  );
+  --krds-high-contrast-color-alpha-inverse100: var(--krds-color-high-contrast-alpha-white100);
+  --krds-high-contrast-color-alpha-inverse50: var(--krds-color-high-contrast-alpha-white50);
+  --krds-high-contrast-color-alpha-inverse25: var(--krds-color-high-contrast-alpha-white25);
+  --krds-high-contrast-color-alpha-inverse0: var(--krds-color-high-contrast-alpha-white0);
+  --krds-high-contrast-color-alpha-base75: var(--krds-color-high-contrast-alpha-black75);
+  --krds-high-contrast-color-alpha-inverse75: var(--krds-color-high-contrast-alpha-white75);
+  --krds-high-contrast-color-alpha-inverse10: var(--krds-color-high-contrast-alpha-black25);
+  --krds-high-contrast-color-alpha-base10: var(--krds-color-high-contrast-alpha-black10);
   --krds-high-contrast-color-alpha-shadow1: #0000001f;
   --krds-high-contrast-color-alpha-shadow2: #00000033;
   --krds-high-contrast-color-alpha-shadow3: #00000066;
@@ -1195,4 +786,5 @@
   --krds-radius-xlarge1: var(--krds-number-7);
   --krds-radius-xlarge2: var(--krds-number-7);
   --krds-radius-max: var(--krds-number-max);
+
 }
