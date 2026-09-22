@@ -19,8 +19,14 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "jsxImportSource": "vue"
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", ".storybook/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    ".storybook/**/*.ts"
+  ],
   "exclude": ["node_modules", "dist", "vendor"]
 }

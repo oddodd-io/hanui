@@ -10,7 +10,7 @@ export default defineConfig({
       insertTypesEntry: true,
       outDir: 'dist',
       tsconfigPath: './tsconfig.json',
-      exclude: ['src/**/*.test.ts', 'src/**/*.stories.ts', 'src/test/**'],
+      exclude: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.ts', 'src/test/**'],
     }),
   ],
   css: {

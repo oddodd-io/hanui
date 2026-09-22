@@ -8,7 +8,7 @@ export default [
   },
   ...vue.configs['flat/recommended'],
   {
-    files: ['**/*.vue', '**/*.ts'],
+    files: ['**/*.vue'],
     languageOptions: {
       parser: vueParser,
       parserOptions: {
@@ -17,6 +17,20 @@ export default [
         sourceType: 'module',
       },
     },
+  },
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: { jsx: true },
+      },
+    },
+  },
+  {
+    files: ['**/*.vue', '**/*.ts', '**/*.tsx'],
     rules: {
       'vue/multi-word-component-names': 'off',
       // prettier가 포맷을 담당하므로 줄바꿈 스타일 규칙은 끈다
