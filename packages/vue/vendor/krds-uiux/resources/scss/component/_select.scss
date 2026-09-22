@@ -1,0 +1,241 @@
+/* 셀렉트 */
+//사이즈 정의
+@mixin form-select-size-variable() {
+	$form-select-size: (
+		small: (
+			size-height: var(--krds-size-height-6),
+			icon-size: var(--krds-icon--size-small),
+			radius: var(--krds-radius-medium3),
+			padding-right: calc(var(--krds-form-select--padding-default) + var(--krds-gap-3) + var(--krds-form-select--icon-size-small)),
+			pc-font-size: var(--krds-pc-font-size-label-small),
+			mobile-font-size: var(--krds-mobile-font-size-label-small),
+		),
+		medium: (
+			size-height: var(--krds-size-height-7),
+			icon-size: var(--krds-icon--size-medium),
+			padding-right: calc(var(--krds-form-select--padding-default) + var(--krds-gap-3) + var(--krds-form-select--icon-size-medium)),
+			radius: var(--krds-radius-medium2),
+			pc-font-size: var(--krds-pc-font-size-label-medium),
+			mobile-font-size: var(--krds-mobile-font-size-label-medium),
+		),
+		large: (
+			size-height: var(--krds-size-height-8),
+			icon-size: var(--krds-icon--size-large),
+			padding-right: calc(var(--krds-form-select--padding-default) + var(--krds-gap-3) + var(--krds-form-select--icon-size-large)),
+			radius: var(--krds-radius-medium1),
+			pc-font-size: var(--krds-pc-font-size-label-large),
+			mobile-font-size: var(--krds-mobile-font-size-label-large),
+		),
+	) !default;
+	--krds-form-select--padding-default: var(--krds-padding-6);
+
+	@each $size, $types in $form-select-size {
+		@each $type, $value in $types {
+			//css variable 생성
+			--krds-form-select--#{$type}-#{$size}: #{$value};
+		}
+	}
+
+	& {
+		//default size large
+		@include form-select-size(large);
+
+		@each $size, $types in $form-select-size {
+			&.#{$size} {
+				@include form-select-size(#{$size});
+			}
+		}
+	}
+}
+
+//컬러 정의
+@mixin form-select-color-variable($mode: light) {
+	--krds-form-select--color-background: var(--krds-#{$mode}-color-input-surface);
+	--krds-form-select--color-background-readonly: var(--krds-#{$mode}-color-input-surface-disabled);
+	--krds-form-select--color-background-disabled: var(--krds-#{$mode}-color-input-surface-disabled);
+	--krds-form-select--color-background-error: var(--krds-#{$mode}-color-input-surface);
+	--krds-form-select--icon-color-background: var(--krds-#{$mode}-color-icon-gray);
+	--krds-form-select--icon-color-background-readonly: var(--krds-#{$mode}-color-icon-disabled-on);
+	--krds-form-select--icon-color-background-disabled: var(--krds-#{$mode}-color-icon-disabled-on);
+	--krds-form-select--color-border: var(--krds-#{$mode}-color-input-border);
+	--krds-form-select--color-border-active: var(--krds-#{$mode}-color-input-border-active);
+	--krds-form-select--color-border-readonly: var(--krds-#{$mode}-color-input-border-disabled);
+	--krds-form-select--color-border-disabled: var(--krds-#{$mode}-color-input-border-disabled);
+	--krds-form-select--color-border-error: var(--krds-#{$mode}-color-input-border-error);
+	--krds-form-select--color-text: var(--krds-#{$mode}-color-text-disabled);
+	--krds-form-select--color-text-active: var(--krds-#{$mode}-color-text-basic);
+	--krds-form-select--color-text-completed: var(--krds-#{$mode}-color-text-subtle);
+	--krds-form-select--color-text-disabled: var(--krds-#{$mode}-color-text-disabled-on);
+	--krds-form-select--color-text-error: var(--krds-#{$mode}-color-text-subtle);
+}
+
+@mixin form-select-size($unit) {
+	height: var(--krds-form-select--size-height-#{$unit});
+	padding:0 var(--krds-form-select--padding-right-#{$unit}) 0 var(--krds-form-select--padding-default);
+	background-position: center right var(--krds-form-select--padding-default);
+	background-size: var(--krds-form-select--icon-size-#{$unit}) !important;
+	border-radius: var(--krds-form-select--radius-#{$unit});
+	font-size: var(--krds-form-select--pc-font-size-#{$unit});
+	@include size-medium {
+		font-size: var(--krds-form-select--mobile-font-size-#{$unit});
+	}
+}
+//모드 설정
+$mode-setting: light;
+
+.krds-form-select {
+	@include form-select-color-variable(#{$mode-setting});
+	@include form-select-size-variable();
+
+	& {
+		position: relative;
+		width: 100%;
+		@include icon-set(ico_angle, $effect: pure);
+		background-color: var(--krds-form-select--color-background) !important;
+		@include border-size-mode(#{$mode-setting});
+		border-style: solid;
+		border-color: var(--krds-form-select--color-border);
+		font-family: inherit;
+		color: var(--krds-form-select--color-text);
+		transition: var(--krds-transition-base);
+	}
+	&:focus {
+		border-color: var(--krds-form-select--color-border-active);
+		border-width: 2px;
+		outline: none;
+		box-shadow: none;
+		color: var(--krds-form-select--color-text-active);
+	}
+	&.completed {
+		color: var(--krds-form-select--color-text-completed);
+	}
+	&.is-error {
+		border-color: var(--krds-light-color-text-point);
+		border-width: 2px;
+	}
+	&[disabled] {
+		@include icon-set(ico_angle_disabled, $effect: pure);
+		background-color: var(--krds-form-select--color-background-disabled) !important;
+		border-color: var(--krds-form-select--color-border-disabled);
+		color: var(--krds-form-select--color-text-disabled);
+	}
+}
+
+.is-error {
+	.krds-form-select {
+		border-color: var(--krds-light-color-text-point);
+		border-width: 2px;
+	}
+}
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-form-select {
+		@include form-select-color-variable(#{$mode-setting});
+
+		@include border-size-mode(#{$mode-setting});
+		@include icon-set(ico_angle_inverse, $effect: pure);
+		background-color: var(--krds-form-select--color-background) !important;
+		&[disabled] {
+			@include icon-set(ico_angle_disabled_inverse, $effect: pure);
+			background-color: var(--krds-form-select--color-background-disabled) !important;
+		}
+	}
+}
+
+/* sorting select */
+//size variable
+$form-select-sorting-size: (
+	small: (
+		icon-size: var(--krds-icon--size-small),
+		padding-left: var(--krds-padding-1),
+		padding-right: calc(var(--krds-form-select-sorting--padding-left) + var(--krds-gap-1) + var(--krds-form-select-sorting--icon-size-small)),
+		pc-font-size: var(--krds-pc-font-size-label-small),
+		mobile-font-size: var(--krds-mobile-font-size-label-small),
+	),
+	medium: (
+		icon-size: var(--krds-icon--size-medium),
+		padding-left: var(--krds-padding-2),
+		padding-right: calc(var(--krds-form-select-sorting--padding-left) + var(--krds-gap-1) + var(--krds-form-select-sorting--icon-size-medium)),
+		pc-font-size: var(--krds-pc-font-size-label-medium),
+		mobile-font-size: var(--krds-mobile-font-size-label-medium),
+	),
+	large: (
+		icon-size: var(--krds-icon--size-large),
+		padding-left: var(--krds-padding-2),
+		padding-right: calc(var(--krds-form-select-sorting--padding-left) + var(--krds-gap-1) + var(--krds-form-select-sorting--icon-size-large)),
+		pc-font-size: var(--krds-pc-font-size-heading-small),
+		mobile-font-size: var(--krds-mobile-font-size-heading-small),
+	),
+) !default;
+@mixin form-select-sorting-color-variable($mode: light) {
+	--krds-form-select-sorting--color-background: var(--krds-#{$mode}-color-action-secondary);
+	--krds-form-select-sorting--color-background-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-form-select-sorting--color-background-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-form-select-sorting--color-text: var(--krds-#{$mode}-color-text-basic);
+}
+@mixin form-select-sorting-size($unit) {
+	padding:0 var(--krds-form-select-sorting--padding-right-#{$unit}) 0 var(--krds-form-select-sorting--padding-left);
+	background-position: center right var(--krds-form-select-sorting--padding-left);
+	background-size: var(--krds-form-select-sorting--icon-size-#{$unit}) !important;
+	font-size: var(--krds-form-select-sorting--pc-font-size-#{$unit});
+	@if ($unit == 'large') {
+		font-weight: var(--krds-font-weight-bold);
+	}
+	@include size-medium {
+		font-size: var(--krds-form-select-sorting--mobile-font-size-#{$unit});
+	}
+}
+.krds-form-select-sort {
+	@include form-select-sorting-color-variable($mode: #{$mode-setting});
+
+	--krds-form-select-sorting--padding-left: var(--krds-padding-2);
+	--krds-form-select-sorting--radius: var(--krds-radius-small2);
+	@each $size, $types in $form-select-sorting-size {
+		@each $type, $value in $types {
+			//css variable 생성
+			--krds-form-select-sorting--#{$type}-#{$size}: #{$value};
+		}
+	}
+
+	position: relative;
+	@include icon-set(ico_angle, $effect: pure);
+	background-color: var(--krds-form-select-sorting--color-background) !important;
+	border: none;
+	border-radius: var(--krds-form-select-sorting--radius);
+	font-family: inherit;
+	color: var(--krds-form-select-sorting--color-text);
+	transition: var(--krds-transition-base);
+	& {
+		@include form-select-sorting-size(medium);
+
+		@each $size, $types in $form-select-sorting-size {
+			&.#{$size} {
+				@include form-select-sorting-size(#{$size});
+			}
+		}
+	}
+	&:hover {
+		background-color: var(--krds-form-select-sorting--color-background-hover) !important;
+	}
+	&:focus {
+		background-color: var(--krds-form-select-sorting--color-background-pressed) !important;
+	}
+}
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-form-select-sort {
+		@include form-select-sorting-color-variable($mode: #{$mode-setting});
+		@include icon-set(ico_angle_inverse, $effect: pure);
+		background-color: var(--krds-form-select-sorting--color-background) !important;
+		&:hover {
+			background-color: var(--krds-form-select-sorting--color-background-hover) !important;
+		}
+		&:focus {
+			background-color: var(--krds-form-select-sorting--color-background-pressed) !important;
+		}
+	}
+}

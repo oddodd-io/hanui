@@ -1,0 +1,132 @@
+/* tag style */
+//사이즈 정의
+@mixin tag-size-variable() {
+	//컬러 변수 배열 생성
+	$tag-size: (
+		small: (
+			wrapper-gap-x: var(--krds-gap-2),
+			wrapper-gap-y: var(--krds-gap-3),
+			size-height: var(--krds-size-height-4),
+			button-size: var(--krds-size-height-2),
+			padding-x: var(--krds-padding-3),
+			pc-font-size: var(--krds-pc-font-size-label-xsmall),
+			mobile-font-size: var(--krds-mobile-font-size-label-xsmall),
+		),
+		medium: (
+			wrapper-gap-x: var(--krds-gap-3),
+			wrapper-gap-y: var(--krds-gap-3),
+			size-height: var(--krds-size-height-5),
+			button-size: var(--krds-size-height-2),
+			padding-x: var(--krds-padding-4),
+			pc-font-size: var(--krds-pc-font-size-label-small),
+			mobile-font-size: var(--krds-mobile-font-size-label-small),
+		),
+		large: (
+			wrapper-gap-x: var(--krds-gap-3),
+			wrapper-gap-y: var(--krds-gap-4),
+			size-height: var(--krds-size-height-6),
+			button-size: var(--krds-size-height-2),
+			padding-x: var(--krds-padding-5),
+			pc-font-size: var(--krds-pc-font-size-label-medium),
+			mobile-font-size: var(--krds-mobile-font-size-label-medium),
+		),
+	) !default;
+
+	//css variable 생성
+	@each $size, $types in $tag-size {
+		@each $type, $value in $types {
+			--krds-btn-tag--#{$type}-#{$size}: #{$value};
+		}
+	}
+
+	//class 정의
+	& {
+		@each $size, $types in $tag-size {
+			&.#{$size} {
+				@include tag-wrapper(#{$size});
+				.krds-btn-tag {
+					@include tag(#{$size});
+					.btn-delete {
+						@include tag-delete-button(#{$size});
+					}
+				}
+			}
+		}
+	}
+}
+@mixin tag-wrapper($size) {
+	gap: var(--krds-btn-tag--wrapper-gap-y-#{$size}) var(--krds-btn-tag--wrapper-gap-x-#{$size});
+}
+@mixin tag($size) {
+	gap: var(--krds-gap-1);
+	height: var(--krds-btn-tag--size-height-#{$size});
+	padding: var(--krds-padding-3) var(--krds-btn-tag--padding-x-#{$size});
+	border-radius: var(--krds-btn-tag--size-height-#{$size});
+	font-size: var(--krds-btn-tag--pc-font-size-#{$size});
+	line-height: var(--krds-line-height-none);
+	@include size-medium {
+		font-size: var(--krds-btn-tag--mobile-font-size-#{$size});
+	}
+}
+@mixin tag-delete-button($size) {
+	@include square(var(--krds-btn-tag--button-size-#{$size}));
+	@include icon-set (ico_delete_fill, $effect: pure);
+	line-height: var(--krds-line-height-none);
+}
+
+//컬러 정의
+@mixin tag-color-variable($mode: light) {
+	--krds-btn-tag--color-text: var(--krds-#{$mode}-color-text-basic);
+	--krds-btn-tag--color-action: var(--krds-#{$mode}-color-action-white);
+	--krds-btn-tag--color-action-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-btn-tag--color-action-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-btn-tag--color-border: var(--krds-#{$mode}-color-border-gray-light);
+	--krds-btn-tag--color-border-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-btn-tag--color-border-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+}
+//모드 설정
+$mode-setting: light;
+.krds-tag-wrap {
+	@include tag-color-variable(#{$mode-setting});
+	@include tag-size-variable();
+
+	$size: medium;
+
+	& {
+		display: flex;
+		flex-wrap: wrap;
+		@include tag-wrapper(#{$size});
+	}
+
+	.krds-btn-tag {
+		@include flex-layout($d: inline-flex, $ai: center);
+		position: relative;
+		background-color: var(--krds-btn-tag--color-action);
+		border: 0.1rem solid var(--krds-btn-tag--color-border);
+		transition: var(--krds-transition-base);
+		@include tag(#{$size});
+		&:hover {
+			background-color: var(--krds-btn-tag--color-action-hover);
+		}
+		&:active {
+			background-color: var(--krds-btn-tag--color-action-pressed);
+		}
+		&.link {
+			&:hover,
+			&:active {
+				@include underline();
+			}
+		}
+		.btn-delete {
+			@include tag-delete-button(#{$size});
+		}
+	}
+}
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-tag-wrap {
+		@include tag-color-variable(#{$mode-setting});
+	}
+}

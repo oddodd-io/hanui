@@ -1,0 +1,419 @@
+/* 달력 */
+//사이즈 정의
+@mixin calendar-size-variable() {
+	--krds-calendar--radius: var(--krds-radius-xlarge2);
+	--krds-calendar--head-pc-font-size: var(--krds-pc-font-size-heading-xsmall);
+	--krds-calendar--head-mobile-font-size: var(--krds-mobile-font-size-heading-xsmall);
+	--krds-calendar--head-btn-cal-switch-pc-font-size: var(--krds-pc-font-size-label-medium);
+	--krds-calendar--head-btn-cal-switch-mobile-font-size: var(--krds-mobile-font-size-label-medium);
+	--krds-calendar--head-btn-cal-switch-radius: var(--krds-radius-medium1);
+	--krds-calendar--head-btn-cal-move-size: var(--krds-size-height-5);
+	--krds-calendar--table-wrap-padding: var(--krds-gap-5);
+	--krds-calendar--table-head-pc-font-size: var(--krds-pc-font-size-label-small);
+	--krds-calendar--table-head-mobile-font-size: var(--krds-mobile-font-size-label-small);
+	--krds-calendar--table-caption-pc-font-size: var(--krds-pc-font-size-heading-xxsmall);
+	--krds-calendar--table-caption-mobile-font-size: var(--krds-pc-font-size-heading-xxsmall);
+	--krds-calendar--set-date-radius: var(--krds-radius-max);
+}
+
+//컬러 정의
+@mixin calendar-color-variable($mode: light) {
+	--krds-calendar--color-border: var(--krds-#{$mode}-color-border-secondary-light);
+	--krds-calendar--color-surface: var(--krds-#{$mode}-color-surface-secondary-subtler);
+	--krds-calendar--color-text-sub: var(--krds-#{$mode}-color-text-subtle);
+	--krds-calendar--head-btn-cal-move-color-text-active: var(--krds-#{$mode}-color-text-secondary);
+	--krds-calendar--head-btn-cal-move-color-border: var(--krds-#{$mode}-color-border-gray-light);
+	--krds-calendar--head-btn-cal-move-color-border-active: var(--krds-#{$mode}-color-border-secondary);
+	--krds-calendar--head-btn-cal-move-color-action: var(--krds-#{$mode}-color-action-white);
+	--krds-calendar--head-btn-cal-switch-color-action-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-calendar--head-btn-cal-switch-color-action-active: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-calendar--head-btn-cal-switch-color-text-disabled: var(--krds-#{$mode}-color-text-disabled-on);
+	--krds-calendar--head-drop-down-shadow: 0 0 0.2rem 0 var(--krds-#{$mode}-color-alpha-shadow1), 0 0.4rem 0.8rem 0 var(--krds-#{$mode}-color-alpha-shadow2);
+	--krds-calendar--date-set-color-action: var(--krds-#{$mode}-color-action-secondary-active);
+	--krds-calendar--date-set-color-text: var(--krds-#{$mode}-color-text-inverse-static);
+	--krds-calendar--date-set-color-text-day-off: var(--krds-#{$mode}-color-text-danger);
+	--krds-calendar--date-set-color-text-day-event: var(--krds-#{$mode}-color-text-information);
+	--krds-calendar--date-set-color-text-disabled: var(--krds-#{$mode}-color-text-disabled);
+	--krds-calendar--date-set-color-action-pressed: var(--krds-#{$mode}-color-action-secondary-on-pressed);
+	--krds-calendar--date-set-color-action-period: var(--krds-#{$mode}-color-action-secondary-on-selected);
+	--krds-calendar--date-set-color-element-today: var(--krds-#{$mode}-color-element-point);
+	--krds-calendar--action-btn-wrap-color-border: var(--krds-#{$mode}-color-divider-gray-light);
+	--krds-calendar--action-btn-wrap-color-surface: var(--krds-#{$mode}-color-surface-white);
+}
+
+//모드 설정
+$mode-setting: light;
+// krds-calendar-area
+.krds-calendar-area {
+	@include calendar-size-variable();
+	@include calendar-color-variable(#{$mode-setting});
+	
+	display: none;
+	position: relative;
+	z-index: 1000;
+	width: 100%;
+	.calendar-wrap {
+		@include position($t: .8rem, $l: 0);
+		width: 38.4rem;
+		background-color: var(--krds-calendar--color-surface);
+		border: 1px solid var(--krds-calendar--color-border);
+		border-radius: var(--krds-calendar--radius);
+		overflow: hidden;
+		&.bottom {
+			top: auto;  
+			bottom: 6.4rem;
+		}
+		.calendar-head {
+			@include flex-layout($ai: center, $jc: space-between);
+			padding: var(--krds-padding-8);
+			font-size: var(--krds-calendar--head-pc-font-size);
+			font-weight: var(--krds-font-weight-bold);
+			gap: var(--krds-gap-5);
+			.btn-cal-move {
+				@include flex-layout($ai: center, $jc: center);
+				@include square(var(--krds-calendar--head-btn-cal-move-size));
+				background-color: var(--krds-calendar--head-btn-cal-move-color-action);
+				border: 1px solid var(--krds-calendar--head-btn-cal-move-color-border);
+				border-radius: var(--krds-radius-max);
+				flex-shrink: 0;
+				&::before {
+					@include pseudo();
+					@include svg-icon(var(--krds-size-height-3), $mode: #{$mode-setting});
+					@include icon-set(ico_angle);
+					transform: rotate(90deg); 
+				}
+				&.next {
+					&::before {
+						transform: rotate(-90deg); 
+					}
+				}
+			}
+			.calendar-switch-wrap {
+				@include flex-layout($ai: center, $jc: center);
+				gap: var(--krds-gap-2);
+				.btn-cal-switch {
+					@include flex-layout($ai: center, $jc: center);
+					gap: var(--krds-gap-2);
+					height: var(--krds-size-height-6);
+					border-radius: var(--krds-calendar--head-btn-cal-switch-radius);
+					padding: 0 var(--krds-padding-3);
+					transition: var(--krds-transition-base);
+					&::after {
+						@include pseudo();
+						@include svg-icon(var(--krds-icon--size-small), $mode: #{$mode-setting});
+						@include icon-set(ico_arrow_dropdown);
+					}
+					&:hover {
+						background-color: var(--krds-calendar--head-btn-cal-switch-color-action-hover);
+					}
+					&:focus,
+					&:active,
+					&.active {
+						background-color: var(--krds-calendar--head-btn-cal-switch-color-action-active);
+					}
+					&:disabled {
+						cursor: default;
+						color: var(--krds-calendar--head-btn-cal-switch-color-text-disabled);
+						background-color: var(--krds-calendar--action-btn-wrap-color-surface);
+						&::after {
+							background-color: var(--krds-calendar--head-btn-cal-switch-color-text-disabled);
+						}
+					}
+				}
+				.calendar-drop-down {
+					--krds-calendar-drop-down-btn-height: var(--krds-size-height-6);
+
+					position: relative;
+					.calendar-select {
+						@include visibility(hidden);
+						@include position($t:calc(100% + .4rem), $l: 0);
+						@include position-center(x);
+						overflow-x: hidden;
+						overflow-y: auto;
+						min-width: 14rem;
+						max-height: calc((var(--krds-calendar-drop-down-btn-height) * 6) + (var(--krds-padding-3) * 2));
+						border: 1px solid var(--krds-calendar--action-btn-wrap-color-border);
+						background-color: var(--krds-calendar--action-btn-wrap-color-surface);
+						border-radius: var(--krds-radius-medium4);
+						padding: var(--krds-padding-3);
+						transition: var(--krds-transition-base);
+						box-shadow: var(--krds-calendar--head-drop-down-shadow);
+						&.active {
+							@include visibility(visible);
+							z-index: 10;
+						}
+						.sel {
+							@include flex-layout($fd: column);
+							& li {
+								width: 100%;
+							}
+							button {
+								@include flex-layout($jc: center, $ai: center);
+								@include square(100%, var(--krds-calendar-drop-down-btn-height));
+								border-radius: var(--krds-radius-medium1);
+								font-size: var(--krds-calendar--head-btn-cal-switch-pc-font-size);
+								font-weight: var(--krds-font-weight-regular);
+								&:hover {
+									background-color: var(--krds-calendar--head-btn-cal-switch-color-action-hover);
+								}
+								&:focus,
+								&:active {
+									background-color: var(--krds-calendar--head-btn-cal-switch-color-action-active);
+								}
+								&.active {
+									color: var(--krds-calendar--head-btn-cal-move-color-text-active);
+									border: 1px solid var(--krds-calendar--head-btn-cal-move-color-border-active);
+									background-color: var(--krds-calendar--action-btn-wrap-color-surface);
+								}
+								&:disabled {
+									cursor: default;
+									color: var(--krds-calendar--head-btn-cal-switch-color-text-disabled);
+									background-color: var(--krds-calendar--action-btn-wrap-color-surface);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		.calendar-body {
+			position: relative;
+			.calendar-table-wrap {
+				padding: 0 var(--krds-calendar--table-wrap-padding);
+				.calendar-tbl {
+					caption {
+						width: auto !important;
+						height: auto !important;
+						margin: 0 !important;
+						clip: auto !important;
+						text-align: left;
+						top: 4.6rem;
+						left: var(--krds-calendar--table-wrap-padding);
+						color: var(--krds-calendar--color-text-sub);
+						font-weight: var(--krds-font-weight-bold);
+						font-size: var(--krds-calendar--table-caption-pc-font-size);
+					}
+					th,
+					td {
+						width: calc(100% / 7);
+					}
+					th {
+						padding-bottom: 4.6rem;
+						font-weight: var(--krds-font-weight-regular);
+						font-size: var(--krds-calendar--table-head-pc-font-size);
+					}
+					td {
+						padding: var(--krds-padding-1) 0;
+						> button {
+							@include flex-layout($ai: center, $jc: center);
+							@include square(100%);
+							position: relative;
+							width:44px;
+							height:44px;
+							margin-inline:auto;
+							& span {
+								z-index: 1;
+							}
+							&::after {
+								@include position($t: 0, $l: 0);
+								@include pseudo();
+								@include square(100%);
+								border-radius: var(--krds-calendar--set-date-radius);
+								transition: var(--krds-transition-base);
+							}
+						}
+						.btn-set-date:focus {
+							z-index: 1;
+						}
+						&:not(.period, .old, .new, .disabled) .btn-set-date:hover {
+							&::after {
+								background-color: var(--krds-calendar--date-set-color-action-period);
+							}
+						}
+						&:not(.period, .old, .new, .disabled) .btn-set-date:focus,
+						&:not(.period, .old, .new, .disabled) .btn-set-date:active {
+							&::after {
+								background-color: var(--krds-calendar--date-set-color-action-pressed);
+							}
+						}
+						&.today {
+							.btn-set-date {
+								span {
+									position: relative;
+									&::before {
+										@include pseudo();
+										@include square(.4rem);
+										@include position($b: -10%);
+										@include position-center(x);
+										border-radius: var(--krds-radius-max);
+										background-color: var(--krds-calendar--date-set-color-element-today);
+									}
+								}
+							}
+						}
+						&.day-event {
+							.btn-set-date {
+								color: var(--krds-calendar--date-set-color-text-day-event);
+								span {
+									position: relative;
+									@include underline(0.2rem);
+									&::before {
+										@include position($b: -38%);
+										@include position-center(x);
+										content: "이벤트";
+										font-size: 1rem;
+										font-weight: var(--krds-font-weight-bold);
+									}
+								}
+							}
+						}
+						&.day-off { 
+							color: var(--krds-calendar--date-set-color-text-day-off);
+						}
+						&.old,
+						&.new, 
+						&.disabled {
+							color: var(--krds-calendar--date-set-color-text-disabled);
+							& button {
+								cursor: default;
+							}
+						}
+						&.period {
+							.btn-set-date {
+								background-color: var(--krds-calendar--date-set-color-action-period);
+							}
+							&.start,
+							&.end {
+								> .btn-set-date {
+									background-color: var(--krds-calendar--date-set-color-action);
+									color: var(--krds-calendar--date-set-color-text);
+								}
+							}
+							&.start {
+								> .btn-set-date {
+									border-top-left-radius: var(--krds-calendar--set-date-radius);
+									border-bottom-left-radius: var(--krds-calendar--set-date-radius);
+								}
+							}
+							&.end {
+								> .btn-set-date {
+									border-top-right-radius: var(--krds-calendar--set-date-radius);
+									border-bottom-right-radius: var(--krds-calendar--set-date-radius);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		.calendar-footer {
+			margin-top: var(--krds-calendar--table-wrap-padding);
+			.calendar-btn-wrap {
+				@include flex-layout($jc: flex-end, $ai: center);
+				gap: var(--krds-gap-3);
+				padding: var(--krds-padding-6) var(--krds-padding-8);
+				border-top: 1px solid var(--krds-calendar--action-btn-wrap-color-border);
+				background-color: var(--krds-calendar--action-btn-wrap-color-surface);
+				& .krds-btn:first-child {
+					margin-right: auto;
+				}
+			}
+		}	
+		&:not(.single) {
+			.calendar-body {
+				.calendar-table-wrap {
+					.calendar-tbl {
+						--krds-calendar--after-size: calc(100% - var(--krds-padding-1) * 2);
+						td {
+							position: relative;
+							&::after {
+								@include position($t: 50%, $l: 0);
+								@include pseudo();
+								@include square(100%, var(--krds-calendar--after-size));
+								transform: translateY(-50%);
+							}
+						}
+						td.period {
+							&::after {
+								background-color: var(--krds-calendar--date-set-color-action-period);
+							}
+						}
+						td.start {
+							&::after {
+								background-color: var(--krds-calendar--date-set-color-action);
+								border-top-left-radius: var(--krds-calendar--set-date-radius);
+								border-bottom-left-radius: var(--krds-calendar--set-date-radius);
+								@include square(var(--krds-calendar--after-size), var(--krds-calendar--after-size));
+								right: 0;
+								left: unset;
+							}
+						}
+						td.end {
+							&::after {
+								background-color: var(--krds-calendar--date-set-color-action);
+								border-top-right-radius: var(--krds-calendar--set-date-radius);
+								border-bottom-right-radius: var(--krds-calendar--set-date-radius);
+								@include square(var(--krds-calendar--after-size), var(--krds-calendar--after-size));
+							}
+						}
+						td.period.start.end {
+							&::after {
+								display: none;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	&.active {
+		display: block;
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+
+	// krds-calendar-area
+	.krds-calendar-area {
+		@include calendar-color-variable(#{$mode-setting});
+
+		.calendar-wrap {
+			.calendar-head {
+				.btn-cal-move {
+					&::before {
+						@include svg-icon(var(--krds-size-height-3), $mode: #{$mode-setting});
+					}
+				}
+				.calendar-switch-wrap {
+					.btn-cal-switch {
+						&::after {
+							@include svg-icon(var(--krds-icon--size-small),  $mode: #{$mode-setting});
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+@include size-large-more {
+	.calendar-select {
+		@include scrollbar;
+	}
+}
+
+@media (max-width: 440px) {
+	.krds-calendar-area {
+		.calendar-wrap {
+			$w: calc(100vw - (var(--krds-contents-padding-x) * 2));
+			left: calc(50% - ($w / 2));
+			width: $w;
+		}
+	}
+}

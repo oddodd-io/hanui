@@ -87,3 +87,5 @@ test-vue-cli/
 # Claude Code / OMC 임시 상태 (워크트리·세션·미션 추적)
 .omc/
 .claude/settings.local.json
+storybook-static/
+.playwright-mcp/

@@ -1,0 +1,215 @@
+//focus color
+//추후삭제
+@mixin focus($offset: -.4rem, $color: var(--krds-light-color-border-primary), $alpha: .8) {
+	box-shadow: var(--krds-box-shadow-outline-inset);
+	outline-offset: $offset;
+}
+
+//flex 확대 축소
+@mixin flex-size($shrink, $grow) {
+	flex-shrink: $shrink;
+	flex-grow: $grow;
+}
+
+//position
+@mixin position($p: absolute, $t: null, $b: null, $l: null, $r: null) {
+	position: $p;
+	top: $t;
+	bottom: $b;
+	left: $l;
+	right: $r;
+}
+
+//square rectangle
+@mixin square($w, $h: $w) {
+  width: $w;
+  height: $h;
+}
+
+//pseudo element setting
+@mixin pseudo($c:null) {
+	content: ""+$c+"";
+}
+
+//flex layout
+@mixin flex-layout($d: flex, $ai: flex-start, $jc: flex-start, $fd: row) {
+	display: $d;
+	align-items: $ai;
+	justify-content: $jc;
+	flex-direction: $fd;
+}
+
+//group contents
+@mixin group-wrap() {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	position: relative;
+	width: 100%;
+}
+@mixin group() {
+	flex: 1 1 auto;
+	position: relative;
+	width: 1%;
+	min-width: 0;
+}
+
+//flex item equal width
+@mixin equal-width() {
+	flex: 1 1 0px;
+	min-width: 0;
+}
+
+//position 중앙 정렬
+@mixin position-center($type: both) {
+	//좌우중앙
+	@if ($type == 'x') {
+		left: 50%;
+		transform: translateX(-50%)
+	}
+	//상하중앙
+	@else if ($type == 'y') {
+		top: 50%;
+		transform: translateY(-50%);
+	}
+	//상하좌우중앙
+	@else if ($type == 'both') {
+		left: 50%;
+		top: 50%;
+		transform: translateX(-50%) translateY(-50%);
+	}
+}
+
+//transform 기준점 중앙 정렬
+@mixin transform-origin($x: 50%, $y: 50%) {
+	transform-origin: $x $y;
+}
+
+
+// **** text attr **** //
+//text ellipsis
+@mixin ellipsis($line) {
+	display: -webkit-box;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: $line;
+}
+
+//sr-only
+@mixin sr-only {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+}
+
+//reset text : popover/tooltip
+@mixin reset-text {
+	font-size: var(--krds-pc-font-size-body-medium);
+	font-style: normal;
+	font-weight: var(--krds-font-weight-regular);
+	line-height: var(--krds-line-height-base);
+	text-align: left;
+	text-decoration: none;
+	text-shadow: none;
+	text-transform: none;
+	letter-spacing: normal;
+	//word-break: normal;
+	white-space: normal;
+	word-spacing: normal;
+	line-break: auto;
+	@include size-medium {
+		font-size: var(--krds-mobile-font-size-body-medium);
+	}
+}
+
+//css animation visibility
+@mixin visibility($v) {
+	@if ($v == hidden) {
+		visibility: hidden;
+		z-index: -1;
+		opacity: 0;
+	}
+	@else if ($v == visible) {
+		visibility: visible;
+		z-index: auto;
+		opacity: 1;
+	}
+}
+
+// **** scroll **** //
+@mixin scrollbar-mode($mode: light) {
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--krds-#{$mode}-color-element-secondary-light);
+		border-radius: .8rem;
+	}
+	&::-webkit-scrollbar-track {
+		background-color: var(--krds-#{$mode}-color-element-secondary-lighter);
+	}
+}
+@mixin scrollbar($mode: light) {
+	$mode-setting: $mode;
+	&::-webkit-scrollbar {
+		width: 0.8rem;
+	}
+	@include scrollbar-mode(#{$mode-setting});
+}
+
+//text underline
+@mixin underline($offset: var(--krds-font-underline-offset)) {
+	text-decoration: underline;
+	text-underline-offset: $offset;
+}
+
+//color mode setting
+//$mode-theme: (light, dark) !default;
+@mixin color-mode($mode: light) {
+	[data-krds-mode="#{$mode}"] {
+		@content;
+	}
+
+	$mode-theme: light;
+	@if ($mode == light) {
+		$mode-theme: light;
+	}
+	@else if ($mode == high-contrast) {
+		$mode-theme: dark;
+	}
+
+	//data-krds-mode가 theme일 경우 dark mode 생성
+	[data-krds-mode="theme"] {
+		@media (prefers-color-scheme: #{$mode-theme}) {
+			@content;
+		}
+	}
+}
+
+//사이즈별 variable
+@mixin btn-size($unit) {
+	//unit value: xsmall small medium larger xlarge
+	gap: var(--krds-button--gap-#{$unit});
+	height: var(--krds-button--size-height-#{$unit});
+	padding: var(--krds-button--padding-y-#{$unit}) var(--krds-button--padding-x-#{$unit});
+	border-radius: var(--krds-button--radius-#{$unit});
+	font-size: var(--krds-button--pc-font-size-#{$unit});
+	font-weight: var(--krds-button--font-weight-#{$unit});
+	@include size-medium {
+		font-size: var(--krds-button--mobile-font-size-#{$unit});
+	}
+	& {
+		.svg-icon {
+			@include square(var(--krds-icon--size-#{$unit}));
+		}
+	}
+}
+
+//고대비모드인경우 border-width가 두꺼워짐
+@mixin border-size-mode ($mode: light, $size: regular) {
+	border-width: var(--krds-#{$mode}-border-width-variable-#{$size});
+}

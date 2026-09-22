@@ -1,0 +1,142 @@
+/* 코치마크 */
+//사이즈 정의
+@mixin coach-mark-size-variable() {
+  --krds-coach-mark--popover-max-width: 36rem;
+  --krds-coach-mark--popover-padding: var(--krds-padding-8);
+  --krds-coach-mark--popover-gap: var(--krds-gap-5);
+  --krds-coach-mark--popover-radius: var(--krds-radius-xlarge2);
+  --krds-coach-mark--popover-title-pc-font-size: var(--krds-pc-font-size-label-xsmall);
+  --krds-coach-mark--popover-title-mobile-font-size: var(--krds-mobile-font-size-label-xsmall);
+  --krds-coach-mark--popover-body-pc-font-size: var(--krds-pc-font-size-body-medium);
+  --krds-coach-mark--popover-body-mobile-font-size: var(--krds-mobile-font-size-body-medium);
+  --krds-coach-mark--txtbox-pc-padding: var(--krds-pc-padding-card-large);
+  --krds-coach-mark--txtbox-mobile-padding: var(--krds-mobile-padding-card-large);
+  --krds-coach-mark--txtbox-radius: var(--krds-radius-xlarge1);
+}
+
+//컬러 정의
+@mixin coach-mark-color-variable($mode: light) {
+  --krds-coach-mark--color-border: var(--krds-#{$mode}-color-border-primary);
+  --krds-coach-mark--color-outline: var(--krds-#{$mode}-color-border-primary-light);
+  --krds-coach-mark--popover-color-action: var(--krds-#{$mode}-color-surface-white);
+  --krds-coach-mark--popover-color-text-basic: var(--krds-#{$mode}-color-text-basic);
+  --krds-coach-mark--popover-color-text-subtle: var(--krds-#{$mode}-color-text-subtle);
+}
+
+//모드 설정
+$mode-setting: light;
+
+.krds-coach-mark {
+  @include coach-mark-size-variable();
+  @include coach-mark-color-variable(#{$mode-setting});
+
+  position: relative;
+
+  &.txt-box {
+    padding: var(--krds-coach-mark--txtbox-pc-padding);
+    border-radius: var(--krds-coach-mark--txtbox-radius);
+  }
+
+  &.txt-box,
+  &.form-addr-result,
+  .coach-btn {
+    border: 0.1rem solid var(--krds-coach-mark--color-border);
+    outline: 1rem solid var(--krds-coach-mark--color-outline);
+  }
+
+  .coach-balloon {
+    @include position($t: 0, $r: 0);
+    @include flex-layout($fd: column);
+    z-index: 5;
+    border: 0.2rem solid var(--krds-coach-mark--color-border);
+    max-width: var(--krds-coach-mark--popover-max-width);
+    padding: var(--krds-coach-mark--popover-padding);
+    background-color: var(--krds-coach-mark--popover-color-action);
+    border-radius: var(--krds-coach-mark--popover-radius);
+    transform: translateY(calc(-100% - 2.6rem));
+    word-break: break-all;
+    &::after {
+			--krds-coach-mark--bubble-arrow-size: 1.6rem;
+			--krds-coach-mark--bubble-arrow-margin: calc((var(--krds-coach-mark--bubble-arrow-size) / 2) * -1);
+			--krds-coach-mark--bubble-margin-x: 2.4rem;
+			--krds-coach-mark--bubble-arrow-position-x: -2rem;
+
+      @include pseudo();
+      @include square(var(--krds-coach-mark--bubble-arrow-size));
+      @include position($t: 100%, $r: 2.4rem);
+      display: block;
+			margin-top: var(--krds-coach-mark--bubble-arrow-margin);
+			transform: rotate(45deg);
+			border: .2rem solid var(--krds-coach-mark--color-border);
+			border-top-color: transparent;
+			border-left-color: transparent;
+			background-color: var(--krds-coach-mark--popover-color-action);
+    }
+
+    .coach-tit {
+      color: var(--krds-coach-mark--popover-color-text-subtle);
+      font-size: var(--krds-coach-mark--popover-title-mobile-font-size);
+      margin-bottom: var(--krds-padding-3);
+      font-weight: var(--krds-font-weight-regular);
+    }
+
+    .desc {
+      font-size: var(--krds-coach-mark--popover-body-pc-font-size);
+      color: var(--krds-coach-mark--popover-color-text-basic);
+    }
+
+    .coach-controls {
+      @include flex-layout($jc: space-between, $ai: center);
+      width: 100%;
+      gap: var(--krds-gap-3);
+      margin-top: var(--krds-coach-mark--popover-gap);
+      color: var(--krds-coach-mark--popover-color-text-basic);
+      .num {
+        @include flex-layout($ai: center);
+        font-size: var(--krds-coach-mark--popover-body-pc-font-size);
+        strong {
+          @include flex-layout($ai: center);
+          font-weight: var(--krds-font-weight-regular);
+          &::after {
+            content: "/";
+            margin: 0 var(--krds-padding-1);
+          }
+        }
+      }
+    }
+    .btn-wrap {
+      @include flex-layout($ai: center, $jc: flex-end);
+      gap: var(--krds-gap-4);
+    }
+  }
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+  //모드 설정
+  $mode-setting: high-contrast;
+
+  .krds-coach-mark {
+    @include coach-mark-color-variable(#{$mode-setting});
+  }
+}
+
+//responsive mobile
+@include size-medium {
+  .krds-coach-mark {
+    // page-btn-wrap 코치마크 있는 타입
+    &.page-btn-wrap {
+      position: relative;
+      z-index: 5;
+      > .coach-balloon {
+        @include position($t: 2.4rem, $r: 1.6rem);
+        width: 100%;
+        max-width: calc(100% - 3.2rem);
+      }
+    }
+
+    &.txt-box {
+      padding: var(--krds-coach-mark--txtbox-mobile-padding);
+    }
+  }
+}

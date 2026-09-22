@@ -1,0 +1,385 @@
+/* 푸터 */
+//모드 설정
+$mode-setting: light;
+#krds-footer {
+	position: relative;
+	z-index: 50;
+	background-color: var(--krds-#{$mode-setting}-color-surface-gray-subtler);
+	.foot-quick {
+		$quick-border: var(--krds-#{$mode-setting}-color-border-gray-light);
+		border-top: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+		border-bottom: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+		background-color: var(--krds-#{$mode-setting}-color-background-white);
+		.inner {
+			display: flex;
+			padding: 0;
+			//모바일 전용
+			@include size-medium {
+				flex-direction: column;
+			}
+			.link {
+				@include flex-layout($d: inline-flex, $jc: space-between, $ai: center);
+				flex: 1;
+				gap: var(--krds-gap-3);
+				height: calc(var(--krds-size-height-8) - 0.2rem); //border 위 아래값 뺴기
+				padding: 0 var(--krds-padding-8);
+				background-color: var(--krds-#{$mode-setting}-color-action-secondary);
+				border-right: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+				transition: var(--krds-transition-base);
+				&:first-child {
+					border-left: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+				}
+				&::after {
+					display: inline-flex;
+					flex-shrink: 0;
+					@include pseudo();
+					@include svg-icon(var(--krds-icon--size-medium));
+					@include icon-set(ico_plus);
+				}
+				&:hover {
+					background-color: var(--krds-#{$mode-setting}-color-action-secondary-hover);
+				}
+				&:active,
+				&:focus {
+					background-color: var(--krds-#{$mode-setting}-color-action-secondary-pressed);
+				}
+				//태블릿 전용 속성
+				@include size-medium-to-large {
+					font-size: 1.6rem; //토큰 없음
+					word-break: break-all;
+					padding: 0 var(--krds-padding-1) 0 var(--krds-padding-2);
+					text-align: left;
+				}
+				//모바일 전용
+				@include size-medium {
+					font-size: var(--krds-mobile-font-size-body-small);
+					min-height: calc(var(--krds-size-height-7) - 0.2rem); //border 위 아래값 뺴기;
+					padding: 0 var(--krds-padding-6);
+					border: 0;
+					&:first-child {
+						border:0;
+					}
+					&:not(:first-child) {
+						border-top: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+					}
+				}
+			}
+		}
+	}
+	> .inner {
+		@include flex-layout($fd: column, $ai: normal);
+		//web 전용 속성
+		@include size-large-more {
+			gap: var(--krds-gap-9);
+			padding: var(--krds-padding-10) 0 var(--krds-padding-8);
+		}
+		@include size-large-to-xlarge {
+			padding: var(--krds-padding-10) var(--krds-contents-padding-x) var(--krds-padding-8);
+		}
+		//태블릿 & 모바일 전용 속성
+		@include size-large-less {
+			gap: var(--krds-gap-7);
+			padding: var(--krds-padding-8) var(--krds-padding-6);
+		}
+	}
+
+	.f-logo {		
+		@include square(13.7rem, var(--krds-size-height-7));
+		background-image: url(#{$url}/img/component/icon/ico_logo_krds.svg);
+		background-position: center;
+		background-size: contain;
+		background-repeat: no-repeat;
+		@include size-medium {
+			@include square(9.9rem, 3.2rem);
+		}
+	}
+
+	.f-cnt { //contents
+		display: flex;
+		gap: var(--krds-gap-7);
+		//web 전용 속성
+		@include size-large-more {
+			justify-content: space-between;
+			flex: 1;
+		}
+		//태블릿 전용 속성
+		@include size-medium-to-large {
+			gap: var(--krds-gap-5);
+		}
+		//모바일 전용
+		@include size-medium {
+			flex-direction: column;
+		}
+		.f-info {
+			@include flex-layout($fd: column, $ai: normal);
+			flex: 1;
+			gap: var(--krds-gap-5);
+			//태블릿 전용 속성
+			@include size-medium-to-large {
+				flex: 3;
+			}
+			//모바일 전용
+			@include size-medium {
+				flex-direction: column;
+				gap: var(--krds-gap-5);
+				font-size: var(--krds-mobile-font-size-body-small);
+			}
+			//모바일 전용
+			@include size-medium {
+				.info-addr {
+					.br {
+						display: none;
+					}
+				}
+			}
+			.info-cs {
+				@include flex-layout($fd: column, $ai: normal);
+				width: 100%;
+				gap: var(--krds-gap-3);
+				//모바일 전용
+				@include size-medium {
+					gap: var(--krds-gap-3);
+				}
+				li {
+					@include flex-layout($ai: center);
+					//태블릿 전용 속성
+					@include size-medium-to-large {
+						flex-direction: column;
+						align-items: flex-start;
+					}
+					//모바일 전용
+					@include size-medium {
+						flex-wrap: wrap;
+						word-break: break-all;
+					}
+					.key-info {
+						@include flex-layout($ai: center);
+						gap: var(--krds-gap-3);
+						span {
+							font-weight: var(--krds-font-weight-regular);
+						}
+						//360 아래
+						@media (max-width: (360px - 1px)) {
+							flex-wrap: wrap;
+							row-gap: 0;
+						}
+					}
+					.more-info {
+						@include flex-layout($ai: center);
+						gap: var(--krds-gap-3);
+						padding-left: var(--krds-padding-3);
+						&:before {
+							@include pseudo();
+							width: var(--krds-number-1);
+							height: var(--krds-number-7);
+							background-color: var(--krds-#{$mode-setting}-color-divider-gray-dark);
+						}
+					}
+				}
+			}
+		}
+		.f-cs {
+			@include flex-layout($fd: column);
+			gap: var(--krds-gap-5);
+			//web 전용 속성
+			@include size-large-more {
+				width: 23.5%;
+			}
+			//모바일 전용
+			@include size-medium {
+				gap: var(--krds-gap-3);
+			}
+			dl {
+				@include flex-layout($fd: column);
+				gap: var(--krds-gap-2);
+				//모바일 전용
+				@include size-medium {
+					font-size: var(--krds-mobile-font-size-body-small);
+				}
+				.info-tit {
+					font-weight: var(--krds-font-weight-regular);
+				}
+			}
+		}
+		.f-link {
+			@include flex-layout($fd: column);
+			flex-shrink: 0;
+			gap: var(--krds-gap-9);
+			//web 전용 속성
+			@include size-large-more {
+				flex-shrink: 0;
+				width: 23.5%;
+			}
+			//모바일 전용
+			@include size-medium {
+				gap: var(--krds-gap-8);
+			}
+			.link-go {
+				@include flex-layout($fd: column);
+				gap: var(--krds-gap-2);
+				.krds-btn {
+					&.text {
+						@include btn-size(medium);
+					}
+				}
+				//모바일 전용
+				@include size-medium {
+					.krds-btn {
+						&.text {
+							@include btn-size(small);
+							padding: 0;
+						}
+					}
+				}
+			}
+			.link-sns {
+				display: flex;
+				flex-wrap: wrap;
+				gap: var(--krds-gap-3);
+				//태블릿 전용 속성
+				@include size-medium-to-large {
+					gap: var(--krds-gap-2);
+				}
+				a {
+					display: inline-flex;
+				}
+			}
+		}
+	}
+
+	.f-btm {
+		@include flex-layout($fd: column);
+		padding-top: var(--krds-padding-6);
+		gap: var(--krds-gap-9);
+		border-top: var(--krds-#{$mode-setting}-border-width-static-regular) solid var(--krds-#{$mode-setting}-color-divider-gray-light);
+		//모바일 전용
+		@include size-medium {
+			font-size: var(--krds-mobile-font-size-body-small);
+		}
+		.f-btm-text {
+			@include flex-layout($jc: space-between, $ai: center);
+			width: 100%;
+			//모바일 전용
+			@include size-medium {
+				flex-direction: column;
+				align-items: flex-start;
+				width: 100%;
+				gap: var(--krds-gap-6);
+			}
+			.f-menu {
+				display: inline-flex;
+				flex-wrap: wrap;
+				gap: var(--krds-gap-3);
+				//모바일 전용
+				@include size-medium {
+					gap: var(--krds-gap-3);
+				}
+			}
+			.f-copy {
+				font-size: var(--krds-pc-font-size-body-small);
+				color: var(--krds-#{$mode-setting}-color-text-subtle);
+				@include size-medium {
+					font-size: var(--krds-mobile-font-size-body-small);
+				}
+			}
+		}
+		.krds-identifier-txt {
+			display: flex;
+			align-items: center;
+			font-size: var(--krds-pc-font-size-body-small);
+			line-height: 1;
+			white-space: nowrap;
+			.f-btm-text {
+				display: flex;
+			}
+		}
+	}
+
+	//footer 띠배너
+	.footer-banner {
+		background-color: var(--krds-#{$mode-setting}-color-surface-gray-subtle);
+		padding:var(--krds-padding-6) 0;
+		.inner {
+			display:flex;
+			gap: var(--krds-gap-5);
+			@include size-xlarge {
+				padding-inline: 0;
+			}
+
+			@include size-medium {
+				flex-direction: column;
+				gap: var(--krds-gap-3);
+			}
+		}
+	}
+}
+
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	#krds-footer {
+		background-color: var(--krds-#{$mode-setting}-color-surface-gray-subtler);
+		.foot-quick {
+			$quick-border: var(--krds-#{$mode-setting}-color-border-gray-light);
+			border-top: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+			border-bottom: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+			background-color: var(--krds-#{$mode-setting}-color-background-white);
+			.inner {
+				.link {
+					background-color: var(--krds-#{$mode-setting}-color-action-secondary);
+					border-right: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+					&:first-child {
+						border-left: var(--krds-#{$mode-setting}-border-width-static-regular) solid $quick-border;
+					}
+					&::after {
+						@include svg-icon(var(--krds-icon--size-medium), $mode: $mode-setting);
+					}
+					&:hover {
+						background-color: var(--krds-#{$mode-setting}-color-action-secondary-hover);
+					}
+					&:active,
+					&:focus {
+						background-color: var(--krds-#{$mode-setting}-color-action-secondary-pressed);
+					}
+				}
+			}
+		}
+		.f-cnt { //contents
+			.f-info {
+				.info-cs {
+					li {
+						.more-info {
+							&:before {
+								background-color: var(--krds-#{$mode-setting}-color-divider-gray-dark);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.f-btm {
+			border-top: var(--krds-#{$mode-setting}-border-width-static-regular) solid var(--krds-#{$mode-setting}-color-divider-gray-light);
+			.f-btm-text {
+				.f-copy {
+					color: var(--krds-#{$mode-setting}-color-text-subtle);
+				}
+			}
+		}
+
+		.f-banner {
+			background-color: var(--krds-#{$mode-setting}-color-surface-gray-subtle);
+		}
+
+		//footer 띠배너
+		.footer-banner {
+			background-color: var(--krds-#{$mode-setting}-color-surface-gray-subtle);
+		}
+
+		.f-logo {
+			background-image: url(#{$url}/img/component/icon/ico_logo_krds_high_contrast.svg);
+		}
+	}
+}

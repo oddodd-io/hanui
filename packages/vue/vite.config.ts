@@ -10,31 +10,39 @@ export default defineConfig({
       insertTypesEntry: true,
       outDir: 'dist',
       tsconfigPath: './tsconfig.json',
+      exclude: ['src/**/*.test.ts', 'src/**/*.stories.ts', 'src/test/**'],
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // KRDS 원본 SCSS는 @import 문법을 사용한다. vendor는 수정하지 않으므로 경고만 끈다.
+        silenceDeprecations: [
+          'import',
+          'global-builtin',
+          'color-functions',
+          'slash-div',
+        ],
+        quietDeps: true,
+      },
+    },
+    // 워크스페이스 루트의 PostCSS/Tailwind 설정을 상속하지 않는다.
+    postcss: {},
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'HanuiVue',
       formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format === 'es' ? 'mjs' : 'js'}`,
+      fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
     },
     rollupOptions: {
-      external: [
-        'vue',
-        'shiki',
-        'swiper',
-        'swiper/vue',
-        'swiper/modules',
-        /^swiper\/css/,
-      ],
+      external: ['vue'],
       output: {
-        globals: {
-          vue: 'Vue',
-        },
+        globals: { vue: 'Vue' },
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') return 'vue.css';
-          return assetInfo.name!;
+          if (assetInfo.name?.endsWith('.css')) return 'vue.css';
+          return 'assets/[name][extname]';
         },
       },
     },
@@ -43,8 +51,6 @@ export default defineConfig({
     emptyOutDir: true,
   },
   resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-    },
+    alias: { '@': resolve(__dirname, './src') },
   },
 });

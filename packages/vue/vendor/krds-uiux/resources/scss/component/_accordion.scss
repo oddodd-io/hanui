@@ -1,0 +1,155 @@
+/* 아코디언 */
+//사이즈 정의
+@mixin accordion-size-variable() {
+	--krds-accordion--list-margin-y: var(--krds-padding-2);
+	--krds-accordion--padding: var(--krds-padding-8);
+	--krds-accordion--button-padding-right: calc(var(--krds-accordion--padding) + var(--krds-gap-5) + var(--krds-accordion--button-icon-size));
+	--krds-accordion--line-padding: var(--krds-padding-7);
+	--krds-accordion--line-button-padding-right: calc(var(--krds-gap-5) + var(--krds-accordion--button-icon-size));
+	--krds-accordion--button-icon-size: var(--krds-icon--size-large);
+	--krds-accordion--radius: var(--krds-radius-large2 );
+	--krds-accordion--button-pc-font-size: var(--krds-pc-font-size-heading-xsmall);
+	--krds-accordion--button-mobile-font-size: var(--krds-mobile-font-size-heading-xsmall);
+}
+
+//컬러 정의
+@mixin accordion-color-variable($mode: light) {
+	--krds-accordion--color-action: var(--krds-#{$mode}-color-action-secondary);
+	--krds-accordion--button-color-action: var(--krds-#{$mode}-color-action-secondary);
+	--krds-accordion--button-color-action-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-accordion--button-color-action-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-accordion--color-action-open: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-accordion--color-divider: var(--krds-#{$mode}-color-divider-gray-light);
+	--krds-accordion--color-divider-open: var(--krds-#{$mode}-color-divider-gray-dark);
+	--krds-accordion--button-color-text: var(--krds-#{$mode}-color-text-basic);
+	--krds-accordion--button-color-text-open: var(--krds-#{$mode}-color-text-secondary);
+	--krds-accordion--color-icon: var(--krds-#{$mode}-color-icon-gray);
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-accordion {
+	@include accordion-size-variable();
+	@include accordion-color-variable($mode: #{$mode-setting});
+	padding: var(--krds-accordion--list-margin-y) 0;
+	border-top: 0.1rem solid var(--krds-accordion--color-divider);
+	border-bottom: 0.1rem solid var(--krds-accordion--color-divider);
+	.accordion-item {
+		padding: var(--krds-accordion--list-margin-y) 0;
+
+		transition: var(--krds-transition-base);
+		.btn-accordion {
+			position: relative;
+			width: 100%;
+			padding: var(--krds-accordion--padding) var(--krds-accordion--button-padding-right) var(--krds-accordion--padding) var(--krds-accordion--padding);
+			background-color: var(--krds-accordion--button-color-action);
+			border-radius: var(--krds-accordion--radius);
+			font-size: var(--krds-accordion--button-pc-font-size);
+			color: var(--krds-accordion--button-color-text);
+			font-weight: var(--krds-font-weight-bold);
+			text-align: left;
+			@include size-medium {
+				font-size: var(--krds-accordion--button-mobile-font-size);
+			}
+			&:hover {
+				background-color: var(--krds-accordion--button-color-action-hover);
+			}
+			&:active {
+				background-color: var(--krds-accordion--button-color-action-pressed);
+			}
+			&::after {
+				@include position($t: var(--krds-accordion--padding), $r: var(--krds-accordion--padding));
+				@include pseudo();
+				@include svg-icon(var(--krds-accordion--button-icon-size), $mode: #{$mode-setting});
+				@include icon-set(ico_angle);
+				background-color: var(--krds-accordion--color-icon);
+				transition: var(--krds-transition-base);
+				transform: rotate(0deg);
+			}
+			&.active {
+				background-color: var(--krds-accordion--color-action-open);
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+				color: var(--krds-accordion--button-color-text-open);
+				&:focus {
+					border-radius: var(--krds-accordion--radius);
+				}
+				&::after {
+					transform: rotate(180deg);
+				}
+			}
+		}
+		.accordion-collapse {
+			max-height: 0;
+			overflow: hidden;
+			transition: all .5s cubic-bezier(0, 1, 0, 1);
+			visibility: hidden;
+		}
+		.accordion-body {
+			padding: 0 var(--krds-accordion--padding) var(--krds-accordion--padding);
+			background-color: var(--krds-accordion--color-action);
+			border-bottom-left-radius: var(--krds-accordion--radius);
+			border-bottom-right-radius: var(--krds-accordion--radius);
+		}
+		&.active {
+			.accordion-collapse {
+				height: auto;
+				max-height: 100vh;
+				transition: all 1.5s ease-in-out;
+				visibility: visible;
+			}
+			.accordion-body {
+				background-color: var(--krds-accordion--color-action-open);
+			}
+		}
+	}
+
+	//라인형
+	&.type-line {
+		padding: 0;
+		border-top: none;
+		.accordion-item {
+			border-top: 0.1rem solid var(--krds-accordion--color-divider);
+			border-radius: 0;
+			.btn-accordion {
+				padding: var(--krds-accordion--line-padding) var(--krds-accordion--line-button-padding-right) var(--krds-accordion--line-padding) 0;
+				&::after {
+					top: var(--krds-accordion--line-padding);
+					right: 0;
+				}
+				&.active {
+					background: none;
+				}
+			}
+			.accordion-body {
+				padding: 0 0 var(--krds-accordion--padding);
+			}
+			&.active {
+				background: none;
+				border-top-color: var(--krds-accordion--color-divider-open);
+				.accordion-body {
+					background: none;
+				}
+			}
+		}
+
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-accordion {
+		@include accordion-color-variable($mode: #{$mode-setting});
+	}
+
+}
+
+@include size-medium {
+	.krds-accordion{
+		--krds-accordion--padding: var(--krds-padding-6);
+		--krds-accordion--line-padding: var(--krds-padding-5);
+		--krds-accordion--button-icon-size: var(--krds-icon--size-medium);
+	}
+}

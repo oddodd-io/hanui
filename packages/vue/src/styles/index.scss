@@ -1,0 +1,27 @@
+// hanui Vue 스타일 진입점
+//
+// vendor/krds-uiux/resources/scss/component/output.scss 와 같은 구성이다.
+// output.scss를 직접 import하지 않는 이유: 그 안의 common.scss가
+// `@import "../../css/token/krds_tokens.css"`를 CSS @import로 남기는데 Vite가
+// 이 상대경로를 vendor가 아닌 이 파일 기준으로 해석해 빌드가 실패한다.
+// vendor는 수정하지 않으므로 여기서 같은 순서로 재구성한다.
+// KRDS 업데이트 시 common.scss / component.scss의 import 목록이 바뀌었는지 확인한다.
+// → vendor/krds-uiux/VERSION.md
+
+// ---- common.scss 재구성 ----
+// _path.scss의 `$url !default`(이미지 루트)를 이 파일 기준 경로로 덮어쓴다.
+// 이렇게 해야 Vite가 url(...)을 빌드 시점에 해석해 아이콘을 번들에 포함한다.
+$url: '../../vendor/krds-uiux/resources';
+@import '../../vendor/krds-uiux/resources/scss/common/path';
+@import '../../vendor/krds-uiux/resources/css/token/krds_tokens'; // 확장자 없이 불러와 Sass가 인라인하도록 한다
+@import '../../vendor/krds-uiux/resources/scss/common/include';
+@import '../../vendor/krds-uiux/resources/scss/common/root';
+@import '../../vendor/krds-uiux/resources/scss/common/icon';
+@import '../../vendor/krds-uiux/resources/scss/common/dropdown';
+@import '../../vendor/krds-uiux/resources/scss/common/reset';
+
+// ---- component.scss ----
+@import '../../vendor/krds-uiux/resources/scss/component/component';
+
+// ---- hanui 확장 (KRDS에 없는 상태·조합만 최소한으로) ----
+@import './button';

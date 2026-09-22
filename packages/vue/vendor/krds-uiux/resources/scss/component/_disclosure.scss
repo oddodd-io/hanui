@@ -1,0 +1,108 @@
+/* 디스클로저 */
+//사이즈 정의
+@mixin disclosure-size-variable() {
+    --krds-disclosure--gap: 1.4rem;
+    --krds-disclosure--button-icon-size: var(--krds-icon--size-medium);
+    --krds-disclosure--button-size-height: 2.6rem;
+    --krds-disclosure--button-gap: var(--krds-gap-2);
+    --krds-disclosure--button-pc-font-size: var(--krds-pc-font-size-body-medium);
+    --krds-disclosure--button-mobile-font-size: var(--krds-mobile-font-size-body-medium);
+    --krds-disclosure--pc-expand-padding: var(--krds-pc-padding-card-small);
+    --krds-disclosure--mobile-expand-padding: var(--krds-mobile-padding-card-small);
+    --krds-disclosure--expand-margin-top: var(--krds-gap-2);
+    --krds-disclosure--expand-radius: var(--krds-radius-xlarge2);
+
+}
+
+//컬러 정의
+@mixin disclosure-color-variable($mode: light) {
+    --krds-disclosure--button-color-text: var(--krds-#{$mode}-color-text-bolder);
+    --krds-disclosure--expand-color-surface: var(--krds-#{$mode}-color-surface-gray-subtle);
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-disclosure {
+    @include disclosure-size-variable();
+    @include disclosure-color-variable(#{$mode-setting});
+
+	width: 100%;
+
+    & ~ .krds-disclosure {
+        margin-top: var(--krds-disclosure--gap); //pattern 간격 적용
+    }
+
+    .btn-conts-expand {
+        @include flex-layout($ai: center);
+        height: var(--krds-disclosure--button-size-height);
+        font-size: var(--krds-disclosure--button-pc-font-size);
+        color: var(--krds-disclosure--button-color-text);
+        &::before {
+            display: inline-flex;
+            @include pseudo();
+            @include svg-icon($size: var(--krds-disclosure--button-icon-size), $mode: #{$mode-setting});
+            @include icon-set(ico_expand);
+            margin-right: var(--krds-disclosure--button-gap);
+            transition: var(--krds-transition-base);
+            transform: rotate(0);
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        &::after {
+            display: none;
+        }
+    }
+    .expand-wrap {
+        overflow: hidden;
+        transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+        max-height: 0;
+        &::after {
+            display: none;
+        }
+        .expand-in {
+            padding: var(--krds-disclosure--pc-expand-padding);
+            margin-top: var(--krds-disclosure--expand-margin-top);
+            background-color: var(--krds-disclosure--expand-color-surface);
+            border-radius: var(--krds-disclosure--expand-radius);
+        }
+    }
+    &.active {
+        .expand-wrap {
+            max-height: 1000vh !important;
+            transition: max-height 1.5s ease-in-out;
+        }
+        .btn-conts-expand {
+            &::before {
+                transform: rotate(-90deg);
+            }
+        }
+    }
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+    //모드 설정
+    $mode-setting: high-contrast;
+    .krds-disclosure { 
+        @include disclosure-color-variable(#{$mode-setting});
+    
+        .btn-conts-expand {
+            &::before {
+                @include svg-icon($size: var(--krds-disclosure--button-icon-size), $mode: #{$mode-setting});
+            }
+        }
+    }
+}
+
+@include size-medium {
+	.krds-disclosure {
+		.btn-conts-expand {
+			font-size: var(--krds-disclosure--button-mobile-font-size);
+		}
+		.expand-wrap {
+			.expand-in {
+				padding: var(--krds-disclosure--mobile-expand-padding);
+			}
+		}
+	}
+}

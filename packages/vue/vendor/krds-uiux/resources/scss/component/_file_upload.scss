@@ -1,0 +1,199 @@
+/* 파일 업로드 */
+//사이즈 정의
+@mixin file-upload-size-variable() {
+    --krds-file-upload--gap: var(--krds-gap-7);
+    --krds-file-upload--file-total-y: .3rem;
+    --krds-file-upload--file-padding-x: var(--krds-padding-10);
+    --krds-file-upload--file-padding-y: 6.4rem;
+    --krds-file-upload--file-radius: var(--krds-radius-xlarge1);
+    --krds-file-upload--file-pc-font-size: var(--krds-pc-font-size-body-large);
+    --krds-file-upload--file-mobile-font-size: var(--krds-mobile-font-size-body-large);
+    --krds-file-upload--list-padding: var(--krds-padding-6);
+    --krds-file-upload--list-radius: var(--krds-radius-medium4);
+    --krds-file-upload--mobile-list-padding-y: var(--krds-padding-5);
+    --krds-file-upload--line-radius: var(--krds-radius-xlarge1);
+    --krds-file-upload--line-pc-padding: var(--krds-pc-padding-card-large);
+    --krds-file-upload--line-mobile-padding: var(--krds-mobile-padding-card-large);
+    --krds-file-upload--head-pc-font-size: var(--krds-pc-font-size-heading-small);
+    --krds-file-upload--head-mobile-font-size: var(--krds-mobile-font-size-heading-small);
+    --krds-file-upload--head-pc-margin-bottom: var(--krds-pc-gap-layout-title-body-small);
+    --krds-file-upload--head-mobile-margin-bottom: var(--krds-mobile-gap-layout-title-body-small);
+}
+
+//컬러 정의
+@mixin file-upload-color-variable($mode: light) {
+    --krds-file-upload--border-width: var(--krds-#{$mode}-border-width-variable-regular);
+    --krds-file-upload--border-medium: var(--krds-#{$mode}-border-width-variable-medium);
+    --krds-file-upload--file-color-surface: var(--krds-#{$mode}-color-surface-gray-subtle);
+    --krds-file-upload--file-color-border-active: var(--krds-#{$mode}-color-border-gray);
+    --krds-file-upload--list-color-surface: var(--krds-#{$mode}-color-surface-danger-subtler);
+    --krds-file-upload--list-color-border: var(--krds-#{$mode}-color-divider-gray-light);
+    --krds-file-upload--list-color-border-error: var(--krds-#{$mode}-color-border-danger);
+    --krds-file-upload--list-color-text: var(--krds-#{$mode}-color-text-bolder);
+    --krds-file-upload--list-color-text-error: var(--krds-#{$mode}-color-text-danger);
+    --krds-file-upload--line-color-border: var(--krds-#{$mode}-color-border-gray);
+}
+
+//모드 설정
+$mode-setting: light;
+
+.krds-file-upload {
+    @include file-upload-size-variable();
+    @include file-upload-color-variable(#{$mode-setting});
+    
+    @include flex-layout($fd: column);
+    gap: var(--krds-file-upload--gap);
+    width: 100%;
+
+    &.line {
+        padding: var(--krds-file-upload--line-pc-padding);
+        border:var(--krds-file-upload--border-width) solid var(--krds-file-upload--line-color-border);
+        border-radius: var(--krds-file-upload--line-radius);
+
+        @include size-medium {  
+            padding: var(--krds-file-upload--line-mobile-padding);    
+        }
+    }
+
+    .file-head {
+        .tit {
+            margin-bottom: var(--krds-file-upload--head-pc-margin-bottom);
+            font-size: var(--krds-file-upload--head-pc-font-size);
+            @include size-medium {  
+                margin-bottom: var(--krds-file-upload--head-mobile-margin-bottom);
+                font-size: var(--krds-file-upload--head-mobile-font-size); 
+            }
+        }
+        
+    }
+
+    .file-upload {
+        @include flex-layout($fd:column, $jc: center, $ai: center);
+        gap: var(--krds-gap-9);
+        width: 100%;
+        padding: var(--krds-file-upload--file-padding-y) var(--krds-file-upload--file-padding-x);
+        border-radius: var(--krds-file-upload--file-radius);
+        border: var(--krds-file-upload--border-width) dashed transparent;
+        background-color: var(--krds-file-upload--file-color-surface);
+        .txt {
+            font-size: var(--krds-file-upload--file-pc-font-size);
+            text-align: center;
+            @include size-medium {
+                font-size: var(--krds-file-upload--file-mobile-font-size);
+            }
+        }
+        [type='file'] {
+            @include sr-only;
+        }
+        &.active {
+            border-color:var(--krds-file-upload--file-color-border-active) !important;
+        }
+    }
+
+    .file-list {
+        @include flex-layout($fd: column);
+        gap: var(--krds-file-upload--gap);
+        position: relative;
+        width: 100%;
+        .total {
+            padding: var(--krds-file-upload--file-total-y) 0;
+            font-weight: var(--krds-font-weight-bold);
+            .current {
+                color: var(--krds-#{$mode-setting}-color-text-primary);
+            }
+        }
+        .upload-list {
+            @include flex-layout($fd: column, $ai: normal);
+            gap: var(--krds-gap-5);
+            width: 100%;
+            > li {
+                padding: var(--krds-file-upload--list-padding);
+                border-radius: var(--krds-file-upload--list-radius);
+                border: var(--krds-file-upload--border-width) solid var(--krds-file-upload--list-color-border);
+                color: var(--krds-file-upload--list-color-text);
+                
+                @include size-medium {
+                    padding-top: var(--krds-file-upload--mobile-list-padding-y);
+                    padding-bottom: var(--krds-file-upload--mobile-list-padding-y);
+                }
+
+                &.is-error {
+                    border: var(--krds-file-upload--border-medium) solid var(--krds-file-upload--list-color-border-error);
+                    background-color: var(--krds-file-upload--list-color-surface);
+                    .file-hint {
+                        color: var(--krds-file-upload--list-color-text-error);
+                    }
+                }
+            }
+            .file-info {
+                @include flex-layout($ai:center);
+                gap: var(--krds-gap-5);                
+                > div {
+                    display: inline-flex;                    
+                }
+                .file-name {
+                    flex: 1;
+                    @include ellipsis(1);
+
+                    @include size-medium {
+                        display: flex;
+                    }
+                }
+                .btn-wrap {
+                    align-items: center;
+                    gap: var(--krds-gap-5);
+                    width: auto;
+                }
+                .ico-invalid {
+                    @include svg-icon($size: var(--krds-icon--size-medium), $mode: #{$mode-setting}, $effect: pure);
+                    &.error {
+                        @include icon-set(ico_error_fill, pure);
+                    }
+                    &.complete {
+                        @include icon-set(ico_complete_fill, pure);
+                    }
+                }
+
+                &.m-column {
+                    @include size-medium {
+                        flex-direction: column;
+                        gap: var(--krds-gap-3);
+                        .btn-wrap {
+                            gap: var(--krds-gap-5);
+                            justify-content: flex-end;
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+            .file-hint-invalid {
+                @include flex-layout();
+                gap: var(--krds-gap-2);
+                width: 100%;
+                padding-top: var(--krds-padding-5);
+                margin-top: var(--krds-padding-5);
+                border-top: var(--krds-file-upload--border-width) solid var(--krds-#{$mode-setting}-color-divider-gray);
+                color: var(--krds-file-upload--list-color-text-error);
+                &::before {
+                    @include pseudo();
+                    margin-top: var(--krds-padding-1);
+                    @include svg-icon($size: var(--krds-icon--size-medium), $mode: #{$mode-setting}, $effect: pure);
+                    @include icon-set(ico_error_fill, pure);
+                }
+            }
+        }
+        .upload-delete-btn {
+            @include position($t:0, $r: 0);
+        }
+    }
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+    //모드 설정
+    $mode-setting: high-contrast;
+
+    .krds-file-upload {
+        @include file-upload-color-variable(#{$mode-setting});
+    }
+}

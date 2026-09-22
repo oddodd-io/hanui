@@ -1,0 +1,300 @@
+.svg-icon {
+	&.ico-angle { //꺽쇠모양
+		@include icon-set(ico_angle);
+		//disabled (for selectbox)
+		&.disabled {
+			@include icon-set(ico_angle_disabled, $effect: pure);
+		}
+		//default: down
+		&.up {
+			transform: rotate(180deg);
+		}
+		&.left {
+			transform: rotate(90deg);
+		}
+		&.right {
+			transform: rotate(-90deg);
+		}
+	}
+	&.ico-sch {
+		@include icon-set(ico_sch);
+	}
+
+	&.ico-upload {
+		@include icon-set(ico_upload);
+	}
+	&.ico-call {
+		@include icon-set(ico_call);
+	}
+	&.ico-faq {
+		@include icon-set(ico_faq);
+	}
+	&.ico-like {
+		@include icon-set(ico_like);
+	}
+	&.ico-share {
+		@include icon-set(ico_share);
+	}
+	&.ico-more {
+		@include icon-set(ico_more);
+	}
+	&.ico-sch-plus {
+		@include icon-set(ico_sch_plus);
+	}
+
+	&.ico-go {
+		@include icon-set(ico_go);
+	}
+	&.ico-down {
+		@include icon-set(ico_download);
+	}
+	&.ico-filter {
+		@include icon-set(ico_filter);
+	}
+
+	&.ico-reset {
+		@include icon-set(ico_reset);
+	}
+	&.ico-log {
+		@include icon-set(ico_login);
+	}
+	&.ico-func {
+		@include icon-set(ico_expand);
+		//default:right
+		&.up {
+			transform: rotate(-90deg);
+		}
+
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+	&.ico-logout {
+		@include icon-set(ico_logout);
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+	&.ico-email {
+		@include icon-set(ico_email);
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+	&.ico-print {
+		@include icon-set(ico_print);
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+	&.ico-scrap {
+		@include icon-set(ico_scrap);
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+	&.ico-del {
+		@include icon-set(ico_delete);
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+	&.ico-popup-close {
+		@include icon-set(ico_close);
+	}
+	&.ico-delete-fill {
+		@include icon-set(ico_delete_fill, pure);
+	}
+	&.ico-plus {
+		@include icon-set(ico_plus);
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+	&.ico-setting {
+		@include icon-set(ico_setting);
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+
+	&.ico-link {
+		@include icon-set(ico_go);
+		& {
+			gap: var(--krds-gap-3);	
+		}
+	}
+
+	&.ico-refresh {
+		@include icon-set(ico_reset);
+	}
+
+	&.ico-toggle {
+		@include icon-set(ico_angle);
+	}
+	&.ico-pw-visible {
+		@include icon-set(ico_pw_visible_off);
+	}
+	&.ico-pw-visible-on {
+		@include icon-set(ico_pw_visible_on);
+	}
+
+	&.ico-help {
+		@include icon-set(ico_help, pure);
+	}
+
+	&.ico-page-next {
+		@include icon-set(ico_angle);
+		transform: rotate(-90deg);
+	}
+
+	&.ico-bread-home {
+		@include icon-set(ico_bread_home);
+	}
+
+	&.ico-cal-move {
+		@include icon-set(ico_arrow_dropdown);
+	}
+	
+	&.ico-calendar {
+		@include icon-set(ico_calendar);
+	}
+
+	&.ico-success-fill {
+		@include icon-set(ico_success_fill, pure);
+	}
+	&.ico-information-fill {
+		@include icon-set(ico_information_fill, pure);
+	}
+	&.ico-error-fill {
+		@include icon-set(ico_error_fill, pure);
+	}
+	&.ico-complete-fill {
+		@include icon-set(ico_complete_fill, pure);
+	}
+
+	&.ico-modal-close {
+		@include icon-set(ico_close);
+	}
+
+	&.ico-fold {
+		@include icon-set(ico_foldable);
+
+		&.right {
+			transform: rotate(-180deg);
+		}
+	}
+
+	&.ico-ellipsis {
+		@include icon-set(ico_ellipsis);
+	}
+
+	&.ico-swiper-play {
+		@include icon-set(ico_swiper_play);
+	}
+
+	&.ico-swiper-stop {
+		@include icon-set(ico_swiper_stop);
+	}
+
+	&.ico-tooltip {
+		@include icon-set(ico_tooltip);
+	}
+
+	&.ico-urgent-danger {
+		@include icon-set(ico_urgent_badge_danger);
+	}
+
+	&.ico-blog {
+		@include icon-set(ico_blog);
+	}
+
+	&.ico-facebook {
+		@include icon-set(ico_facebook);
+	}
+
+	&.ico-instagram {
+		@include icon-set(ico_instagram);
+	}
+
+	&.ico-sns-x {
+		@include icon-set(ico_sns_x);
+	}
+
+	&.ico-youtube {
+		@include icon-set(ico_youtube);
+	}
+
+	&.ico-all {
+		@include icon-set(ico_all);
+	}
+
+	&.ico-join {
+		@include icon-set(ico_join);
+	}
+	&.ico-my {
+		@include icon-set(ico_my);
+	}
+
+	&.ico-login-go {
+		@include icon-set(ico_login_certify_go);
+	}
+
+	&.ico-global {
+		@include icon-set(ico_global);
+	}
+
+	&.ico-view-mode {
+		@include icon-set(ico_view_mode);
+	}
+
+	&.ico-go-top {
+		@include icon-set(ico_go_top);
+	}
+
+	&.ico-login-type01 {
+		@include icon-set(ico_login_certify_type_01);
+	}
+
+	&.ico-login-type02 {
+		@include icon-set(ico_login_certify_type_02);
+	}
+
+	&.ico-login-type03 {
+		@include icon-set(ico_login_certify_type_03);
+	}
+
+	&.ico-login-type04 {
+		@include icon-set(ico_login_certify_type_04);
+	}
+
+	&.ico-login-type05 {
+		@include icon-set(ico_login_certify_type_05);
+	}
+
+	&.ico-login-type06 {
+		@include icon-set(ico_login_certify_type_06);
+	}
+
+	&.ico-flag {
+		@include icon-set(ico_flag, $effect: pure);
+	}
+
+	&.ico-file {
+		@include icon-set(ico_file);
+	}
+
+	&.ico-checkbox {
+		@include icon-set(ico_checkbox_checked);     
+	}
+}
+  
+//고대비모드
+@include color-mode($mode: high-contrast){
+	.svg-icon {
+		&.ico-help {
+			background-image: url(#{$url}/img/component/icon/ico_help_fill.svg);
+		}
+		
+	}
+}

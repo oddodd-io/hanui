@@ -1,0 +1,337 @@
+/* 모달 */
+//사이즈 정의
+@mixin modal-size-variable() {
+	--krds-modal--size-large: 76rem;
+	--krds-modal--size-medium: 56rem;
+	--krds-modal--size-small: 40rem;
+	--krds-modal--size-min-height: 26.4rem;
+	--krds-modal--wrap-radius: var(--krds-radius-xlarge1);
+	--krds-modal--padding: var(--krds-padding-10);
+	--krds-modal--header-padding-top: var(--krds-number-17);
+	--krds-modal--header-pc-font-size: var(--krds-pc-font-size-heading-medium);
+	--krds-modal--header-mobile-font-size: var(--krds-mobile-font-size-heading-medium);
+	--krds-modal--conts-padding-top: var(--krds-padding-6);
+	--krds-modal--conts-padding-bottom: var(--krds-padding-3);
+	--krds-modal--conts-gap: var(--krds-gap-5);
+	--krds-modal--btn-gap: var(--krds-gap-3);
+	--krds-modal--btn-padding-top: var(--krds-padding-6);
+	--krds-modal--btn-size-min-wdith: 7.8rem;
+	--krds-modal--btn-close-position: var(--krds-gap-7);
+	
+	//mobile
+	--krds-modal--mobile-gap: var(--krds-gap-7);
+	--krds-modal--mobile-width: calc(100% - var(--krds-gap-7));
+	--krds-modal--mobile-height: calc(100% - var(--krds-modal--mobile-gap) * 2);
+	--krds-modal--mobile-padding: var(--krds-padding-8); 
+	--krds-modal--mobile-header-padding-top: 5.2rem;
+	--krds-modal--mobile-btn-close-position: var(--krds-gap-6);
+	--krds-modal--mobile-btn-padding-top: var(--krds-padding-6);
+	--krds-modal--mobile-btn-padding-bottom: var(--krds-padding-8);
+}
+
+//컬러 정의
+@mixin modal-color-variable($mode: light) {
+	--krds-modal--border-width: var(--krds-#{$mode}-border-width-variable-regular);
+	--krds-modal--color-text: var(--krds-#{$mode}-color-text-basic);
+	--krds-modal--wrap-color-surface: var(--krds-#{$mode}-color-surface-white-subtler);
+	--krds-modal--wrap-color-border: var(--krds-#{$mode}-color-border-gray);
+	--krds-modal--wrap-shadow: 0 0 0.2rem 0 var(--krds-#{$mode}-color-alpha-shadow2), 0 1.6rem 2.4rem 0 var(--krds-#{$mode}-color-alpha-shadow3);
+	--krds-modal--color-dim: var(--krds-#{$mode}-color-background-dim);
+	--krds-modal--full-popup-surface: var(--krds-#{$mode}-color-surface-secondary-subtler);
+}
+
+//modal size
+$modal-size: (
+		sm: var(--krds-modal--size-small),
+		md: var(--krds-modal--size-medium),
+		lg: var(--krds-modal--size-large),
+) !default;
+
+
+//modal default css
+@mixin modal-default {
+	display: none;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+	visibility: hidden;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	transition: visibility .15s .3s, z-index 0s .3s, opacity .2s;
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-modal {
+	@include modal-size-variable();
+	@include modal-color-variable(#{$mode-setting});
+
+	@include modal-default();
+	@include reset-text();
+
+	> * {
+		width: 100%;
+	}
+	&.in {
+		z-index: 1010;
+		transition-delay: 0s;
+		opacity: 1; 
+		visibility: visible;
+	}
+	&.shown {
+		display: block;
+	}
+
+	//dim-backgorund
+	.modal-back {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		visibility: hidden;
+		z-index: -1;
+		background-color: var(--krds-modal--color-dim);
+		&.in {
+			display: block;
+			z-index: 1000;
+			visibility: visible;
+		}
+	}
+
+	//기본타입  
+	.modal-dialog {
+		@include flex-layout($ai: center);
+		position: relative;
+		z-index: 1020;
+		width:var(--krds-modal--size-large); // size클래스 없을 경우. 기본 large 84.6rem;
+		height: 100%;
+		min-height: var(--krds-modal--size-min-height);
+		margin:0 auto;
+		
+		//modal size
+		@each $size, $value in $modal-size {
+			&.modal-#{$size} {
+				max-width: $value;
+			}
+		}
+		.modal-content {  
+			@include flex-layout($ai: center, $fd: column);
+			position: relative;
+			width: 100%;
+			max-height: 80%;
+			background-color: var(--krds-modal--wrap-color-surface);
+			border-radius: var(--krds-modal--wrap-radius);
+			border:var(--krds-modal--border-width) solid var(--krds-modal--wrap-color-border);
+			color: var(--krds-modal--color-text);
+			outline-color: transparent;
+			transition: outline-color .1s;
+			box-shadow: var(--krds-modal--wrap-shadow);
+			
+			> *:not(.btn-close) {
+				width: 100%;
+			}
+			&:focus {
+				@include focus($offset: .4rem, $color: var(--krds-modal--wrap-color-surface), $alpha: 0.9); 
+			}
+		}
+		.modal-header {
+			width: 100%;  
+			background-color: inherit;
+			border-top-left-radius: inherit;
+			border-top-right-radius: inherit;
+			padding-top: var(--krds-modal--header-padding-top);
+			padding-inline: var(--krds-modal--padding);
+			.modal-title {
+				@include ellipsis(1);
+				font-size: var(--krds-modal--header-pc-font-size);
+				font-weight: var(--krds-font-weight-bold);  
+			}
+		}
+		.modal-conts {
+			@include flex-layout($fd: column);
+			position: relative;
+			overflow-y: auto;
+			width: 100%;
+			padding: var(--krds-modal--conts-padding-top) var(--krds-modal--padding) var(--krds-modal--conts-padding-bottom);
+			@include scrollbar();
+			> * {
+				width: 100%;
+			}
+			.conts-area {
+				@include flex-layout($fd: column);
+				gap: var(--krds-modal--conts-gap);
+				> * {
+					width: 100%;
+				}
+			}
+		}
+		.modal-btn {
+			@include flex-layout($ai: center, $jc: flex-end);
+			gap: var(--krds-modal--btn-gap);
+			padding: var(--krds-modal--btn-padding-top) var(--krds-modal--padding) var(--krds-modal--padding);
+			.krds-btn {
+				min-width: var(--krds-modal--btn-size-min-wdith);
+			}
+			&.multi-conts {
+				justify-content: space-between;
+			}
+		}
+		.btn-close {
+			@include position($t: var(--krds-modal--btn-close-position), $r: var(--krds-modal--btn-close-position));
+			z-index: 901;
+		}
+	}	
+
+	//full 팝업(통합검색, 관련기관링크)
+	&[data-type="full"] { 
+		background-color: var(--krds-modal--full-popup-surface);
+        .modal-dialog {
+			width: 100%;
+            height: 100%;
+			margin: 0 auto;
+			padding: 0;
+        }
+		.modal-header,
+		.modal-conts {
+			padding:0;
+		}
+        .modal-content {
+            height: 100%;
+			max-height: 100%;;
+			background: none;
+			margin: 0 auto;
+			border: none;
+			border-radius: 0;
+        }
+        .modal-back.in {
+            display: none;
+        }
+    }
+
+	//바텀시트(모바일만 사용)
+    &[data-type="bottom-sheet"] {
+		--krds-modal--bottom-sheet-radius: var(--krds-radius-xlarge1);
+		--krds-modal--bottom-sheet-padding: var(--krds-padding-6);
+		--krds-modal--bottom-sheet-btn-close-position-top: var(--krds-gap-6);
+		--krds-modal--bottom-sheet-btn-close-position-right: var(--krds-gap-5);
+		--krds-modal--bottom-sheet-btn-padding-top: var(--krds-padding-10);
+
+        .modal-content {
+            position: fixed;
+            left: 0;
+            bottom: -100%;
+            border-radius: 0;
+            border-top-left-radius: var(--krds-modal--bottom-sheet-radius);
+            border-top-right-radius: var(--krds-modal--bottom-sheet-radius);
+            max-height: 90%;
+            transition: var(--krds-transition-base);
+        }
+        .modal-header {
+            @include flex-layout($ai: center, $jc: space-between);
+           	padding: var(--krds-modal--bottom-sheet-padding);
+			flex-shrink: 0;
+            .modal-title {
+                font-size: var(--krds-pc-font-size-heading-small);
+            }
+        }
+        .modal-conts {
+            display: block;
+            padding: 0 var(--krds-modal--bottom-sheet-padding);
+            @include scrollbar;
+        }
+        .btn-close {
+			top: var(--krds-modal--bottom-sheet-btn-close-position-top);
+			right: var(--krds-modal--bottom-sheet-btn-close-position-right);
+        }
+        .pop-filter-top {
+            width: auto;
+        }
+        .modal-btn {
+			&.btn-wrap {
+				padding: var(--krds-modal--bottom-sheet-btn-padding-top) var(--krds-modal--bottom-sheet-padding) var(--krds-modal--bottom-sheet-padding);
+				.krds-btn {
+					flex: 1;
+				}
+			}
+        }
+        &.in {
+			.modal-content {
+				bottom: 0;
+			}
+		}
+    }
+}
+
+/* mobile */
+@include size-medium {
+	.krds-modal {
+		&:not([data-type="bottom-sheet"]){
+			//기본 스타일(bottom-sheet제외) 
+			.modal-dialog { 
+				width: var(--krds-modal--mobile-width);
+				height: var(--krds-modal--mobile-height);
+				min-height: var(--krds-modal--mobile-height);
+				margin: var(--krds-modal--mobile-gap) auto;
+				.modal-header {
+					padding: var(--krds-modal--mobile-header-padding-top) var(--krds-modal--mobile-padding) 0;
+					.modal-title {
+						font-size: var(--krds-modal--header-mobile-font-size);
+					}
+				}
+				.modal-content {
+					max-height: 100%;
+				}
+				.modal-conts {
+					padding-inline: var(--krds-modal--mobile-padding);
+					padding-bottom: 0;
+					.conts-area {
+						> * {
+							width: 100%;
+						}
+					}
+				}
+				.modal-btn {
+					padding: var(--krds-modal--mobile-btn-padding-top) var(--krds-modal--mobile-padding) var(--krds-modal--mobile-btn-padding-bottom);
+					
+				}
+				.btn-close {
+					top: var(--krds-modal--mobile-btn-close-position);
+					right: var(--krds-modal--mobile-btn-close-position);
+				}
+			}
+		}
+
+		//풀팝업
+		&[data-type="full"] { 
+			--krds-modal--full-mobile-btn-close-size: var(--krds-size-height-4);
+
+			.modal-dialog {
+				width: 100%;
+				height: 100%;
+				margin:0 auto;
+				.btn-close {
+					@include square(var(--krds-modal--full-mobile-btn-close-size));
+				}
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-modal {
+		@include modal-color-variable(#{$mode-setting});
+		.modal-dialog {
+			.modal-conts {
+				@include scrollbar(#{$mode-setting});
+			}
+		}
+	}
+}

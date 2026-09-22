@@ -1,0 +1,221 @@
+/* ** swiper ** */
+
+//모드 설정
+$mode-setting: light;
+.swiper-indicator {
+    @include flex-layout($jc: flex-end, $ai: center);
+    gap: var(--krds-gap-3);
+    flex-shrink: 0;
+    position: relative;
+    &.text-center {
+        justify-content: center;
+    }
+    .swiper-pagination {
+        top: auto;
+        bottom: auto;
+        width: auto;
+        &:not(.swiper-pagination-fraction) {
+            @include flex-layout($jc: center, $ai: center);
+            height: var(--krds-size-height-6);
+            padding: var(--krds-padding-5);
+            border-radius: var(--krds-radius-max);
+            background-color: var(--krds-#{$mode-setting}-color-element-inverse);
+        }
+        &.swiper-pagination-fraction {
+            &.swiper-pagination-bg {
+                font-weight: var(--krds-font-weight-bold);
+                padding: var(--krds-padding-5);
+                border-radius: var(--krds-radius-max);
+				background-color: var(--krds-#{$mode-setting}-color-surface-white);
+            }
+        }
+    }
+    .swiper-button-next,
+    .swiper-button-prev {
+        @include position(relative, auto, auto, auto, auto);
+        margin: 0;
+    }
+    .swiper-navigation {
+        display: inline-flex;
+        gap: var(--krds-gap-3);
+    }
+}
+
+.swiper-pagination {
+    @include flex-layout($jc: center, $ai: center);
+    position: relative;
+    height: var(--krds-size-height-6);
+    .swiper-pagination-bullet {
+        @include square(var(--krds-size-height-1));
+		background-color: var(--krds-#{$mode-setting}-color-element-gray);
+        opacity: 1;
+        &.swiper-pagination-bullet-active {
+            width: 2rem;
+            border-radius: var(--krds-radius-max);
+            background-color: var(--krds-#{$mode-setting}-color-element-primary);
+        }
+    }
+    &.swiper-pagination-fraction {
+        gap: var(--krds-gap-2);
+		padding: 0 var(--krds-padding-6);
+		color: var(--krds-#{$mode-setting}-color-text-basic);
+		font-weight: var(--krds-font-weight-bold);
+		border: var(--krds-#{$mode-setting}-border-width-variable-regular) solid var(--krds-#{$mode-setting}-color-border-gray-light);
+		border-radius: var(--krds-radius-max);
+		background-color: var(--krds-#{$mode-setting}-color-surface-white);
+        .swiper-pagination-current {
+            color: var(--krds-#{$mode-setting}-color-text-secondary);
+        }
+    }
+}
+
+.swiper-controller {
+    @include flex-layout($jc: center, $ai: center);
+    gap: var(--krds-gap-3);
+}
+
+[class ^= 'swiper-button-']{
+    @include flex-layout( $jc: center, $ai: center);
+    @include square(var(--krds-size-height-6));
+	flex-shrink: 0;
+    border-radius: var(--krds-radius-max);
+    border: var(--krds-#{$mode-setting}-border-width-variable-regular) solid var(--krds-#{$mode-setting}-color-border-gray-light);
+    background-color: var(--krds-#{$mode-setting}-color-action-white);
+    &::after {
+        @include pseudo();
+        @include svg-icon();
+        font-size: 0 !important;
+    }
+	&:hover{
+		background-color: var(--krds-#{$mode-setting}-color-action-secondary-hover);
+	}
+}
+
+.swiper-button-more {
+    &::after {
+        @include icon-set(ico_plus);
+    }
+}
+
+.swiper-button-play {
+    &::after {
+        @include icon-set(ico_swiper_play);
+    }
+}
+
+.swiper-button-stop {
+    &::after {
+        @include icon-set(ico_swiper_stop);
+    }
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    &::after {
+        @include icon-set(ico_angle);
+    }
+    &:hover {
+        background-color: var(--krds-#{$mode-setting}-color-action-secondary-hover);
+    }
+    &:active {
+        background-color: var(--krds-#{$mode-setting}-color-action-secondary-pressed);
+    }
+    &.swiper-button-disabled  {
+        background-color: var(--krds-#{$mode-setting}-color-action-disabled);
+        opacity: 1;
+        &::after {
+            background-color: var(--krds-#{$mode-setting}-color-icon-disabled-on);
+        }
+    }
+}
+.swiper-button-next {
+    right: 0;
+    &::after {
+        transform: rotate(-90deg);
+    }
+}
+.swiper-button-prev {
+    left: 0;
+    &::after {
+        transform: rotate(90deg);
+    }
+}
+
+//고대비모드
+@include color-mode(high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.swiper-indicator {
+		.swiper-pagination {
+			&:not(.swiper-pagination-fraction) {
+				background-color: var(--krds-#{$mode-setting}-color-element-inverse);
+			}
+			&.swiper-pagination-fraction {
+				&.swiper-pagination-bg {
+					background-color: var(--krds-#{$mode-setting}-color-surface-white);
+				}
+			}
+		}
+	}
+	
+	.swiper-pagination {
+		.swiper-pagination-bullet {
+			background-color: var(--krds-#{$mode-setting}-color-element-gray);
+			&.swiper-pagination-bullet-active {
+				background-color: var(--krds-#{$mode-setting}-color-element-primary);
+			}
+		}
+		&.swiper-pagination-fraction {
+			color: var(--krds-#{$mode-setting}-color-text-basic);
+			border-width: var(--krds-#{$mode-setting}-border-width-variable-regular);
+			border-color: var(--krds-#{$mode-setting}-color-border-gray-light);
+			background-color: var(--krds-#{$mode-setting}-color-surface-white);
+			.swiper-pagination-current {
+				color: var(--krds-#{$mode-setting}-color-text-secondary);
+			}
+		}
+	}
+	
+	[class ^= 'swiper-button-']{
+		border-width: var(--krds-#{$mode-setting}-border-width-variable-regular);
+		border-color: var(--krds-#{$mode-setting}-color-border-gray-light);
+		background-color: var(--krds-#{$mode-setting}-color-action-white);
+		&::after {
+			background-color: var(--krds-#{$mode-setting}-color-text-basic);
+		}
+		&:hover{
+			background-color: var(--krds-#{$mode-setting}-color-action-secondary-hover);
+		}
+	}
+	
+	.swiper-button-next,
+	.swiper-button-prev {
+		&:hover {
+			background-color: var(--krds-#{$mode-setting}-color-action-secondary-hover);
+		}
+		&:active {
+			background-color: var(--krds-#{$mode-setting}-color-action-secondary-pressed);
+		}
+		&.swiper-button-disabled  {
+			background-color: var(--krds-#{$mode-setting}-color-action-disabled);
+			&::after {
+				background-color: var(--krds-#{$mode-setting}-color-icon-disabled-on);
+			}
+		}
+	}
+}
+
+
+//모바일 전용 속성
+@include size-medium {
+    .swiper-indicator {
+        &.w-hide {
+            display: flex !important;
+        }
+        .swiper-navigation {
+            &.w-hide {
+                display: flex !important;
+            }
+        }
+    }
+}

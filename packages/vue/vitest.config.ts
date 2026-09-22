@@ -4,15 +4,14 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [vue()],
+  css: { postcss: {} },
   resolve: {
-    alias: {
-      '@': resolve(__dirname, './src'),
-    },
+    alias: { '@': resolve(__dirname, './src') },
   },
   test: {
     environment: 'jsdom',
     globals: true,
-    include: ['src/**/*.{test,spec}.{js,ts}'],
+    include: ['src/**/*.{test,spec}.ts'],
     setupFiles: ['./src/test/setup.ts'],
   },
 });

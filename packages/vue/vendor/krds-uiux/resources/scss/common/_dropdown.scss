@@ -1,0 +1,146 @@
+//사이즈 정의
+@mixin dropdown-size-variable() {
+	--krds-dropdown--menu-radius: var(--krds-radius-medium4);
+	--krds-dropdown--menu-padding: var(--krds-padding-3);
+	--krds-dropdown--menu-margin-top: var(--krds-padding-6);
+	--krds-dropdown--menu-gap: var(--krds-gap-3);
+	--krds-dropdown--list-item-radius: var(--krds-radius-medium2);
+	--krds-dropdown--list-item-height: var(--krds-size-height-7);
+	--krds-dropdown--list-item-pc-font-size: var(--krds-pc-font-size-navigation-depth-medium);
+	--krds-dropdown--list-item-mobile-font-size: var(--krds-mobile-font-size-navigation-depth-medium);
+}
+
+//컬러 정의
+@mixin dropdown-color-variable($mode: light) {
+	--krds-dropdown--menu-color-border: var(--krds-#{$mode}-color-border-gray-light);
+	--krds-dropdown--menu-color-surface: var(--krds-#{$mode}-color-surface-white-subtler);
+	--krds-dropdown--menu-color-alpha-shadow: 0 0 0.2rem 0 var(--krds-#{$mode}-color-alpha-shadow1), 0 0.4rem 0.8rem 0 var(--krds-#{$mode}-color-alpha-shadow2);
+	--krds-dropdown--list-item-color-action-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-dropdown--list-item-color-action-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-dropdown--list-item-color-action-selected: var(--krds-#{$mode}-color-action-secondary-selected);
+	--krds-dropdown--list-item-color-text-selected: var(--krds-#{$mode}-color-text-secondary);
+}
+
+//모드 설정
+$mode-setting: light;
+/* krds-drop-wrap */
+.krds-drop-wrap {
+	@include dropdown-size-variable();
+	@include dropdown-color-variable(#{$mode-setting});
+
+	display: inline-flex;
+	position: relative;
+	.drop-menu {
+		@include position($t: 100%, $l: 50%);
+		display: none;
+		z-index: 6;
+		min-width: 13rem;
+		border-radius: var(--krds-dropdown--menu-radius);
+		padding: var(--krds-dropdown--menu-padding);
+		margin-top: var(--krds-dropdown--menu-margin-top);
+		background-color: var(--krds-dropdown--menu-color-surface);
+		border: 0.1rem solid var(--krds-dropdown--menu-color-border);
+		box-shadow: var(--krds-dropdown--menu-color-alpha-shadow);
+		transform: translateX(-50%);
+		&::before {
+			@include pseudo();
+			@include square(1.2rem);
+			@include position($b: 100%, $l: 50%);
+			display: block;
+			margin-bottom: -0.5rem;
+			margin-left: -0.6rem;
+			transform: rotate(-135deg);
+			background-color: var(--krds-dropdown--menu-color-surface);
+			border: 0.1rem solid var(--krds-dropdown--menu-color-border);
+			border-top-color: transparent;
+			border-left-color: transparent;
+		}
+		.drop-in {
+			@include flex-layout($fd: column, $ai: flex-start);
+			gap: var(--krds-dropdown--menu-gap);
+			position: relative;
+			z-index: 1;
+		}
+		.drop-top {
+			width: 100%;
+			padding: var(--krds-padding-3) var(--krds-padding-6);
+			border-bottom: 0.1rem solid var(--krds-dropdown--menu-color-border);
+		}
+		.drop-bottom {
+			@include flex-layout($jc: center);
+			width: 100%;
+			padding: var(--krds-padding-3) 0;
+			border-top: 0.1rem solid var(--krds-dropdown--menu-color-border);
+		}
+		.drop-list {
+			width: 100%;
+			.item-link {
+				@include flex-layout($jc: flex-start, $ai: center);
+				width: 100%;
+				gap: var(--krds-gap-3);
+				padding: 0 var(--krds-padding-6);
+				font-size: var(--krds-dropdown--list-item-pc-font-size);
+				border-radius: var(--krds-dropdown--list-item-radius);
+				height: var(--krds-dropdown--list-item-height);
+				background-color: var(--krds-dropdown--menu-color-surface);
+				@include size-medium {
+					font-size: var(--krds-dropdown--list-item-mobile-font-size);
+				}
+				.ico-go {
+					@include svg-icon($size: var(--krds-icon--size-medium), $mode: #{$mode-setting});
+				}
+				&:hover {
+					background-color: var(--krds-dropdown--list-item-color-action-hover);
+				}
+				&:active {
+					background-color: var(--krds-dropdown--list-item-color-action-pressed);
+				}
+				&.active {
+					font-weight: var(--krds-font-weight-bold);
+					color: var(--krds-dropdown--list-item-color-text-selected);
+					background-color: var(--krds-dropdown--list-item-color-action-selected);
+				}
+			}
+		}
+	}
+	&.drop-left {
+		.drop-menu {
+			left: 0;
+			right: unset;
+			transform: none;
+			&::before {
+				left: 2.4rem;
+				margin-left: 0;
+			}
+		}
+	}
+	&.drop-right {
+		.drop-menu {
+			left: unset;
+			right: 0;
+			transform: none;
+			&::before {
+				left: unset;
+				right: 2.4rem;
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+
+	/* krds-drop-wrap */
+	.krds-drop-wrap {
+		@include dropdown-color-variable(#{$mode-setting});
+		.drop-list {
+			.item-link {
+				.ico-go {
+					@include svg-icon($size: var(--krds-icon--size-medium), $mode: #{$mode-setting});
+				}
+			}
+		}
+	}
+}

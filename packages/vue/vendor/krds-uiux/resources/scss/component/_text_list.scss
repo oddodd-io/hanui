@@ -1,0 +1,133 @@
+/* 텍스트 목록 */
+//사이즈 정의
+@mixin text-list-size-variable() {
+	--krds-info-list--depth1-list-margin-top: 0;
+	--krds-info-list--depth2-list-margin-top: var(--krds-gap-5);
+	--krds-info-list--depth3-list-margin-top: var(--krds-gap-4);
+	--krds-info-list--depth1-padding-left: var(--krds-number-12);
+	--krds-info-list--depth2-padding-left: var(--krds-number-10);
+	--krds-info-list--depth3-padding-left: var(--krds-number-9);
+	--krds-info-list--gap-layout-depth1-li-li: var(--krds-gap-4);
+	--krds-info-list--gap-layout-depth2-li-li: var(--krds-gap-3);
+	--krds-info-list--gap-layout-depth3-li-li: var(--krds-gap-3);
+	--krds-info-list--pc-text-depth1: var(--krds-pc-font-size-body-medium);
+	--krds-info-list--mobile-text-depth1: var(--krds-mobile-font-size-body-medium);
+	--krds-info-list--pc-text-depth2: var(--krds-pc-font-size-body-medium);
+	--krds-info-list--mobile-text-depth2: var(--krds-mobile-font-size-body-medium);
+	--krds-info-list--pc-text-depth3: var(--krds-pc-font-size-body-small);
+	--krds-info-list--mobile-text-depth3: var(--krds-mobile-font-size-body-small);
+	--krds-info-list--info-txt-margin-top: var(--krds-number-7);
+}
+
+//컬러 정의
+@mixin text-list-color-variable($mode: light) {
+	--krds-info-list--depth1-color-text: var(--krds-#{$mode}-color-text-subtle);
+	--krds-info-list--depth2-color-text: var(--krds-#{$mode}-color-text-subtle);
+	--krds-info-list--depth3-color-text: var(--krds-#{$mode}-color-text-subtle);
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-info-list {
+	@include text-list-size-variable();
+	@include text-list-color-variable(#{$mode-setting});
+
+	display: flex;
+	flex-direction: column;
+	margin-top: var(--krds-info-list--depth1-list-margin-top);
+	gap: var(--krds-info-list--gap-layout-depth1-li-li);
+
+	> li {
+		position: relative;
+		padding-left: var(--krds-info-list--depth1-padding-left);
+		color: var(--krds-info-list--depth1-color-text);
+		font-size: var(--krds-info-list--pc-text-depth1);
+		@include size-medium {
+			font-size:  var(--krds-info-list--mobile-text-depth1);
+		}
+		&::before {
+			@include position($t: 0, $l: 0);
+		}
+		> .krds-info-list { //2depth
+			gap: var(--krds-info-list--gap-layout-depth2-li-li);
+			margin-top: var(--krds-info-list--depth2-list-margin-top);
+			> li {
+				padding-left: var(--krds-info-list--depth2-padding-left);
+				color: var(--krds-info-list--depth2-color-text);
+				font-size: var(--krds-info-list--pc-text-depth2);
+				@include size-medium {
+					font-size:  var(--krds-info-list--mobile-text-depth2);
+				}
+				> .krds-info-list { //3depth
+					margin-top: var(--krds-info-list--depth3-list-margin-top);
+					> li {
+						padding-left: var(--krds-info-list--depth3-padding-left);
+						color: var(--krds-info-list--depth3-color-text);
+						font-size: var(--krds-info-list--pc-text-depth3);
+						@include size-medium {
+							font-size:  var(--krds-info-list--mobile-text-depth3);
+						}
+					}
+				}
+			}
+		}
+		>.info-txt {
+			margin-top: var(--krds-info-list--info-txt-margin-top);
+		}
+	}
+	&.decimal {
+		> li {
+			&::before {
+				@include pseudo();
+				@include square(0.6rem);
+				content: "";
+				background-color: var(--krds-info-list--depth1-color-text);
+				border-radius: var(--krds-radius-max);
+				top: 1rem;
+				left: 0.8rem;
+			}
+		}
+	}
+	&.dash {
+		> li {
+			&::before {
+				content: "\002D"; //hyphen-minus
+			}
+		}
+	}
+	&.hollow {
+		gap: var(--krds-info-list--gap-layout-depth2-li-li);
+		> li {
+			padding-left: var(--krds-info-list--depth3-padding-left);
+			&::before {
+				@include pseudo();
+				@include square(0.4rem);
+				content: "";
+				border: 0.1rem solid var(--krds-info-list--depth1-color-text);
+				border-radius: var(--krds-radius-max);
+				top: 0.95rem;
+				left: 0.8rem;
+			}
+		}
+	}
+	&.ordered {
+		> li {
+			.num {
+				@include position($t: 0, $l: 0);
+			}
+			&::before {
+				display: none;
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+
+	.krds-info-list {
+		@include text-list-color-variable(#{$mode-setting});
+	}
+}

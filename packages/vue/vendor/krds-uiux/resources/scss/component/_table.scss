@@ -1,0 +1,108 @@
+/* 표 */
+//사이즈 정의
+@mixin table-size-variable() {
+	--krds-table--data-thead-th-padding: var(--krds-padding-3);
+	--krds-table--data-thead-th-padding-sides:var(--krds-padding-6);
+	--krds-table--data-thead-pc-font-size: var(--krds-pc-font-size-heading-xxsmall);
+	--krds-table--data-thead-mobile-font-size: var(--krds-mobile-font-size-heading-xxsmall);
+	--krds-table--data-tbody-pc-font-size: var(--krds-pc-font-size-label-medium);
+	--krds-table--data-tbody-mobile-font-size: var(--krds-mobile-font-size-label-medium);
+	--krds-table--data-tbody-padding: var(--krds-padding-5);
+	--krds-table--data-tbody-padding-sides: var(--krds-padding-6);
+
+}
+
+//컬러 설정
+@mixin table-color-variable($mode: light) {
+	--krds-table--data-border-width: var(--krds-#{$mode}-border-width-variable-regular);
+	--krds-table--data-thead-border: var(--krds-#{$mode}-color-border-secondary-light);
+	--krds-table--data-thead-surface: var(--krds-#{$mode}-color-surface-secondary-subtler);
+	--krds-table--data-thead-color-text: var(--krds-#{$mode}-color-text-bolder);
+	--krds-table--data-tbody-color-surface: var(--krds-#{$mode}-color-surface-white-subtle);
+	--krds-table--data-tbody-color-divider: var(--krds-#{$mode}-color-divider-gray-light);
+	--krds-table--data-tbody-color-text: var(--krds-#{$mode}-color-text-subtle);
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-table-wrap {
+	@include table-size-variable();
+	@include table-color-variable(#{$mode-setting});
+	width: 100%;
+
+	.tbl {
+		&.data {
+			th,
+			td {
+				vertical-align: middle;
+			}
+			thead {
+				th {
+					padding:var(--krds-table--data-thead-th-padding) var(--krds-table--data-thead-th-padding-sides);
+					background-color: var(--krds-table--data-thead-surface);
+					border-bottom: var(--krds-table--data-border-width) solid var(--krds-table--data-thead-border);
+					font-weight: var(--krds-font-weight-bold) ;
+					font-size:var(--krds-table--data-thead-pc-font-size);
+					color: var(--krds-table--data-thead-color-text);
+					text-align: left;
+					@include size-medium {
+						font-size: var(--krds-table--data-thead-mobile-font-size);
+					}
+				}
+			}
+			tbody {
+				th,
+				td {
+					padding:var(--krds-table--data-tbody-padding) var(--krds-table--data-tbody-padding-sides);					
+					background-color: var(--krds-table--data-tbody-color-surface);
+					border-bottom: var(--krds-table--data-border-width) solid var(--krds-table--data-tbody-color-divider);
+					font-size:var(--krds-table--data-tbody-pc-font-size);
+					color: var(--krds-table--data-tbody-color-text);
+					font-weight: var(--krds-font-weight-regular) ;
+					text-align: left;
+					@include size-medium {
+						font-size: var(--krds-table--data-tbody-mobile-font-size);
+					}
+				}
+			}
+		}
+	}
+
+	
+	&.scroll {
+		overflow-x: auto;
+		overflow-y: hidden;
+		.tbl {
+			width: 100%;
+		}
+	}
+	
+}
+
+@include size-medium {
+	.krds-table-wrap {
+		overflow-x: auto;
+		width: calc(100vw - (var(--krds-contents-padding-x) * 2));
+		.tbl { 
+			min-width: 73.2rem;
+		}
+
+		&.mob-scroll {
+			width: 100%;
+			th,
+			td {
+				white-space: nowrap;
+			}
+		}
+	}
+}
+
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-table-wrap {
+		@include table-color-variable(#{$mode-setting});
+	}
+}

@@ -1,0 +1,241 @@
+/* 사이드 메뉴 */
+//사이즈 정의
+@mixin side-menu-size-variable() {
+	--krds-side-navigation--padding: var(--krds-padding-10);
+	--krds-side-navigation--title-padding-x: var(--krds-padding-3);
+	--krds-side-navigation--title-padding-bottom: var(--krds-padding-6);
+	--krds-side-navigation--title-font-size: var(--krds-pc-font-size-navigation-title-medium);
+	--krds-side-navigation--btn-gap: var(--krds-gap-3);
+	--krds-side-navigation--btn-padding-x: var(--krds-padding-3);
+	--krds-side-navigation--btn-padding-y: var(--krds-padding-6);
+	--krds-side-navigation--btn-padding-y-selected: var(--krds-padding-3);
+	--krds-side-navigation--btn-font-size: var(--krds-pc-font-size-navigation-depth-medium-bold);
+	--krds-side-navigation--3depth-padding-y: var(--krds-padding-3);
+	--krds-side-navigation--3depth-btn-padding-x: var(--krds-padding-6);
+	--krds-side-navigation--3depth-btn-padding-y: var(--krds-padding-3);
+	--krds-side-navigation--3depth-btn-radius: var(--krds-radius-medium2);
+	--krds-side-navigation--4depth-padding: var(--krds-padding-6);
+	--krds-side-navigation--4depth-title-padding: var(--krds-padding-3);
+	--krds-side-navigation--4depth-title-radius: var(--krds-radius-medium3);
+	--krds-side-navigation--4depth-title-font-size: var(--krds-pc-font-size-navigation-title-medium);
+	
+}
+//컬러 정의
+@mixin side-menu-color-variable($mode: light) {
+	--krds-side-navigation--title-color-border: var(--krds-#{$mode}-color-divider-gray);
+	--krds-side-navigation--title-border-width: var(--krds-#{$mode}-border-width-static-regular);
+	--krds-side-navigation--color-action: var(--krds-#{$mode}-color-action-secondary);
+	--krds-side-navigation--color-action-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-side-navigation--color-action-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-side-navigation--color-action-selected: var(--krds-#{$mode}-color-action-secondary-selected);
+	--krds-side-navigation--color-border: var(--krds-#{$mode}-color-divider-gray-light);
+	--krds-side-navigation--color-text-selected: var(--krds-#{$mode}-color-text-secondary);
+	--krds-side-navigation--color-border-selected: var(--krds-#{$mode}-color-action-secondary-active);
+	--krds-side-navigation--item-color-border: var(--krds-#{$mode}-color-divider-gray-light);
+	--krds-side-navigation--item-color-border-selected: var(--krds-#{$mode}-color-border-gray);
+	--krds-side-navigation--item-border-width: var(--krds-#{$mode}-border-width-static-regular);
+	--krds-side-navigation--2depth-btn-color-border: var(--krds-#{$mode}-color-border-secondary);
+	--krds-side-navigation--4depth-color-border: var(--krds-#{$mode}-color-border-gray);
+	--krds-side-navigation--4depth-background: var(--krds-#{$mode}-color-background-white);
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-side-navigation {
+	@include side-menu-size-variable();
+	@include side-menu-color-variable(#{$mode-setting});
+
+	position: relative;
+	overflow: hidden;
+	padding: var(--krds-side-navigation--padding) 0;
+	.lnb-tit {
+		font-size: var(--krds-side-navigation--title-font-size);
+		font-weight: var(--krds-font-weight-bold);
+		padding: 0 var(--krds-side-navigation--title-padding-x) var(--krds-side-navigation--title-padding-bottom) var(--krds-side-navigation--title-padding-x);
+		border-bottom: var(--krds-side-navigation--title-border-width) solid var(--krds-side-navigation--title-color-border);
+	}
+	.lnb-list {
+		.lnb-item {
+			border-bottom: var(--krds-side-navigation--item-border-width) solid var(--krds-side-navigation--item-color-border);
+			.lnb-btn {
+				@include flex-layout();
+				gap: var(--krds-side-navigation--btn-gap);
+				position: relative;
+				width: 100%;
+				background-color: var(--krds-side-navigation--color-action);
+				padding: var(--krds-side-navigation--btn-padding-y) var(--krds-side-navigation--btn-padding-x);
+				font-size: var(--krds-side-navigation--btn-font-size);
+				font-weight: var(--krds-font-weight-bold);
+				text-align: left;
+				&:hover {
+					background-color: var(--krds-side-navigation--color-action-hover);
+				}
+				&:active {
+					background-color: var(--krds-side-navigation--color-action-pressed);
+				}
+				&:focus {
+					@include focus();
+				}
+				&.selected {
+					background-color: var(--krds-side-navigation--color-action-selected);
+					color: var(--krds-side-navigation--color-text-selected);
+				}
+			}
+			[class*=lnb-toggle] {
+				&::after {
+					@include pseudo();
+					flex-shrink: 0;
+					@include svg-icon($size: var(--krds-icon--size-medium));
+					@include icon-set(ico_angle);
+					margin-top: var(--krds-padding-1);
+					margin-left: auto;
+					transition: var(--krds-transition-base);
+					transform: rotate(0deg);
+				}
+				&[aria-expanded="true"] {
+					padding-bottom: var(--krds-side-navigation--btn-padding-y-selected);
+					&::after {
+						background-color: var(--krds-side-navigation--color-text-selected);
+						transform: rotate(180deg);
+					}
+				}
+			}
+			.lnb-submenu {
+				display: grid;
+				grid-template-rows: 0fr;
+				opacity: 0;
+				visibility: hidden;
+				transition: var(--krds-transition-base);
+				> ul {
+					padding: 0;
+					overflow: hidden;
+				}
+				.lnb-btn {
+					padding: var(--krds-side-navigation--3depth-btn-padding-y) var(--krds-side-navigation--3depth-btn-padding-x);
+					border-radius: var(--krds-side-navigation--3depth-btn-radius);
+					font-weight: var(--krds-font-weight-regular);
+					&::before {
+						@include pseudo("•");
+					}
+					&.selected {
+						color: var(--krds-side-navigation--color-text-selected);
+						font-weight: var(--krds-font-weight-bold);
+					}
+				}
+			}
+			.lnb-submenu-lv2 {
+				position: absolute;
+				visibility: hidden;
+				opacity: 0;
+				top: 0;
+				left: -100%;
+				z-index: 10;
+				width: 100%;
+				height: 100%;
+				background-color: var(--krds-side-navigation--4depth-background);
+				transition: var(--krds-transition-base);
+				&.active {
+					opacity: 1;
+					visibility: visible;
+					left: 0;
+				}
+				> ul {
+					@include flex-layout($fd: column, $ai: normal);
+					padding: var(--krds-side-navigation--4depth-padidng) 0;
+					border-top: 0.1rem solid var(--krds-side-navigation--4depth-color-border);
+					border-bottom: 0.1rem solid var(--krds-side-navigation--4depth-color-border);
+				}
+				.lnb-btn-tit {
+					@include flex-layout($fd: column, $jc: space-between, $ai: normal);
+					gap: var(--krds-gap-2);
+					width: 100%;
+					padding: var(--krds-side-navigation--4depth-title-padding) !important;
+					margin-bottom: var(--krds-padding-3);
+					font-size: var(--krds-side-navigation--4depth-title-font-size);
+					font-weight: var(--krds-font-weight-bold);
+					text-align: left;
+					border-radius: var(--krds-side-navigation--4depth-title-radius);
+					&::before {
+						@include pseudo();
+						@include svg-icon($mode: light);
+						@include icon-set(ico_angle);
+						transform: rotate(90deg);
+					}
+					&:focus {
+						@include focus();
+					}
+					&:hover {
+						background-color: var(--krds-side-navigation--color-action-hover);
+					}
+					&:active {
+						background-color: var(--krds-side-navigation--color-action-pressed);
+					}
+				}
+			}
+			&.active {
+				border-bottom-color: var(--krds-side-navigation--item-color-border-selected);
+				.lnb-submenu {
+					grid-template-rows: 1fr;
+					opacity: 1;
+					visibility: visible;
+					padding: var(--krds-side-navigation--3depth-padding-y) 0;
+				}
+			}
+		}
+		//하위뎁스
+		> li {
+			> .lnb-btn { 
+				&::before {
+					display: inline-flex;
+					@include pseudo();
+					@include position($b: -.1rem, $l: 0%);  
+					@include square(0, 0.3rem);
+					background-color: var(--krds-side-navigation--color-border-selected);
+					transition: var(--krds-transition-base);
+				}
+				&:hover {
+					&::before {
+						left: 0;
+						width: 100%;
+					}
+					
+				}
+				&.active {
+					&:not(.lnb-toggle){
+						&::before {
+							left: 0;
+							width: 100%;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-side-navigation {
+		@include side-menu-color-variable(#{$mode-setting});
+
+		.lnb-list {
+			.lnb-item {
+				[class*=lnb-toggle] {
+					&::after {
+						@include svg-icon($size: var(--krds-icon--size-medium), $mode: #{$mode-setting});
+					}
+				}
+
+				.lnb-submenu-lv2 {
+					.lnb-btn-tit {
+						&::before {
+							@include svg-icon($mode: #{$mode-setting});
+						}
+					}
+				}
+			}
+		}
+	}
+}

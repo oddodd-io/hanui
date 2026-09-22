@@ -1,0 +1,176 @@
+/* 브레드크럼 */
+//모드 설정
+$mode-setting: light;
+
+//사이즈 정의
+@mixin breadcrumb-size-variable() {
+	--krds-breadcrumb--padding-x: var(--krds-padding-2);
+	--krds-breadcrumb--margin-bottom: var(--krds-pc-gap-layout-breadcrumb-h1);
+	--krds-breadcrumb--radius: var(--krds-radius-medium2);
+	--krds-breadcrumb--pc-font-size: var(--krds-pc-font-size-label-small);
+	--krds-breadcrumb--mobile-font-size: var(--krds-mobile-font-size-label-small);
+}
+
+//컬러 정의
+@mixin breadcrumb-color-variable($mode: light) {
+	--krds-breadcrumb--color-action: var(--krds-#{$mode}-color-action-secondary);
+	--krds-breadcrumb--color-action-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-breadcrumb--color-action-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-breadcrumb--color-text: var(--krds-#{$mode}-color-text-basic);
+	--krds-breadcrumb--color-text-disabled: var(--krds-#{$mode}-color-text-disabled);
+}
+.krds-breadcrumb-wrap {
+	@include breadcrumb-size-variable();
+	@include breadcrumb-color-variable(#{$mode-setting});
+
+	@include flex-layout($jc: center);
+	margin-bottom: var(--krds-breadcrumb--margin-bottom);
+	padding-top: var(--krds-pc-gap-layout-header-breadcrumb);
+	padding-bottom: var(--krds-pc-gap-layout-breadcrumb-h2);
+	.breadcrumb {
+		@include flex-layout($ai: center);
+		gap: var(--krds-gap-2);
+		width: 100%;
+		li {
+			@include flex-layout($d: inline-flex, $ai: center);
+			font-size: var(--krds-breadcrumb--pc-font-size);
+			@include size-medium {
+				font-size: var(--krds-breadcrumb--mobile-font-size);
+			}
+			.txt {
+				@include flex-layout($d: inline-flex, $ai: center);
+				gap: var(--krds-gap-2);
+				padding: 0 var(--krds-breadcrumb--padding-x);
+				background-color: var(--krds-breadcrumb--color-action);
+				border-radius: var(--krds-breadcrumb--radius);
+			}
+			a {
+				&.txt {
+					@include underline();
+					&:not(.disabled):hover {
+						background-color: var(--krds-breadcrumb--color-action-hover);
+					}
+					&:not(.disabled):active {
+						background-color: var(--krds-breadcrumb--color-action-pressed);
+					}
+					&:not(.disabled):focus,
+					&:not(:disabled):focus {
+						@include focus();
+					}
+					&.disabled,
+					&:disabled {
+						cursor: default;
+						color: var(--krds-breadcrumb--color-text-disabled);
+					}
+				}
+			}
+			&:not(:last-child) {
+				//마지막 뎁스가 아니면 화살표 아이콘 표시
+				&::after {
+					@include flex-layout($d: inline-flex, $ai: center);
+					@include pseudo();
+					margin-left: var(--krds-gap-2);
+					@include svg-icon($size: var(--krds-icon--size-small), $mode: light);
+					@include icon-set(ico_angle);
+					transform: rotate(-90deg);
+				}
+			}
+		}
+		.home {
+			gap: 0;
+			.txt {
+				&::before {
+					@include flex-layout($d: inline-flex, $ai: center);
+					@include pseudo();
+					@include svg-icon($size: var(--krds-icon--size-small), $mode: light);
+					@include icon-set(ico_bread_home);
+				}
+			}
+		}
+	}
+}
+
+//모바일 전용 속성
+@include size-medium {
+	.krds-breadcrumb-wrap {
+		padding-top: var(--krds-mobile-gap-layout-header-breadcrumb);
+		padding-bottom: var(--krds-mobile-gap-layout-breadcrumb-h2);
+		.breadcrumb {
+			li {
+				//모바일에서는 홈, 마지막 뎁스만 화면에 표시
+				&:not(.home) {
+					&:not(:last-child) {
+						@include sr-only;
+					}
+				}
+				&:not(.home):not(:nth-child(2)) {
+					&:last-child {
+						gap: var(--krds-gap-2);
+						&::before,
+						&::after {
+							@include flex-layout($d: inline-flex, $ai: center);
+							@include pseudo();
+							@include svg-icon($size: var(--krds-icon--size-small), $mode: light);
+						}
+						&::before {
+							@include icon-set(ico_ellipsis);
+						}
+						&::after {
+							@include icon-set(ico_angle);
+							transform: rotate(-90deg);
+						}
+						.txt {
+							order: 3;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-breadcrumb-wrap {
+		@include breadcrumb-color-variable(#{$mode-setting});
+
+		.breadcrumb {
+			li {
+				&:not(:last-child) {
+					//마지막 뎁스가 아니면 화살표 아이콘 표시
+					&::after {
+						@include svg-icon($size: var(--krds-icon--size-small), $mode: high-contrast);
+					}
+				}
+			}
+			.home {
+				gap: 0;
+				.txt {
+					&::before {
+						@include svg-icon($size: var(--krds-icon--size-small), $mode: high-contrast);
+					}
+				}
+			}
+		}
+	}
+
+	//모바일 전용 속성
+	@include size-medium {
+		.krds-breadcrumb-wrap {
+			.breadcrumb {
+				li {
+					&:not(:nth-child(2)) {
+						&:last-child {
+							&::before,
+							&::after {
+								@include svg-icon($size: var(--krds-icon--size-small), $mode: high-contrast);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,182 @@
+/* 맥락적 도움말 */
+//모드 설정
+$mode-setting: light;
+
+//사이즈 정의
+@mixin contextual-help-size-variable() {
+	--krds-contextual-help--action-btn-radius: var(--krds-radius-small2);
+	--krds-contextual-help--action-pc-font-size: var(--krds-pc-font-size-body-small);
+	--krds-contextual-help--action-mobile-font-size: var(--krds-mobile-font-size-body-small);
+	--krds-contextual-help--popover-width: 36rem;
+	--krds-contextual-help--popover-padding: var(--krds-padding-8);
+	--krds-contextual-help--popover-radius: var(--krds-radius-xlarge2);
+	--krds-contextual-help--popover-title-pc-font-size: var(--krds-pc-font-size-heading-xsmall);
+	--krds-contextual-help--popover-title-mobile-font-size: var(--krds-mobile-font-size-heading-xsmall);
+	--krds-contextual-help--popover-contents-pc-font-size: var(--krds-pc-font-size-body-small);
+	--krds-contextual-help--popover-contents-mobile-font-size: var(--krds-mobile-font-size-body-small);
+}
+
+//컬러 정의
+@mixin contextual-help-color-variable($mode: light) {
+	--krds-contextual-help--action-btn-color-background: var(--krds-#{$mode}-color-action-secondary);
+	--krds-contextual-help--action-btn-color-background-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-contextual-help--action-btn-color-background-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-contextual-help--action-icon-color-information: var(--krds-#{$mode}-color-icon-information);
+	--krds-contextual-help--popover-color-text-basic: var(--krds-#{$mode}-color-text-basic);
+	--krds-contextual-help--popover-color-text-bolder: var(--krds-#{$mode}-color-text-bolder);
+	--krds-contextual-help--popover-color-border: var(--krds-#{$mode}-color-border-gray);
+	--krds-contextual-help--popover-color-background: var(--krds-#{$mode}-color-surface-white-subtler);
+	--krds-contextual-help--popover-shadow: 0 0 0.2rem 0 var(--krds-#{$mode}-color-alpha-shadow2), 0 0.8rem 1.6rem 0 var(--krds-#{$mode}-color-alpha-shadow3);
+}
+
+.krds-contextual-help {
+	@include contextual-help-size-variable();
+	@include contextual-help-color-variable();
+
+	@include flex-layout($ai: center);
+	gap: var(--krds-gap-2);
+	.tooltip-txt {
+		font-size: var(--krds-contextual-help--action-pc-font-size);
+	}
+	.tooltip-action {
+		@include flex-layout($ai: center);
+		position: relative;
+		.tooltip-btn {
+			@include flex-layout($ai:center);
+			border-radius: var(--krds-contextual-help--action-btn-radius);
+			background-color: var(--krds-contextual-help--action-btn-color-background);
+			&:hover {
+				background-color: var(--krds-contextual-help--action-btn-color-background-hover);
+			}
+			&:active {
+				background-color: var(--krds-contextual-help--action-btn-color-background-pressed);
+			}
+			.ico-tooltip {
+				background-color: var(--krds-contextual-help--action-icon-color-information);
+			}
+		}
+	}
+	.tooltip-popover {
+		--krds-contextual-help--bubble-arrow-size: 1.6rem;
+		--krds-contextual-help--bubble-arrow-margin: calc((var(--krds-contextual-help--bubble-arrow-size) / 2) * -1);
+		--krds-contextual-help--bubble-margin-x: 2.4rem;
+		--krds-contextual-help--bubble-arrow-position-x: -2rem;
+		
+		display: none;
+		position: absolute;
+		z-index: 10;
+		width: var(--krds-contextual-help--popover-width);
+		padding: var(--krds-contextual-help--popover-padding);
+		border-radius: var(--krds-contextual-help--popover-radius);
+		background-color: var(--krds-contextual-help--popover-color-background);
+		border: .1rem solid var(--krds-contextual-help--popover-color-border);
+		box-shadow: var(--krds-contextual-help--popover-shadow);
+		&::before {
+			@include pseudo();
+			@include square(var(--krds-contextual-help--bubble-arrow-size));
+			display: block;
+			position: absolute;
+			margin-top: var(--krds-contextual-help--bubble-arrow-margin);
+			transform: rotate(45deg);
+			border: .1rem solid var(--krds-contextual-help--popover-color-border);
+			border-top-color: transparent;
+			border-left-color: transparent;
+			background-color: var(--krds-contextual-help--popover-color-background);
+		}
+		.tooltip-title {
+			@include ellipsis(1);
+			color: var(--krds-contextual-help--popover-color-text-bolder);
+			font-size: var(--krds-contextual-help--popover-title-pc-font-size);
+			padding-right: var(--krds-gap-5);
+		}
+		.tooltip-contents {
+			@include flex-layout($fd: column);
+			color: var(--krds-contextual-help--popover-color-text-basic);
+			font-size: var(--krds-contextual-help--popover-contents-pc-font-size);
+			margin-top: var(--krds-gap-5);
+			gap: var(--krds-gap-3);
+		}
+		.tooltip-close {
+			@include position($t: var(--krds-contextual-help--popover-padding), $r: var(--krds-contextual-help--popover-padding));
+		}
+	}
+	&.left {
+		.tooltip-popover {
+			left: 0;
+			margin-left: var(--krds-contextual-help--bubble-arrow-position-x);
+			&::before {
+				left: var(--krds-contextual-help--bubble-margin-x);
+			}
+		}
+	}
+	&.center {
+		.tooltip-popover {
+			@include position-center(x);
+			&::before {
+				left: 50%;
+				margin-left: var(--krds-contextual-help--bubble-arrow-margin);
+			}
+		}
+	}
+	&.right {
+		.tooltip-popover {
+			right: 0;
+			margin-right: var(--krds-contextual-help--bubble-arrow-position-x);
+			&::before {
+				right: var(--krds-contextual-help--bubble-margin-x);
+			}
+		}
+	}
+	&.top {
+		.tooltip-popover { 
+			bottom: 100%;
+			margin-bottom: var(--krds-gap-5);
+			&::before {
+				top: 100%;
+			}
+		}
+	}
+	&.bottom {
+		.tooltip-popover { 
+			top: 100%;
+			margin-top: var(--krds-gap-5);
+			&::before {
+				bottom: 100%;
+				transform: rotate(225deg);
+				margin-bottom: var(--krds-contextual-help--bubble-arrow-margin);
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+
+	// krds-contextual-help
+	.krds-contextual-help {
+		@include contextual-help-color-variable(#{$mode-setting});
+	}
+}
+
+//responsive mobile
+@include size-medium {
+	.krds-contextual-help {
+		.tooltip-popover {
+			right: unset !important;
+			transform: none !important;
+			margin-left: 0 !important;
+			&::before {
+				display: none;
+			}
+
+			.tooltip-title {
+				font-size: var(--krds-contextual-help--popover-title-mobile-font-size);
+			}
+			.tooltip-contents {
+				font-size: var(--krds-contextual-help--popover-contents-mobile-font-size);
+			}
+		}
+	}
+}

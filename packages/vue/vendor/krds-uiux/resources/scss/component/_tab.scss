@@ -1,0 +1,247 @@
+/* 탭 */
+//사이즈 정의
+@mixin tab-size-variable() {
+	--krds-tab--button-size-height: var(--krds-size-height-7);
+	--krds-tab--button-size-min-width: 6.4rem;
+	--krds-tab--button-pc-font-size: var(--krds-pc-font-size-heading-xsmall);
+	--krds-tab--button-mobile-font-size: var(--krds-mobile-font-size-heading-xsmall);
+	--krds-tab--gap: var(--krds-gap-3);
+	--krds-tab--full-button-size-height: var(--krds-size-height-8);
+	--krds-tab--full-button-pc-font-size: var(--krds-pc-font-size-heading-small);
+	--krds-tab--full-button-mobile-font-size: var(--krds-mobile-font-size-heading-small);
+	--krds-tab--line-button-padding: var(--krds-padding-2);
+	--krds-tab--fill-button-padding: var(--krds-padding-3);
+	--krds-tab--fill-button-radius: var(--krds-radius-medium2);
+	--krds-tab--conts-padding-top: var(--krds-padding-10);
+	--krds-tab--mobile-button-trigger-size-height: var(--krds-size-height-7);
+	--krds-tab--mobile-button-trigger-padding-x: var(--krds-padding-6);
+	--krds-tab--mobile-button-trigger-radius: var(--krds-radius-medium1);
+}
+//컬러 정의
+@mixin tab-color-variable($mode: light) {
+	--krds-tab--button-color-action: var(--krds-#{$mode}-color-action-secondary);
+	--krds-tab--button-color-action-hover: var(--krds-#{$mode}-color-action-secondary-hover);
+	--krds-tab--button-color-action-pressed: var(--krds-#{$mode}-color-action-secondary-pressed);
+	--krds-tab--button-color-border: var(--krds-#{$mode}-color-action-secondary);
+	--krds-tab--button-color-text: var(--krds-#{$mode}-color-text-subtle);
+	--krds-tab--button-color-text-disabled: var(--krds-#{$mode}-color-text-disabled);
+	--krds-tab--fill-button-color-action-active: var(--krds-#{$mode}-color-action-secondary-active);
+	--krds-tab--fill-button-color-border: var(--krds-#{$mode}-color-border-gray);
+	--krds-tab--fill-button-color-border-active: var(--krds-#{$mode}-color-action-secondary-active);
+	--krds-tab--fill-button-color-text: var(--krds-#{$mode}-color-text-inverse-static);
+	--krds-tab--line-button-color-border: var(--krds-#{$mode}-color-border-gray);
+	--krds-tab--line-button-color-line-active: var(--krds-#{$mode}-color-action-secondary-active);
+	--krds-tab--line-button-color-text-active: var(--krds-#{$mode}-color-text-secondary);
+	--krds-tab--mobile-button-trigger-color-text: var(--krds-#{$mode}-color-text-inverse-static);
+	--krds-tab--mobile-button-trigger-color-action: var(--krds-#{$mode}-color-action-secondary-active);
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-tab-area {
+	@include flex-layout($fd: column);
+	gap: var(--krds-gap-8);
+	width: 100%;
+
+	@include size-medium {
+		gap: var(--krds-gap-8);
+	}
+}
+.tab {
+	@include tab-size-variable();
+	@include tab-color-variable(#{$mode-setting});
+	
+	> ul {
+		@include flex-layout($ai: center);
+		gap: var(--krds-tab--gap);
+		overflow-x: auto;
+		width: 100%;
+	}
+	li,
+	.btn-tab {
+		@include flex-layout(inline-flex, center, center);
+		position: relative;
+		white-space: nowrap;
+	}
+	.btn-tab {
+		width: 100%;
+		height: var(--krds-tab--button-size-height);
+		background-color: var(--krds-tab--button-color-action);
+		border: 1px solid var(--krds-tab--button-color-border);
+		font-size: var(--krds-tab--button-pc-font-size);
+		color: var(--krds-tab--button-color-text);
+		font-weight: var(--krds-font-weight-bold);
+		transition: var(--krds-transition-base);
+		@include size-medium {
+			font-size: var(--krds-tab--button-mobile-font-size);
+		}
+		&:not(:disabled):hover {
+			background-color: var(--krds-tab--button-color-action-hover);
+			transition: var(--krds-transition-base);
+		}
+		&:not(:disabled):active {
+			background-color: var(--krds-tab--button-color-action-pressed);
+			transition: var(--krds-transition-base);
+		}
+		&:focus {
+			@include focus();
+		}
+		&[disabled] {
+			color: var(--krds-tab--button-color-text-disabled);
+			cursor: default;
+		}
+	}
+	li {
+		flex-grow: 0;
+	}
+
+	&.full { //풀사이즈
+		width: 100%;
+		.btn-tab {
+			height: var(--krds-tab--full-button-size-height);
+			padding: 0;
+			font-size: var(--krds-tab--full-button-pc-font-size);
+			@include size-medium {
+				font-size: var(--krds-tab--full-button-mobile-font-size);
+			}
+		}
+		> ul {
+			@include group-wrap;
+			gap: 0;
+			> li {
+				@include equal-width;
+			}
+		}
+	}
+	&.fill { //bg 타입
+		.btn-tab {
+			padding: 0 var(--krds-tab--fill-button-padding);
+			border-radius: var(--krds-tab--fill-button-radius);
+			&:focus {
+				box-shadow: inset 0 0 0 0.6rem var(--krds-#{$mode-setting}-color-border-primary);
+				outline-offset: -.4rem;
+			}
+		}
+		.active {
+			.btn-tab {
+				background-color: var(--krds-tab--fill-button-color-action-active);
+				border-color: var(--krds-tab--fill-button-color-border-active) !important;
+				color: var(--krds-tab--fill-button-color-text);
+			}
+		}
+
+		&.full {
+			.btn-tab {
+				border-color: var(--krds-tab--fill-button-color-border);
+			}
+			> ul {
+				> li {
+					& + li {
+						.btn-tab {
+							border-left: none;
+						}
+					}
+					.btn-tab {
+						border-radius: 0;
+					}
+					&:first-of-type {
+						.btn-tab {
+							border-top-left-radius: var(--krds-tab--fill-button-radius);
+							border-bottom-left-radius: var(--krds-tab--fill-button-radius);
+						}
+					}
+					&:last-of-type {
+						.btn-tab {
+							border-top-right-radius: var(--krds-tab--fill-button-radius);
+							border-bottom-right-radius: var(--krds-tab--fill-button-radius);
+						}
+					}
+				}
+			}
+		}
+	}
+	&.line { //line 타입
+		.btn-tab {
+			min-width: var(--krds-tab--button-size-min-width);
+			padding: 0 var(--krds-tab--line-button-padding);
+			&:before {
+				@include position($b: 0, $l: 50%);
+				@include pseudo();
+				width: 0;
+				height: 0.4rem;
+				background-color: var(--krds-tab--line-button-color-line-active);
+				transition: var(--krds-transition-base);
+			}
+		}
+		.active {
+			.btn-tab {
+				color: var(--krds-tab--line-button-color-text-active);
+				&:before {
+					@include position($l: 0);
+					width: 100%;
+				}
+			}
+		}
+		&.full {
+			.btn-tab {
+				border: 0;
+				border-bottom: 2px solid var(--krds-tab--line-button-color-border);
+				&:before {
+					bottom: -.2rem;
+				}
+			}
+		}
+	}
+}  
+
+.tab-conts-wrap {
+	width:100%;
+}
+
+.tab-conts {
+	display: none;
+	margin-top: var(--krds-tab--conts-padding-top);
+	&.active {
+		@include flex-layout($fd: column, $ai: normal);
+	}
+}
+
+//mobile only
+@include size-medium {
+	.tab-conts {
+		&.active {
+			gap: var(--krds-padding-8);
+		}
+	}
+	.tab{
+		&.fill {
+			&.full {
+				.btn-tab {
+					border-color: var(--krds-tab--fill-button-color-border);
+					padding: 0 var(--krds-padding-5);
+					border-width: 0;
+				}
+				> ul {
+					gap: var(--krds-gap-3);
+					flex-wrap: nowrap;
+					> li {
+						width: fit-content;
+						flex: none;
+						.btn-tab {
+							border-radius: var(--krds-tab--fill-button-radius);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.tab {
+		@include tab-color-variable(#{$mode-setting});
+	}
+}

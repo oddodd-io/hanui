@@ -1,0 +1,661 @@
+/* 버튼 / 링크 */
+//사이즈 정의
+@mixin button-size-variable() {
+	//변수 배열 설정
+	$button-size: (
+		xsmall: (
+			size-height: var(--krds-size-height-5),
+			padding-x: var(--krds-padding-4),
+			padding-y: 0,
+			gap: var(--krds-gap-1),
+			radius: var(--krds-radius-small3),
+			pc-font-size: var(--krds-pc-font-size-label-small),
+			mobile-font-size: var(--krds-mobile-font-size-label-small),
+			font-weight: var(--krds-font-weight-regular),
+		),
+		small: (
+			size-height: var(--krds-size-height-6),
+			padding-x: var(--krds-padding-5),
+			padding-y: 0,
+			gap: var(--krds-gap-1),
+			radius: var(--krds-radius-medium1),
+			pc-font-size: var(--krds-pc-font-size-label-small),
+			mobile-font-size: var(--krds-mobile-font-size-label-small),
+			font-weight: var(--krds-font-weight-regular),
+		),
+		medium: (
+			size-height: var(--krds-size-height-7),
+			padding-x: var(--krds-padding-6),
+			padding-y: 0,
+			gap: var(--krds-gap-2),
+			radius: var(--krds-radius-medium2),
+			pc-font-size: var(--krds-pc-font-size-label-medium),
+			mobile-font-size: var(--krds-mobile-font-size-label-medium),
+			font-weight: var(--krds-font-weight-regular),
+		),
+		large: (
+			size-height: var(--krds-size-height-8),
+			padding-x: var(--krds-padding-7),
+			padding-y: 0,
+			gap: var(--krds-gap-2),
+			radius: var(--krds-radius-medium3),
+			pc-font-size: var(--krds-pc-font-size-label-large),
+			mobile-font-size: var(--krds-mobile-font-size-label-large),
+			font-weight: var(--krds-font-weight-regular),
+		),
+		xlarge: (
+			size-height: var(--krds-size-height-9),
+			padding-x: var(--krds-padding-8),
+			padding-y: 0,
+			gap: var(--krds-gap-2),
+			radius: var(--krds-radius-medium4),
+			pc-font-size: var(--krds-pc-font-size-label-large),
+			mobile-font-size: var(--krds-mobile-font-size-label-large),
+			font-weight: var(--krds-font-weight-regular),
+		),
+	) !default;
+
+	//css variable 생성
+	@each $size, $types in $button-size {
+		@each $type, $value in $types {
+			//css variable 생성
+			--krds-button--#{$type}-#{$size}: #{$value};
+		}
+	}
+
+	//class 정의
+	& {
+		@include btn-size(large);
+		& {
+			@each $size, $types in $button-size {
+				&.#{$size} {
+					@include btn-size(#{$size});
+				}
+			}
+		}
+	}
+}
+
+//컬러 정의
+@mixin button-color-variable($mode) {
+	//변수 배열 정의
+	$button-color-variable: (
+		primary: (
+			fill: var(--krds-#{$mode}-color-button-primary-fill),
+			fill-hover: var(--krds-#{$mode}-color-button-primary-fill-hover),
+			fill-pressed: var(--krds-#{$mode}-color-button-primary-fill-pressed),
+			fill-disabled: var(--krds-#{$mode}-color-button-disabled-fill),
+			border: var(--krds-#{$mode}-color-button-primary-fill),
+			border-disabled: var(--krds-#{$mode}-color-button-disabled-border),
+			text: var(--krds-#{$mode}-color-text-inverse-static),
+			text-disabled: var(--krds-#{$mode}-color-text-disabled-on),
+		),
+		secondary: (
+			fill: var(--krds-#{$mode}-color-button-secondary-fill),
+			fill-hover: var(--krds-#{$mode}-color-button-secondary-fill-hover),
+			fill-pressed: var(--krds-#{$mode}-color-button-secondary-fill-pressed),
+			fill-disabled: var(--krds-#{$mode}-color-button-disabled-fill),
+			border: var(--krds-#{$mode}-color-button-secondary-border),
+			border-disabled: var(--krds-#{$mode}-color-button-disabled-border),
+			text: var(--krds-#{$mode}-color-text-primary),
+			text-disabled: var(--krds-#{$mode}-color-text-disabled-on),
+		),
+		tertiary: (
+			fill: var(--krds-#{$mode}-color-button-tertiary-fill),
+			fill-hover: var(--krds-#{$mode}-color-button-tertiary-fill-hover),
+			fill-pressed: var(--krds-#{$mode}-color-button-tertiary-fill-pressed),
+			fill-disabled: var(--krds-#{$mode}-color-button-disabled-fill),
+			border: var(--krds-#{$mode}-color-button-tertiary-border),
+			border-disabled: var(--krds-#{$mode}-color-button-disabled-border),
+			text: var(--krds-#{$mode}-color-text-basic),
+			text-disabled: var(--krds-#{$mode}-color-text-disabled-on),
+		),
+		text: (
+			fill: var(--krds-#{$mode}-color-button-text-fill),
+			fill-hover: var(--krds-#{$mode}-color-button-text-fill-hover),
+			fill-pressed: var(--krds-#{$mode}-color-button-text-fill-pressed),
+			fill-disabled: var(--krds-#{$mode}-color-button-text-fill),
+			border: var(--krds-#{$mode}-color-button-text-border),
+			border-disabled: var(--krds-#{$mode}-color-border-transparency),
+			text: var(--krds-#{$mode}-color-text-basic),
+			text-disabled: var(--krds-#{$mode}-color-text-disabled),
+		),
+		link: (
+			fill: var(--krds-#{$mode}-color-button-text-fill),
+			fill-hover: var(--krds-#{$mode}-color-button-text-fill),
+			fill-pressed: var(--krds-#{$mode}-color-button-text-fill),
+			fill-disabled: var(--krds-#{$mode}-color-button-text-fill),
+			border: var(--krds-#{$mode}-color-button-text-border),
+			border-disabled: var(--krds-#{$mode}-color-border-transparency),
+			text: var(--krds-#{$mode}-color-link-default),
+			text-disabled: var(--krds-#{$mode}-color-text-disabled),
+		),
+	) !default;
+
+	//css variable 생성
+	@each $color, $types in $button-color-variable {
+		@each $type, $value in $types {
+			--krds-button--color-#{$color}-#{$type}: #{$value};
+		}
+	}
+
+	//class 생성
+	& {
+		@include btn-color(primary);
+
+		& {
+			//컬러 별 class
+			@each $color, $types in $button-color-variable {
+				&.#{$color} {
+					@include btn-color(#{$color});
+					&:not(.icon) {
+						.svg-icon {
+							@include btn-color-icon(#{$color});
+						}
+					}
+
+					&:hover {
+						@include btn-color-hover(#{$color});
+					}
+					&:active,
+					&:focus {
+						@include btn-color-pressed(#{$color});
+					}
+
+					&[disabled],
+					&.disabled {
+						@include btn-color-disabled(#{$color});
+						&:not(.icon) {
+							.svg-icon {
+								background-color: var(--krds-button--color-#{$color}-text-disabled);
+							}
+						}
+						&:hover {
+							@include btn-color-disabled(#{$color});
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* icon 버튼 사이즈 */
+$button-icon-size: (
+	xsmall: var(--krds-size-height-2),
+	small: var(--krds-size-height-3),
+	medium: var(--krds-size-height-4),
+	large: var(--krds-size-height-5),
+	xlarge: var(--krds-size-height-6),
+) !default;
+
+//text버튼은 높이와 좌우 padding값이 달라 재정의 함
+@mixin btn-text-variable() {
+	//text버튼은 높이와 좌우 padding값이 달라 재정의 함
+	--krds-button--size-height-xsmall: var(--krds-size-height-3);
+	--krds-button--padding-x-xsmall: var(--krds-padding-1);
+	--krds-button--padding-y-xsmall: var(--krds-number-0);
+	--krds-button--size-height-small: var(--krds-size-height-4);
+	--krds-button--padding-x-small: var(--krds-padding-1);
+	--krds-button--padding-y-small: var(--krds-number-0);
+	--krds-button--size-height-medium: var(--krds-size-height-5);
+	--krds-button--padding-x-medium: var(--krds-padding-1);
+	--krds-button--padding-y-medium: var(--krds-number-2);
+	--krds-button--size-height-large: var(--krds-size-height-6);
+	--krds-button--padding-x-large: var(--krds-padding-1);
+	--krds-button--padding-y-large: 0.5rem;
+	--krds-button--size-height-xlarge: var(--krds-size-height-7);
+	--krds-button--padding-x-xlarge: var(--krds-padding-1);
+	--krds-button--padding-y-xlarge: 0.9rem;
+}
+//link버튼은 font size와 좌우 padding값이 달라 재정의 함
+@mixin btn-link-variable() {
+	--krds-button--pc-font-size-xsmall: var(--krds-pc-font-size-label-small);
+	--krds-button--mobile-font-size-xsmall: var(--krds-mobile-font-size-label-small);
+	--krds-button--padding-x-xsmall: var(--krds-padding-1);
+	--krds-button--pc-font-size-small: var(--krds-pc-font-size-label-small);
+	--krds-button--mobile-font-size-small: var(--krds-mobile-font-size-label-small);
+	--krds-button--padding-x-small: var(--krds-padding-1);
+	--krds-button--pc-font-size-medium: var(--krds-pc-font-size-label-medium);
+	--krds-button--mobile-font-size-medium: var(--krds-mobile-font-size-label-medium);
+	--krds-button--padding-x-medium: var(--krds-padding-1);
+	--krds-button--pc-font-size-large: var(--krds-pc-font-size-label-large);
+	--krds-button--mobile-font-size-large: var(--krds-mobile-font-size-label-large);
+	--krds-button--padding-x-large: var(--krds-padding-1);
+	--krds-button--pc-font-size-xlarge: var(--krds-pc-font-size-label-large);
+	--krds-button--mobile-font-size-xlarge: var(--krds-mobile-font-size-label-large);
+	--krds-button--padding-x-xlarge: var(--krds-padding-1);
+}
+
+//컬러별 variable
+@mixin btn-color($color) {
+	background-color: var(--krds-button--color-#{$color}-fill);
+	border-color: var(--krds-button--color-#{$color}-border);
+	color: var(--krds-button--color-#{$color}-text);
+}
+@mixin btn-color-hover($color) {
+	background-color: var(--krds-button--color-#{$color}-fill-hover);
+}
+@mixin btn-color-pressed($color) {
+	background-color: var(--krds-button--color-#{$color}-fill-pressed);
+}
+@mixin btn-color-disabled($color) {
+	background-color: var(--krds-button--color-#{$color}-fill-disabled);
+	border-color: var(--krds-button--color-#{$color}-border-disabled);
+	color: var(--krds-button--color-#{$color}-text-disabled);
+}
+@mixin btn-color-icon($color) {
+	background-color: var(--krds-button--color-#{$color}-text);
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-btn {
+	@include button-size-variable();
+}
+.krds-btn {
+	@include button-color-variable(#{$mode-setting});
+
+	& {
+		//기본버튼: primary large
+		@include flex-layout($d: inline-flex, $ai: center, $jc: center);
+		width: auto;
+		border-style: solid;
+		cursor: pointer;
+		white-space: nowrap;
+		transition: var(--krds-transition-base);
+		@include border-size-mode(#{$mode-setting});
+	}
+
+	.svg-icon {
+		@include btn-color-icon(primary);
+		transition: var(--krds-transition-base);
+	}
+	&:hover {
+		@include btn-color-hover(primary);
+	}
+	&:active,
+	&:focus {
+		@include btn-color-pressed(primary);
+	}
+	&[disabled],
+	&.disabled {
+		@include btn-color-disabled(primary);
+		cursor: default;
+		&:hover {
+			@include btn-color-disabled(primary);
+		}
+	}
+
+	&.text { //높이를 가짐
+		@include btn-text-variable();
+
+		//large 사이즈 기준 기본 세팅수정
+		display: inline-block;
+		height: auto !important;
+		padding: var(--krds-button--padding-y-large) var(--krds-button--padding-x-large);
+		text-align: left;
+		white-space: normal;
+		&.xsmall {
+			min-height: var(--krds-button--size-height-xsmall);
+			padding: var(--krds-button--padding-y-xsmall) var(--krds-button--padding-x-xsmall);
+			.svg-icon {
+				margin-bottom: -0.3rem;
+			}
+		}
+		&.small {
+			padding: var(--krds-button--padding-y-small) var(--krds-button--padding-x-small);
+			.svg-icon {
+				margin-bottom: -0.3rem;
+			}
+		}
+		&.medium {
+			padding: var(--krds-button--padding-y-medium) var(--krds-button--padding-x-medium);
+			.svg-icon {
+				margin-bottom: -0.4rem;
+			}
+		}
+		&.large {
+			padding: var(--krds-button--padding-y-large) var(--krds-button--padding-x-large);
+			.svg-icon {
+				margin-bottom: -0.5rem;
+			}
+		}
+		&.xlarge {
+			padding: var(--krds-button--padding-y-xlarge) var(--krds-button--padding-x-xlarge);
+			.svg-icon {
+				margin-bottom: -0.6rem;
+			}
+		}
+		&.h-auto {
+			height: auto;
+			padding: var(--krds-padding-1) !important;
+		}
+		.svg-icon {
+			display: inline-block;
+			margin-bottom: -0.5rem;
+		}
+	}
+	&.link { //링크인 경우 (텍스트 버튼과 비슷해보이지만 높이값 없음)
+		@include btn-link-variable();
+		//large 사이즈 기준 기본 세팅수정
+		display: inline-block;
+		height: auto !important;
+		padding: 0 var(--krds-button--padding-x-large);
+		font-size: var(--krds-button--pc-font-size-large);
+		text-align: left;
+		white-space: normal;
+		@include size-medium {
+			font-size: var(--krds-button--mobile-font-size-large);
+		}
+		&.xsmall {
+			padding: 0 var(--krds-button--padding-x-xsmall);
+			font-size: var(--krds-button--pc-font-size-xsmall);
+			@include size-medium {
+				font-size: var(--krds-button--mobile-font-size-xsmall);
+			}
+			.svg-icon {
+				margin-bottom: -0.3rem;
+			}
+		}
+		&.small {
+			padding: 0 var(--krds-button--padding-x-small);
+			font-size: var(--krds-button--pc-font-size-small);
+			@include size-medium {
+				font-size: var(--krds-button--mobile-font-size-small);
+			}
+			.svg-icon {
+				margin-bottom: -0.3rem;
+			}
+		}
+		&.medium {
+			padding: 0 var(--krds-button--padding-x-medium);
+			font-size: var(--krds-button--pc-font-size-medium);
+			@include size-medium {
+				font-size: var(--krds-button--mobile-font-size-medium);
+			}
+			.svg-icon {
+				margin-bottom: -0.4rem;
+			}
+		}
+		&.large {
+			padding: 0 var(--krds-button--padding-x-large);
+			font-size: var(--krds-button--pc-font-size-large);
+			@include size-medium {
+				font-size: var(--krds-button--mobile-font-size-large);
+			}
+			.svg-icon {
+				margin-bottom: -0.5rem;
+			}
+		}
+		&.xlarge {
+			padding: 0 var(--krds-button--padding-x-xlarge);
+			font-size: var(--krds-button--pc-font-size-xlarge);
+			@include size-medium {
+				font-size: var(--krds-button--mobile-font-size-xlarge);
+			}
+			.svg-icon {
+				margin-bottom: -0.6rem;
+			}
+		}
+		&.basic {
+			$color: var(--krds-#{$mode-setting}-color-text-basic);
+			color: $color;
+			.svg-icon {
+				background-color: $color;
+			}
+			&.pure {
+				&:hover,
+				&:active,
+				&:focus,
+				&:visited {
+					color: $color;
+					.svg-icon {
+						background-color: $color;
+					}
+				}
+			}
+		}
+		&:hover {
+			$color: var(--krds-#{$mode-setting}-color-link-hover);
+			color: $color;
+			.svg-icon {
+				background-color: $color;
+			}
+		}
+		&:active,
+		&:focus {
+			$color: var(--krds-#{$mode-setting}-color-link-pressed);
+			color: $color;
+			.svg-icon {
+				background-color: $color;
+			}
+		}
+		&:visited {
+			$color: var(--krds-#{$mode-setting}-color-link-visited);
+			color: $color;
+			text-decoration: none;
+			.svg-icon {
+				background-color: $color;
+			}
+		}
+		&.pure {
+			&:hover,
+			&:active,
+			&:focus,
+			&:visited {
+				$color: var(--krds-button--color-link-text);
+				color: $color;
+				.svg-icon {
+					background-color: $color;
+				}
+			}
+		}
+		.underline {
+			&.hidden-underline {
+				text-decoration-color: var(--krds-#{$mode-setting}-color-border-transparency);
+				transition: var(--krds-transition-base);
+			}
+		}
+		&:hover,
+		&:active,
+		&:focus,
+		&:visited {
+			.underline {
+				&.hidden-underline {
+					text-decoration-color: inherit;
+				}
+			}
+		}
+		.svg-icon {
+			display: inline-block;
+			margin-bottom: -0.5rem;
+		}
+	}
+
+	/* icon 버튼 (텍스트 없음) */
+	&.icon {
+		@each $size, $value in $button-icon-size {
+			--krds-button--icon-size-#{$size}: #{$value};
+		}
+
+		//기본 세팅
+		@include square(var(--krds-button--icon-size-medium));
+		padding: 0 !important;
+		background-color: transparent;
+		border-color: var(--krds-#{$mode-setting}-color-border-transparency);
+		color: inherit;
+		border: 0;
+		&:hover,
+		&:active {
+			background-color: inherit;
+		}
+
+		& {
+			@each $size, $value in $button-icon-size {
+				&.#{$size} {
+					@include square(var(--krds-button--icon-size-#{$size}));
+					//icon size
+					.svg-icon {
+						@include square(100%);
+					}
+				}
+			}
+		}
+
+		.svg-icon {
+			background-color: var(--krds-#{$mode-setting}-color-text-basic);
+		}
+		&.pure {
+			.svg-icon {
+				background-color: transparent;
+			}
+		}
+		//새로고침, 토글 등 보더 아이콘 버튼 형태
+		&.border {
+			background-color: var(--krds-#{$mode-setting}-color-background-white);
+			border: 0.1rem solid var(--krds-#{$mode-setting}-color-border-gray);
+			border-radius: var(--krds-radius-max);
+
+			//icon size 1.6rem
+			&.large {
+				.svg-icon {
+					@include square(var(--krds-icon--size-xsmall));
+				}
+			}
+			&.xlarge {
+				.svg-icon {
+					@include square(var(--krds-icon--size-xlarge));
+				}
+			}
+			&[disabled],
+			&.disabled {
+				background-color: var(--krds-#{$mode-setting}-color-button-disabled-fill);
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-btn {
+		@include border-size-mode(#{$mode-setting});
+		@include button-color-variable(#{$mode-setting});
+
+
+		&.text {
+			//class명 검토
+			&.ico-filter {
+				.num {
+					color: var(--krds-#{$mode-setting}-color-text-basic-inverse);
+					background-color: var(--krds-#{$mode-setting}-color-element-primary);
+				}
+			}
+		}
+		&.link {
+			&.basic {
+				$color: var(--krds-#{$mode-setting}-color-text-basic);
+				color: $color;
+				&:not(.icon) {
+					.svg-icon {
+						background-color: $color;
+					}
+				}
+				&.pure {
+					&:hover,
+					&:active,
+					&:focus,
+					&:visited {
+						color: $color;
+						.svg-icon {
+							background-color: $color;
+						}
+					}
+				}
+			}
+			&:hover {
+				$color: var(--krds-#{$mode-setting}-color-link-hover);
+				color: $color;
+				&:not(.icon) {
+					.svg-icon {
+						background-color: $color;
+					}
+				}
+			}
+			&:active,
+			&:focus {
+				$color: var(--krds-#{$mode-setting}-color-link-pressed);
+				color: $color;
+				&:not(.icon) {
+					.svg-icon {
+						background-color: $color;
+					}
+				}
+			}
+			&:visited {
+				$color: var(--krds-#{$mode-setting}-color-link-visited);
+				color: $color;
+				&:not(.icon) {
+					.svg-icon {
+						background-color: $color;
+					}
+				}
+			}
+			&.pure {
+				&:hover,
+				&:active,
+				&:focus,
+				&:visited {
+					$color: var(--krds-button--color-link-text);
+					color: $color;
+					.svg-icon {
+						background-color: $color;
+					}
+				}
+			}
+			.underline {
+				&.hidden-underline {
+					text-decoration-color: var(--krds-#{$mode-setting}-color-border-transparency);
+				}
+			}
+			&:hover,
+			&:active,
+			&:focus,
+			&:visited {
+				.underline {
+					&.hidden-underline {
+						text-decoration-color: inherit;
+					}
+				}
+			}
+		}
+		/* icon 버튼 (텍스트 없음) */
+		&.icon {
+			background-color: transparent;
+			border-color: var(--krds-#{$mode-setting}-color-border-transparency);
+
+			.svg-icon {
+				background-color: var(--krds-#{$mode-setting}-color-text-basic);
+			}
+			//새로고침, 토글 등 보더 아이콘 버튼 형태
+			&.border {
+				background-color: var(--krds-#{$mode-setting}-color-background-white);
+				border-color: var(--krds-#{$mode-setting}-color-border-gray);
+
+				&[disabled],
+				&.disabled {
+					background-color: var(--krds-#{$mode-setting}-color-button-disabled-fill);
+				}
+			}
+		}
+
+
+	}
+}
+
+/* **** button area **** */
+.btn-wrap {
+	width: 100%;
+}

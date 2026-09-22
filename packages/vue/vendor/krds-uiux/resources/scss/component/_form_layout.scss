@@ -1,0 +1,315 @@
+/* form 레이아웃 */
+//사이즈 정의
+@mixin form-layout-size-variable() {
+	--krds-form-group--label-pc-font-size: var(--krds-pc-font-size-label-small);
+	--krds-form-group--label-mobile-font-size: var(--krds-mobile-font-size-label-small);
+	--krds-form-group--gap: var(--krds-gap-3);
+	--krds-form-group--icon-padding-right: calc(var(--krds-padding-7) * 2 + var(--krds-icon--size-large));
+	--krds-form-group--message-pc-font-size: var(--krds-pc-font-size-label-xsmall);
+	--krds-form-group--message-mobile-font-size: var(--krds-mobile-font-size-label-xsmall);
+}
+
+//컬러 정의
+@mixin form-layout-color-variable($mode: light) {
+	--krds-form-group--message-text-color: var(--krds-#{$mode}-color-text-subtle);
+	--krds-form-group--message-success-text-color: var(--krds-#{$mode}-color-text-success);
+	--krds-form-group--message-information-text-color: var(--krds-#{$mode}-color-text-information);
+	--krds-form-group--message-error-text-color: var(--krds-#{$mode}-color-text-danger);
+}
+
+//모드 설정
+$mode-setting: light;
+
+.fieldset {
+	@include flex-layout($fd: column);
+	gap: var(--krds-gap-7);
+}
+
+.form-col-group{
+	display: flex;
+	gap: var(--krds-gap-5);
+
+	.form-group{
+		width: fit-content;
+	}
+
+	@include size-medium {
+		flex-direction: column;
+
+		.form-group{
+			width: 100%;
+		}
+	}
+}
+
+.form-group {
+	@include form-layout-size-variable();
+	@include form-layout-color-variable(#{$mode-setting});
+
+	@include flex-layout($ai: normal, $fd: column);
+	gap: var(--krds-form-group--gap);
+	width: 100%;
+	.form-tit,
+	.form-label {
+		width: 100%;
+		color: var(--krds-#{$mode-setting}-color-text-subtle);
+	}	
+	.form-conts {
+		@include flex-layout($fd: column);
+		gap:var(--krds-gap-4);
+		width: 100%;
+		&.keyword-sch {
+			width: 58.8rem;
+		}
+		.form-label  {
+			display: flex;
+			font-size: var(--krds-form-group--label-pc-font-size);
+			width: 100%;
+			@include size-medium {
+				font-size: var(--krds-form-group--label-mobile-font-size);
+			}
+		}
+		&.btn-ico-wrap { //input안에 button 노출
+			position: relative;
+			.krds-input {
+				padding-right: var(--krds-form-group--icon-padding-right);
+			}
+			.btn-group,
+			.krds-btn { //form control 우측에 버튼 정렬
+				@include position($t: 50%, $r: var(--krds-padding-7)); //form control large 사이즈에만 버튼 들어감
+				transform: translateY(-50%);
+			}
+			.btn-group { // form control 버튼이 여러개인경우
+				@include flex-layout($ai: center);
+				gap: var(--krds-gap-3);
+				.krds-btn {
+					position: static;
+					transform: translateY(0);
+				}
+			}
+			.btn-delete-input { //input 내용삭제 버튼은 value가 있을때만 보이게
+				display: none;
+				@at-root .form-conts {
+					&[data-delete="true"] {
+						.krds-input:not(:placeholder-shown) {
+							~.btn-delete-input {
+								display: flex;
+							}
+							~.btn-group {
+								.btn-delete-input {
+									display: flex;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		&.calendar-conts {
+			gap: 0;
+		}
+	}
+	> p {
+		width: 100%;
+	}
+	[class^=form-hint] {
+
+
+		@include flex-layout($ai: center);
+		gap: var(--krds-gap-2);
+		width: 100%;
+		font-size: var(--krds-form-group--message-pc-font-size);
+		color: var(--krds-form-group--message-text-color);
+		@include size-medium {
+			font-size: var(--krds-form-group--message-mobile-font-size);
+		}
+		&::before {
+			display: inline-flex;
+			@include pseudo();
+			@include svg-icon($size: var(--krds-icon--size-small), $mode: #{$mode-setting});
+			@include icon-set(ico_information);
+		}
+	}
+	[class^=form-hint-] {
+		&::before {
+			@include svg-icon($size: var(--krds-icon--size-small), $mode: #{$mode-setting}, $effect: pure);
+		}
+	}
+	.form-hint-success { //성공
+		color:var(--krds-form-group--message-success-text-color);
+		&::before {
+			@include icon-set(ico_success_fill, pure);
+		}
+	}
+	.form-hint-information { //정보
+		color:var(--krds-form-group--message-information-text-color);
+		&::before {
+			@include icon-set(ico_information_fill, pure);
+		}
+	}
+	.form-hint-invalid { //에러
+		color:var(--krds-form-group--message-error-text-color);
+		&::before {
+			@include icon-set(ico_error_fill, pure);
+		}
+	}
+}
+
+
+.krds-form-checks-inline {
+	display: flex;
+	gap:1.2rem;
+}
+
+.input-group { //input 여러개가 포함된 그룹
+	@include flex-layout($ai: center);
+	gap: var(--krds-gap-5);
+	width: 100%;
+	&.range { //범위설정 그룹 (주로 날짜범위설정에 사용됨)
+		align-items: flex-end;
+		position: relative;
+		> li {
+			&:not(.mark) {
+				@include flex-layout($fd: column);
+				@include equal-width();
+				gap: var(--krds-form-group--gap);
+				position: relative;
+			}
+			&.mark {
+				@include flex-layout($ai: center);
+				height: var(--krds-size-height-8);
+				&.large {
+					height: var(--krds-size-height-8);
+				}
+				&.medium {
+					height: var(--krds-size-height-7);
+				}
+				&.small {
+					height: var(--krds-size-height-6);
+				}
+			}
+		}
+	}
+}
+.row {
+	.input-group {
+		flex-direction: column;
+		&.range {
+			> li {
+				width: 100%;
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+
+	.form-group {
+		@include form-layout-color-variable(#{$mode-setting});
+
+		.form-tit,
+		.form-label {
+			color: var(--krds-#{$mode-setting}-color-text-subtle);
+		}
+
+		[class^=form-hint] {
+			&::before {
+				@include svg-icon($size: var(--krds-icon--size-small), $mode: #{$mode-setting});
+				@include icon-set(ico_information);
+			}
+		}
+		[class^=form-hint-] {
+			&::before {
+				@include svg-icon($size: var(--krds-icon--size-small), $mode: #{$mode-setting}, $effect: pure);
+			}
+		}
+		.form-hint-success { //성공
+			&::before {
+				@include icon-set(ico_success_fill, pure);
+			}
+		}
+		.form-hint-information { //정보
+			&::before {
+				@include icon-set(ico_information_fill, pure);
+			}
+		}
+		.form-hint-invalid { //에러
+			&::before {
+				@include icon-set(ico_error_fill, pure);
+			}
+		}
+	}
+}
+
+/* 검색 폼 */
+.sch-form-wrap {
+	@include flex-layout($ai: center);
+	gap: var(--krds-gap-5);
+	&.vert {
+		@include flex-layout($fd:column, $ai : flex-start);
+		.sch-input {
+			width: 100%;
+		}
+	}
+	.input-group {
+		.krds-form-select {
+			width: auto;
+		}
+	}
+	.krds-btn {
+		&.ico-sch-plus {
+			&::before {
+				@include square(var(--krds-size-height-4));				
+			}
+		}
+	}
+}
+.sch-input {
+	display: flex;
+	position: relative;
+	.krds-input {
+		padding: 0 var(--krds-size-height-7) 0 var(--krds-padding-6);
+		&.xlarge {
+			font-weight: var(--krds-font-weight-bold);
+			padding: 0 7.2rem 0 var(--krds-padding-8);  
+		}
+	}
+	.ico-search {
+		position: absolute;
+		top: 50%;
+		right: var(--krds-gap-5);
+		transform: translateY(-50%);
+	}
+}
+
+//모바일 전용
+@include size-medium {
+	.form-group {
+		.form-conts {
+			&.keyword-sch {
+				width: 100%;
+			}
+		}
+	}
+
+	/* 검색 폼 */
+	.sch-form-wrap {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.sch-input {
+		.krds-input {
+			&.xlg {
+				padding: 0 var(--krds-number-16) 0 var(--krds-number-8);
+				~ .ico-search {
+					right: var(--krds-number-8);
+					width: 2.4rem;
+					height: 2.4rem;
+				}
+			}
+		}
+	}
+}

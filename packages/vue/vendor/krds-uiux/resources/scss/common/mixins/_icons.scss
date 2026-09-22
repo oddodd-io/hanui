@@ -1,0 +1,34 @@
+//svg img
+@mixin svg-icon($size: var(--krds-icon--size-large), $mode: light, $effect: null) {
+	display: inline-flex;
+	@include square($size);
+	background-color: var(--krds-#{$mode}-color-text-basic);
+	@if ($effect == 'pure') { //mask 효과 없이 디자인된 svg 그대로 사용
+		background-color: transparent !important;
+	}
+	forced-color-adjust: none;
+	// @media (forced-colors: active) {
+	// }
+}
+
+//svg icon setting
+@mixin icon-set ($name, $effect: null) {
+	-webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center center;
+	-webkit-mask-size: contain;
+	mask-repeat: no-repeat;
+	mask-position: center center;
+	mask-size: contain;
+	-webkit-mask-image: url(#{$url}/img/component/icon/#{$name}.svg);
+	mask-image: url(#{$url}/img/component/icon/#{$name}.svg);
+	@if ($effect == 'pure') { //mask 효과 없이 디자인된 svg 그대로 사용
+		-webkit-mask-image: none;
+		mask-image: none;
+		background-image: url(#{$url}/img/component/icon/#{$name}.svg);
+		background-color: transparent !important;
+		background-size: contain;
+		background-repeat: no-repeat;
+		-webkit-mask: none;
+		mask: none;
+	}
+}

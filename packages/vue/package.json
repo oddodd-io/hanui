@@ -1,7 +1,7 @@
 {
   "name": "@hanui/vue-components",
-  "version": "0.1.1",
-  "description": "KRDS 기반 공공 웹사이트용 Vue 컴포넌트 라이브러리 - Korean Government Design System (KRDS) based Vue component library for public web services",
+  "version": "0.2.0",
+  "description": "KRDS HTML ComponentKit 리소스를 그대로 사용하는 공공 웹사이트용 Vue 컴포넌트 라이브러리",
   "keywords": [
     "vue",
     "components",
@@ -30,14 +30,14 @@
     "access": "public"
   },
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs"
     },
     "./styles.css": "./dist/vue.css"
   },
@@ -48,25 +48,31 @@
   ],
   "scripts": {
     "dev": "vite build --watch",
-    "build": "vite build",
-    "lint": "echo 'Vue lint: TODO - configure eslint for .vue files'",
+    "build": "vue-tsc --noEmit -p tsconfig.json && vite build",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json",
+    "lint": "eslint src --ext .ts,.vue",
     "test": "vitest run",
     "test:watch": "vitest",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "vue": "^3.3.0"
+    "vue": "^3.5.0"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/vue3-vite": "^10.6.0",
     "@testing-library/vue": "^8.1.0",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
     "axe-core": "^4.11.0",
     "eslint-plugin-vue": "^10.6.2",
-    "happy-dom": "^20.0.11",
     "jsdom": "^27.2.0",
-    "swiper": "^12.0.3",
+    "sass-embedded": "^1.83.0",
+    "storybook": "^10.6.0",
     "typescript": "^5.7.3",
     "vite": "^6.0.7",
     "vite-plugin-dts": "^4.5.4",
@@ -75,14 +81,5 @@
     "vue": "^3.5.13",
     "vue-eslint-parser": "^10.2.0",
     "vue-tsc": "^2.2.0"
-  },
-  "dependencies": {
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-vue-next": "^0.468.0",
-    "tailwind-merge": "^3.4.0"
-  },
-  "optionalDependencies": {
-    "shiki": "^1.0.0"
   }
 }

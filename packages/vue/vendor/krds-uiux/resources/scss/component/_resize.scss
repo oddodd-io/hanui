@@ -1,0 +1,100 @@
+/* 화면 크기 조정 */
+//사이즈 정의
+@mixin resize-size-variable() {
+	--krds-resize--list-icon-radius: var(--krds-radius-small2);
+}
+
+//컬러 정의
+@mixin resize-color-variable($mode: light) {
+	--krds-resize--list-icon-color-border: var(--krds-#{$mode}-color-border-gray);
+	--krds-resize--list-icon-color-border-selected: var(--krds-#{$mode}-color-element-secondary);
+	--krds-resize--list-icon-color-background: var(--krds-#{$mode}-color-action-secondary);
+	--krds-resize--list-icon-color-background-selected: var(--krds-#{$mode}-color-element-secondary);
+}
+
+//모드 설정
+$mode-setting: light;
+/* krds-drop-wrap */
+.krds-drop-wrap {
+	@include resize-size-variable();
+	@include resize-color-variable(#{$mode-setting});
+
+	&.krds-resize {
+		.drop-menu {
+			min-width: 15rem;
+		}
+		.drop-list {
+			.item-link {
+				white-space: nowrap;
+				&::before {
+					@include pseudo();
+					@include square(var(--krds-icon--size-large));
+					background: url(#{$url}/img/component/icon/head_ico_font_sample.svg) no-repeat center / contain;
+					flex-shrink: 0;
+					border-radius: var(--krds-resize--list-icon-radius);
+					border: 0.1rem solid var(--krds-resize--list-icon-color-border);
+					background-color: var(--krds-resize--list-icon-color-background);
+				}
+				&.active {
+					&::before {
+						background-image: url(#{$url}/img/component/icon/head_ico_font_sample_white.svg);
+						border-color: var(--krds-resize--list-icon-color-border-selected);
+						background-color: var(--krds-resize--list-icon-color-background-selected);
+					}
+				}
+				$sizes: (
+					sm: 2.2,
+					md: 2.4,
+					lg: 2.6,
+					xlg: 2.8,
+					xxlg: 3,
+				);
+				@each $name, $size in $sizes {
+					$icon-size: #{$size}rem;
+					&.#{$name} {
+						&::before {
+							width: $icon-size;
+							height: $icon-size;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// krds-scaled-layout
+.krds-scaled-layout {
+	.krds-in-page-navigation-type {
+		& > .inner:not(.in-between) {
+			padding-right: 0;
+		}
+		.in-between {
+			.contents {
+				padding-right: 0;
+			}
+		}
+		.krds-in-page-navigation-area {
+			position: static;
+			margin-bottom: var(--krds-gap-9);
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+
+	/* krds-drop-wrap */
+	.krds-drop-wrap {
+		@include resize-color-variable(#{$mode-setting});
+		&.krds-resize {
+			.item-link {
+				&::before {
+					background: url(#{$url}/img/component/icon/head_ico_font_sample_white.svg) no-repeat center / contain;
+				}
+			}
+		}
+	}
+}

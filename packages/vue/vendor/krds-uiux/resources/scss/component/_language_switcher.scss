@@ -1,0 +1,61 @@
+/* 언어 변경 */
+//사이즈 정의
+@mixin resize-size-variable() {
+	--krds-language--top-title-pc-font-size: var(--krds-pc-font-size-navigation-depth-medium-bold);
+	--krds-language--top-title-mobile-font-size: var(--krds-mobile-font-size-navigation-depth-medium-bold);
+	--krds-language--top-title-sub-pc-font-size: var(--krds-pc-font-size-navigation-depth-small);
+	--krds-language--top-title-sub-mobile-font-size: var(--krds-mobile-font-size-navigation-depth-small);
+}
+
+//컬러 정의
+@mixin language-color-variable($mode: light) {
+	--krds-language--top-title-color: var(--krds-#{$mode}-color-text-secondary);
+	--krds-language--top-title-sub-color: var(--krds-#{$mode}-color-text-subtle);
+}
+
+//모드 설정
+$mode-setting: light;
+
+.krds-drop-wrap {
+	@include language-color-variable(#{$mode-setting});
+
+  &.krds-language {
+    .drop-menu {
+			min-width: 20rem;
+		}
+    .drop-top {
+      .current-laguage {
+        @include flex-layout($fd: column, $ai: flex-start);
+        strong {
+          color: var(--krds-language--top-title-color);
+          font-weight: var(--krds-font-weight-bold);
+          font-size: var(--krds-language--top-title-pc-font-size);
+          @include size-medium {
+            font-size: var(--krds-language--top-title-mobile-font-size);
+          }
+        }
+        span {
+          color: var(--krds-language--top-title-sub-color);
+          font-size: var(--krds-language--top-title-sub-pc-font-size);
+          @include size-medium {
+            font-size: var(--krds-language--top-title-sub-mobile-font-size);
+          }
+        }
+      }
+    }
+    .drop-list {
+      min-width: 20rem;
+    }
+  }
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+  //모드 설정
+  $mode-setting: high-contrast;
+
+  /* krds-drop-wrap */
+  .krds-drop-wrap {
+		@include language-color-variable(#{$mode-setting});
+  }
+}

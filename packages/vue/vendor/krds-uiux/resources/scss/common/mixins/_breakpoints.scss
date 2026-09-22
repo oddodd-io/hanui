@@ -1,0 +1,45 @@
+@import "../group_variables";
+
+@mixin size-medium { // 767까지
+	@media (max-width: $breakpoint-medium - 1px) {
+		@content;
+	}
+}
+@mixin size-medium-more { // 768이상
+	@media (min-width: calc($breakpoint-medium)) {
+		@content;
+	}
+}
+
+@mixin size-medium-to-large { //  768 ~ 1023
+	@media (min-width: calc($breakpoint-medium)) and (max-width: $breakpoint-large - 1px) {
+		@content;
+	}
+}
+
+//tablet size 이하
+@mixin size-large-less { // 1023까지
+	@media (max-width: $breakpoint-large - 1px) {
+		@content;
+	}
+}
+
+//tablet size 이상
+@mixin size-large-more { // 1024이상
+	@media (min-width: calc($breakpoint-large)) {
+		@content;
+	}
+}
+
+//소형 데스크톱
+@mixin size-large-to-xlarge { // 1024 ~ 1279
+	@media (min-width: calc($breakpoint-large)) and (max-width: calc($breakpoint-xlarge - 1px)) {
+		@content;
+	}
+}
+
+@mixin size-xlarge { // 1280 이상
+	@media (min-width: $breakpoint-xlarge) {
+		@content;
+	}
+}

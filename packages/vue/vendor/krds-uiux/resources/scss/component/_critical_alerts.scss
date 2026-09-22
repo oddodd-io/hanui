@@ -1,0 +1,144 @@
+/* 긴급 공지  */
+
+//사이즈 정의
+@mixin critical-badge-size-variable() {
+    --krds-critical-alerts--size-max-width: 84.6rem;
+    --krds-critical-alerts--gap: var(--krds-number-6);
+    --krds-critical-alerts--padding: var(--krds-padding-7);
+    --krds-critical-alerts--banner-gap: var(--krds-gap-5);
+    --krds-critical-alerts--banner-padding: var(--krds-pc-padding-card-xsmall);
+    --krds-critical-alerts--banner-radius: var(--krds-radius-large2);
+
+    --krds-critical-alerts--badge-size-min-width: 7.8rem;
+    --krds-critical-alerts--badge-size-height: var(--krds-size-height-7);
+    --krds-critical-alerts--badge-gap:var(--krds-gap-2);
+    --krds-critical-alerts--badge-padding: var(--krds-padding-4);
+    --krds-critical-alerts--badge-radius: var(--krds-radius-medium2);
+    --krds-critical-alerts--badge-pc-font-size: var(--krds-pc-font-size-body-medium);
+    --krds-critical-alerts--badge-mobile-font-size: var(--krds-mobile-font-size-body-small);
+    --krds-critical-alerts--badge-icon-size: var(--krds-gap-7);
+
+    //mobile
+    --krds-critical-alerts--mobile-padding: var(--krds-padding-6);
+    --krds-critical-alerts--mobile-banner-padding: var(--krds-mobile-padding-card-xsmall);
+    --krds-critical-alerts--mobile-badge-size-height: 3.9rem;
+    --krds-critical-alerts--mobile-badge-icon-size: var(--krds-gap-6);
+    --krds-critical-alerts--mobile-badge-padding: var(--krds-padding-3);
+}
+
+//컬러 정의
+@mixin critical-badge-color-variable($mode: light) {
+    --krds-critical-alerts--banner-border-width: var(--krds-#{$mode}-border-width-variable-regular);
+    --krds-critical-alerts--banner-color-action: var(--krds-#{$mode}-color-surface-white-subtle);
+    --krds-critical-alerts--banner-color-border: var(--krds-#{$mode}-color-border-gray-light);
+	--krds-critical-alerts--banner-shadow: 0 0 0.2rem 0 var(--krds-#{$mode}-color-alpha-shadow1), 0 0.4rem 0.8rem 0 var(--krds-#{$mode}-color-alpha-shadow2);
+    --krds-critical-alerts--badge-color-background-danger: var(--krds-#{$mode}-color-element-danger);
+    --krds-critical-alerts--badge-color-background-ok: var(--krds-#{$mode}-color-element-success);
+    --krds-critical-alerts--badge-color-background-info: var(--krds-#{$mode}-color-element-information);
+    --krds-critical-alerts--badge-color-text: var(--krds-#{$mode}-color-text-inverse-static);
+}
+
+//critical badge style
+@mixin critical-badge-style($type) {
+    $background-color: var(--krds-critical-alerts--badge-color-background-#{$type});
+    $icon: ico_urgent_badge_#{$type};
+
+    background-color: $background-color;
+
+    &::before {
+        @include icon-set($icon, pure);
+    }
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-critical-alerts {
+    @include critical-badge-size-variable();
+    @include critical-badge-color-variable(#{$mode-setting});
+    
+    @include flex-layout($fd: column, $ai: normal);
+    gap: var(--krds-critical-alerts--gap);
+    width: 100%;
+    max-width: var(--krds-critical-alerts--size-max-width);
+    padding: var(--krds-critical-alerts--padding); 
+    margin: 0 auto;
+    .critical-ban {
+        @include flex-layout($ai: center);
+        gap: var(--krds-critical-alerts--banner-gap);
+        padding: var(--krds-critical-alerts--banner-padding);
+        background-color: var(--krds-critical-alerts--banner-color-action);
+        border:var(--krds-critical-alerts--banner-border-width) solid var(--krds-critical-alerts--banner-color-border);
+        border-radius: var(--krds-critical-alerts--banner-radius);
+		box-shadow: var(--krds-critical-alerts--banner-shadow);
+    }
+    .critical-badge {
+        @include flex-layout($ai: center);
+        gap: var(--krds-critical-alerts--badge-gap);
+        font-size: var(--krds-critical-alerts--badge-pc-font-size);
+        font-weight: var(--krds-font-weight-bold);
+        color: var(--krds-critical-alerts--badge-color-text);
+        min-width: var(--krds-critical-alerts--badge-size-min-width);
+        height: var(--krds-critical-alerts--badge-size-height);
+        padding: 0 var(--krds-critical-alerts--badge-padding);
+        border-radius: var(--krds-critical-alerts--badge-radius);
+        @include size-medium {
+			font-size: var(--krds-critical-alerts--badge-mobile-font-size);
+		}
+        &::before {
+        display: inline-flex;
+        @include pseudo();
+        @include square(var(--krds-critical-alerts--badge-icon-size));
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        }
+        &.danger {
+            @include critical-badge-style(danger);
+        }
+        &.ok {
+            @include critical-badge-style(ok);
+        }
+        &.info {
+            @include critical-badge-style(info);
+        }
+    }
+    .critical-txt {
+        flex: 1;
+        font-weight: var(--krds-font-weight-bold);
+        @include ellipsis(2);
+    }
+}
+
+//모바일 전용
+@include size-medium {
+    .krds-critical-alerts {
+        padding: var(--krds-critical-alerts--mobile-padding);
+        .critical-ban {
+            height: auto;
+            padding: var(--krds-critical-alerts--mobile-banner-padding);
+        }
+        .critical-txt {
+            display: block;
+            overflow: visible;
+        }
+        .critical-badge {
+            min-width: auto;
+            height: var(--krds-critical-alerts--mobile-badge-size-height);
+            padding: var(--krds-critical-alerts--mobile-badge-padding);
+            &::before {
+                @include square(var(--krds-critical-alerts--mobile-badge-icon-size));
+            }
+        }
+       
+    }
+}
+
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+    //모드 설정
+	$mode-setting: high-contrast;
+    .krds-critical-alerts {
+        @include critical-badge-color-variable(#{$mode-setting});
+    }
+}

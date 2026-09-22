@@ -1,0 +1,306 @@
+/* 도움 패널 */
+//모드 설정
+$mode-setting: light;
+
+//사이즈 정의
+@mixin help-panel-size-variable() {
+    --krds-help-panel--pc-width: 39rem;
+    --krds-help-panel--mobile-width: calc(100vw - 3rem);
+    --krds-help-panel--pc-padding: var(--krds-padding-10);
+    --krds-help-panel--mobile-padding: var(--krds-padding-6);
+    --krds-help-panel--title-pc-font-size: var(--krds-pc-font-size-heading-small);
+    --krds-help-panel--title-mobile-font-size: var(--krds-mobile-font-size-heading-small);
+    --krds-help-panel--pc-gap-title-link-list: var(--krds-pc-gap-layout-title-body-small);
+    --krds-help-panel--mobile-gap-title-link-list: var(--krds-mobile-gap-layout-title-body-small);
+    --krds-help-panel--pc-gap-link-list: var(--krds-pc-gap-layout-text-text-small);
+    --krds-help-panel--mobile-gap-link-list: var(--krds-mobile-gap-layout-text-text-small);
+    --krds-help-panel--pc-gap-help-conts: var(--krds-pc-gap-layout-title-body-small);
+    --krds-help-panel--mobile-gap-help-conts: var(--krds-mobile-gap-layout-title-body-small);
+    --krds-help-panel--desc-pc-font-size: var(--krds-pc-font-size-body-medium);
+    --krds-help-panel--desc-mobile-font-size: var(--krds-mobile-font-size-body-medium);
+    --krds-help-panel--service-title-pc-font-size: var(--krds-pc-font-size-heading-xsmall);
+    --krds-help-panel--service-title-mobile-font-size: var(--krds-mobile-font-size-heading-xsmall);
+}
+
+//컬러 정의
+@mixin help-panel-color-variable($mode: light) {
+    --krds-help-panel--color-border: var(--krds-#{$mode}-color-border-gray);
+    --krds-help-panel--color-background: var(--krds-#{$mode}-color-surface-gray-subtler);
+    --krds-help-panel--shadow: 0 0 0.2rem 0 var(--krds-#{$mode}-color-alpha-shadow2), 0 0.8rem 1.6rem 0 var(--krds-#{$mode}-color-alpha-shadow3);
+    --krds-help-panel--color-text-subtle: var(--krds-#{$mode}-color-text-subtle);
+    --krds-help-panel--color-text-bolder: var(--krds-#{$mode}-color-text-bolder);
+    --krds-help-panel--service-color-divider: var(--krds-#{$mode}-color-divider-gray-light);
+    --krds-help-panel--coach-color-text-primary: var(--krds-#{$mode}-color-text-primary);
+    --krds-help-panel--coach-color-border: var(--krds-#{$mode}-color-divider-gray);
+    --krds-help-panel--coach-color-text: var(--krds-#{$mode}-color-text-basic);
+}
+
+// krds-help-panel
+.krds-help-panel {
+    @include help-panel-size-variable();
+    @include help-panel-color-variable(#{$mode-setting});
+
+    @include position($p: fixed, $t: 0, $b: 0, $r: 0);
+    width: var(--krds-help-panel--pc-width);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: var(--krds-transition-base);
+    z-index: 60;
+    &.expand {
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(0);
+    }
+    .help-panel-wrap {
+        @include position($t: 0, $l: 0, $b: 0, $r: 0);
+        background-color: var(--krds-help-panel--color-background);
+        border-left: 1px solid var(--krds-help-panel--color-border);
+        transition: var(--krds-transition-base);
+        z-index: 1;
+		box-shadow: var(--krds-help-panel--shadow);
+
+        .help-conts-area {
+            @include flex-layout($fd: column);
+            padding: var(--krds-help-panel--pc-padding);
+            padding-top: calc(var(--krds-help-panel--pc-padding) + var(--krds-size-height-6));
+            gap: var(--krds-gap-8);
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+            transition: var(--krds-transition-base);
+            height: 100%;
+        }
+        .help-conts-area-inner {
+            @include flex-layout($fd: column, $jc: space-between);
+            gap: var(--krds-gap-8);
+            flex: 1;
+            .conts-area {
+				width: 100%;
+                @include flex-layout($ai: flex-start, $jc: flex-start, $fd: column);
+                gap: var(--krds-gap-9);
+            }
+        }
+        .krds-tab-area,
+        .tab-conts-wrap,
+        .tab-conts {
+            height: 100%;
+        }
+        .help-panel-action {
+            width: 100%;
+            border-top: 1px solid var(--krds-help-panel--service-color-divider);
+            padding-top: var(--krds-padding-9);
+            .coach-btn-stop {
+                position: static;
+            }
+        }
+
+        // 헬프 버튼 링크 리스트
+        .link-list {
+            @include flex-layout($fd: column);
+            gap: var(--krds-help-panel--pc-gap-link-list);
+        }
+
+        // 콘텐츠 영역 설정
+        .conts-area {
+            // 타이틀
+            .help-title {
+                @include flex-layout($ai: center);
+                font-size: var(--krds-help-panel--title-pc-font-size);
+                color: var(--krds-help-panel--color-text-bolder);
+                font-weight: var(--krds-font-weight-bold);
+                & > a,
+                & > button {
+                    @include flex-layout($ai: center);
+                    gap: var(--krds-gap-2);
+                    &::before {
+                        @include pseudo();
+                        @include svg-icon($size: var(--krds-number-10), $mode: #{$mode-setting});
+                        @include icon-set(ico_angle);
+				        transform: rotate(90deg);
+                        background-color: var(--krds-help-panel--color-text-bolder);
+                        flex-shrink: 0;
+                    }
+                }
+                .krds-btn {
+                    &.icon {
+                        margin-left: var(--krds-gap-2);
+                    }
+                }
+				+ .link-list{
+					margin-top: var(--krds-help-panel--pc-gap-title-link-list);
+				}
+            }
+            &.related-service {
+                .help-title {
+                    font-size: var(--krds-help-panel--service-title-pc-font-size);
+                }
+            }
+            // 일반영역
+            &.help-conts {
+                width: 100%;
+                .conts-wrap {
+					display: flex;
+					flex-direction: column;
+                    gap: var(--krds-help-panel--pc-gap-help-conts);
+                    .conts-desc {
+                        @include flex-layout($fd: column);
+                        gap: var(--krds-gap-2);
+                        font-size: var(--krds-help-panel--desc-pc-font-size);
+                        color: var(--krds-help-panel--color-text-subtle);
+                    }
+                    .help-desc {
+                        font-size: var(--krds-help-panel--desc-pc-font-size);
+                        color: var(--krds-help-panel--color-text-subtle);
+                    }
+                }
+                .krds-accordion {
+                    width: 100%;
+                }
+            }
+            // 서비스 영역
+            &.related-service {
+                padding-top: var(--krds-padding-9);
+                gap: var(--krds-gap-8);
+                border-top: 1px solid var(--krds-help-panel--service-color-divider);
+                transition: var(--krds-transition-base);
+            }
+        }
+    }
+
+    // 따라하기 패널 컨텐츠
+    .coach-help-process {
+        @include flex-layout($ai: stretch, $fd: column);
+        gap: var(--krds-gap-9);
+        width: 100%;
+        > li {
+            + li {
+                padding-top: var(--krds-gap-9);
+                border-top: 0.1rem solid var(--krds-help-panel--coach-color-border);
+            }
+        }
+        .tit {
+            display: flex;
+            margin-bottom: var(--krds-gap-5);
+            font-size: var(--krds-pc-font-size-body-large);
+            color: var(--krds-help-panel--coach-color-text);
+            &.current {
+                color: var(--krds-help-panel--coach-color-text-primary);
+            }
+        }
+    }
+}
+
+// 도움패널 펼치고 닫는 버튼
+.btn-help-panel {
+    @include position($p: fixed, $t: 4rem, $r: 4rem);
+}
+
+/* 도움패널 flexible 레이아웃 */
+#container {
+    .help-panel-flexible {
+        --krds-help-panel--width: 39rem;
+        transition: var(--krds-transition-base);
+        @media (min-width: 1248px) and (max-width: 1860px) {
+            --krds-help-panel--flexible-padding: calc(var(--krds-help-panel--width) - ((100% - var(--krds-contents-wrap-size)) / 2) + 4.5rem);
+            &.help-panel-expanded {
+                padding-right: var(--krds-help-panel--flexible-padding);
+            }
+        }
+        @media (min-width: 1024px) and (max-width: 1248px) {
+            --krds-help-panel--flexible-padding: calc(var(--krds-help-panel--width) + 4.5rem);
+            &.help-panel-expanded {
+                padding-right: var(--krds-help-panel--flexible-padding);
+            }
+        }
+    }
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+    //모드 설정
+    $mode-setting: high-contrast;
+
+    // krds-help-panel
+    .krds-help-panel {
+        @include help-panel-color-variable(#{$mode-setting});
+    }
+
+    // 도움말 패널 펼치고 닫는 버튼
+    .btn-help-panel {
+        background-color: var(--krds-#{$mode-setting}-color-background-white) !important;
+    }
+}
+
+//responsive tabletMore
+@include size-large-more {
+    .krds-help-panel {
+        .help-panel-wrap {
+            .help-conts-area {
+                @include scrollbar;
+            }
+        }
+    }
+}
+
+//responsive tabletLess
+@include size-large-less {
+    .krds-help-panel {
+        position: fixed;
+        z-index: 71;
+        width: var(--krds-help-panel--mobile-width);
+
+        &::after {
+            @include position($p: fixed, $t: 0, $l: -3rem, $r: 0, $b: 0);
+            @include pseudo();
+            background: transparent;
+            transition: var(--krds-transition-base);
+        }
+        .help-panel-wrap {
+            padding: var(--krds-help-panel--mobile-padding);
+            .help-conts-area {
+                padding: 0;
+                .btn-help-panel {
+                    @include position($p: fixed, $t: 4rem, $r: 1.6rem);
+                }
+                // 탭 없이 나오는 경우
+                & > .help-conts-area-inner {
+                    padding-top: var(--krds-number-20);
+                }
+            }
+
+			// 헬프 버튼 링크 리스트
+			.link-list {
+				gap: var(--krds-help-panel--mobile-gap-link-list);
+			}
+
+			.conts-area {
+				// 타이틀
+				.help-title {
+					font-size: var(--krds-help-panel--title-mobile-font-size);
+					+ .link-list{
+						margin-top: var(--krds-help-panel--mobile-gap-title-link-list);
+					}
+				}
+				// 일반영역
+				&.help-conts {
+					.conts-wrap {
+						gap: var(--krds-help-panel--mobile-gap-help-conts);
+					}
+				}
+			}
+        }
+        &.expand {
+            &::after {
+                background: rgba(0, 0, 0, 0.6);
+                transition-delay: 0.3s;
+            }
+        }
+    }
+
+    // 도움말 패널 펼치고 닫는 버튼
+    .btn-help-panel {
+        @include position($p: fixed, $t: 2.4rem, $r: 1.6rem);
+        background-color: var(--krds-light-color-background-white) !important;
+    }
+}

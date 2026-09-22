@@ -1,0 +1,199 @@
+/* 토글 스위치 */
+//사이즈 정의
+@mixin form-toggle-switch-size-variable() {
+	//변수 배열 생성
+	$form-toggle-switch-size: (
+		medium: (
+			button-size-width: 3.2rem,
+			button-size-height: var(--krds-size-height-3),
+			check-size: var(--krds-form-toggle-switch--button-size-height-medium),
+			icon-size: 0.8rem,
+			button-radius: var(--krds-form-toggle-switch--button-size-height-medium),
+			pc-font-size: var(--krds-pc-font-size-label-medium),
+			mobile-font-size: var(--krds-mobile-font-size-label-medium),
+		),
+		large: (
+			button-size-width: 4rem,
+			button-size-height: var(--krds-size-height-4),
+			check-size: var(--krds-form-toggle-switch--button-size-height-large),
+			icon-size: 1rem,
+			button-radius: var(--krds-form-toggle-switch--button-size-height-large),
+			pc-font-size: var(--krds-pc-font-size-label-large),
+			mobile-font-size: var(--krds-mobile-font-size-label-large),
+			),
+	) !default;
+
+	//css variable 생성
+	@each $size, $types in $form-toggle-switch-size {
+		@each $type, $value in $types {
+			//css variable 생성
+			--krds-form-toggle-switch--#{$type}-#{$size}: #{$value};
+		}
+	}
+
+	--krds-form-toggle-switch--gap: var(--krds-gap-3);
+
+	//class 정의
+	& {
+		@each $size, $types in $form-toggle-switch-size {
+			//사이즈 별 class
+			&.#{$size} {
+				[type="checkbox"] {
+					~ label {
+						@include form-toggle-switch(#{$size});
+						.switch-toggle {
+							@include form-toggle-switch-button(#{$size});
+							& > i {
+								@include form-toggle-switch-check(#{$size});
+								&::before {
+									@include form-toggle-switch-icon(#{$size});
+								}
+							}
+						}
+					}
+					&:checked {
+						~ label {
+							.switch-toggle {
+								& > i {
+									@include form-toggle-switch-check-checked(#{$size});
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//컬러 정의
+@mixin form-toggle-switch-color-variable($mode: light) {
+	--krds-form-toggle-switch--color-text: var(--krds-#{$mode}-color-text-basic);
+	--krds-form-toggle-switch--color-text-disabled: var(--krds-#{$mode}-color-text-disabled);
+	--krds-form-toggle-switch--button-color-background: var(--krds-#{$mode}-color-element-gray);
+	--krds-form-toggle-switch--button-color-background-checked: var(--krds-#{$mode}-color-element-primary);
+	--krds-form-toggle-switch--check-color-background: var(--krds-#{$mode}-color-element-inverse);
+	--krds-form-toggle-switch--button-color-background-disabled: var(--krds-#{$mode}-color-element-disabled-light);
+	--krds-form-toggle-switch--check-color-background-disabled: var(--krds-#{$mode}-color-element-disabled-dark);
+	--krds-form-toggle-switch--check-color-border: var(--krds-form-toggle-switch--button-color-background);
+	--krds-form-toggle-switch--check-color-border-checked: var(--krds-form-toggle-switch--button-color-background-checked);
+	--krds-form-toggle-switch--check-color-border-disabled: var(--krds-form-toggle-switch--button-color-background-disabled);
+}
+
+//switch 전체영역 사이즈 정의
+@mixin form-toggle-switch($size) {
+	gap: var(--krds-form-toggle-switch--gap);
+	font-size: var(--krds-form-toggle-switch--pc-font-size-#{$size});
+	line-height: var(--krds-form-toggle-switch--button-size-height-#{$size});
+	@include size-medium {
+		font-size: var(--krds-form-toggle-switch--mobile-font-size-#{$size});
+	}
+}
+//switch-toggle 사이즈 정의
+@mixin form-toggle-switch-button($size) {
+	width: var(--krds-form-toggle-switch--button-size-width-#{$size});
+	height: var(--krds-form-toggle-switch--button-size-height-#{$size});
+	border-radius: var(--krds-form-toggle-switch--button-radius-#{$size});
+}
+//switch-toggle > i(checker) 사이즈 정의
+@mixin form-toggle-switch-check($size) {
+	@include square(var(--krds-form-toggle-switch--check-size-#{$size}));
+	border-radius: var(--krds-radius-max);
+}
+//switch-toggle > i(checker) checked 시 위치 정의
+@mixin form-toggle-switch-check-checked($size) {
+	//버튼 넓이 - 체크버튼 넓이
+	left: calc(var(--krds-form-toggle-switch--button-size-width-#{$size}) - var(--krds-form-toggle-switch--check-size-#{$size}));
+}
+//switch-toggle > i::before(icon) 사이즈 정의
+@mixin form-toggle-switch-icon($size) {
+	@include svg-icon($size: #{var(--krds-form-toggle-switch--icon-size-#{$size})}, $mode: #{$mode-setting});
+	background-color: var(--krds-form-toggle-switch--button-color-background);
+}
+
+//모드 설정
+$mode-setting: light;
+.krds-form-toggle-switch {
+	
+	@include form-toggle-switch-color-variable($mode: #{$mode-setting});
+
+	position: relative;
+	display: inline-flex;
+	
+	@include form-toggle-switch-size-variable();
+
+	$size: large;
+
+	&.focus {
+		[type="checkbox"] ~ label {
+			@include focus();
+		}
+	}
+
+	[type="checkbox"] {
+		~ label {
+			display: inline-flex;
+			align-items: center;
+			@include form-toggle-switch(#{$size});
+			.switch-toggle {
+				@include form-toggle-switch-button(#{$size});
+				background-color: var(--krds-form-toggle-switch--button-color-background);
+				transition: .4s cubic-bezier(.4, .0, .23, 1);
+				& > i {
+					@include position($t: 0, $l: 0);
+					@include flex-layout($ai: center, $jc: center);
+					@include form-toggle-switch-check(#{$size});
+					background-color: var(--krds-form-toggle-switch--check-color-background);
+					border: 0.2rem solid var(--krds-form-toggle-switch--check-color-border);
+					box-sizing: border-box;
+					transition: .4s cubic-bezier(.4, .0, .23, 1);
+					&::before {
+						@include pseudo();
+						@include form-toggle-switch-icon(#{$size});
+						@include icon-set(ico_switch_off);
+						
+						margin-left: -0.1rem;
+					}
+				}
+			}
+		}
+		&:checked {
+			~ label {
+				.switch-toggle {
+					background-color: var(--krds-form-toggle-switch--button-color-background-checked);
+					& > i {
+						@include form-toggle-switch-check-checked(#{$size});
+						border-color: var(--krds-form-toggle-switch--check-color-border-checked);
+						&::before {
+							@include icon-set(ico_switch_on);
+							background-color: var(--krds-form-toggle-switch--check-color-border-checked);
+						}
+					}
+				}
+			}
+		}
+		&:disabled {
+			~ label {
+				.switch-toggle {
+					background-color: var(--krds-form-toggle-switch--button-color-background-disabled);
+					& > i {
+						background-color: var(--krds-form-toggle-switch--check-color-background-disabled);
+						border-color: var(--krds-form-toggle-switch--check-color-border-disabled);
+						&::before {
+							background-color: var(--krds-form-toggle-switch--button-color-background-disabled);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+	//모드 설정
+	$mode-setting: high-contrast;
+	.krds-form-toggle-switch {
+		@include form-toggle-switch-color-variable($mode: #{$mode-setting});
+	}
+}

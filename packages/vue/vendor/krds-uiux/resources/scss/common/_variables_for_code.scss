@@ -1,0 +1,69 @@
+//CONTENTS MAX WIDTH
+$contents-size: 1200px !default;
+$contents-padding-x-pc: 24px !default;
+$contents-padding-x-mobile: 16px !default;
+$contents-wrap-size: $contents-size + ($contents-padding-x-pc * 2) !default;
+
+//BREAK POINTS
+$breakpoint-small: 360px !default;
+$breakpoint-medium: 768px !default;
+$breakpoint-large: 1024px !default;
+$breakpoint-xlarge: 1280px !default;
+$breakpoint-xxlarge: 1440px !default;
+
+//TYPO CUSTOM
+$font-family-base: "Pretendard GOV", sans-serif !default;
+$font-size-base: 62.5% !default; //10px 1rem으로 설정
+
+$font-letter-spacings: (
+	none: var(--krds-typo-letter-spacing-0),
+	wide: var(--krds-typo-letter-spacing-1),
+) !default;
+
+//font weight
+$font-weight-regular: 400 !default;
+$font-weight-bold: 700 !default;
+$font-weights: (
+	regular: $font-weight-regular,
+	bold: $font-weight-bold,
+) !default;
+
+//line height style
+$font-line-height-none: 1 !default;
+$font-line-height-base: 1.5 !default;
+$font-line-heights: (
+	none: $font-line-height-none,
+	base: $font-line-height-base,
+) !default;
+
+//TYPO UNDERLINE OFFESET
+$font-underline-offset-default: 0.3rem !default;
+
+//IMG BACKGROUND URL
+$url: "../../img" !default;
+
+//TRANSITION
+$transition-base: .4s ease-in-out !default;
+$transition-fade: opacity .4s linear !default;
+$transition-collapse: max-height .4s ease !default;
+$transition-collapse-width: width .4s ease !default;
+
+//SVG ICON SIZE
+$icon-sizes: (
+	xsmall: var(--krds-size-height-2),
+	small: var(--krds-size-height-2),
+	medium: var(--krds-size-height-3),
+	large: var(--krds-size-height-4),
+	xlarge: var(--krds-size-height-4),
+) !default;
+
+//SCREEN ZOOM
+$screen-zoom-sizes: (
+	small: 0.9,
+	medium: 1,
+	large: 1.1,
+	xlarge: 1.3,
+	xxlarge: 1.5,
+) !default;
+
+/////////////////////////////////// variable group setting ///////////////////////////////////////////////////

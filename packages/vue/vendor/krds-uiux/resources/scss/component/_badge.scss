@@ -1,0 +1,185 @@
+/* 배지 */
+//사이즈 정의
+@mixin badge-size-variable() {
+    --krds-badge--size-height: var(--krds-size-height-4);
+    --krds-badge--line-height: 2.4rem;
+    --krds-badge--padding: var(--krds-padding-3);
+    --krds-badge--radius: var(--krds-radius-small2);
+    --krds-badge--radius-max: var(--krds-radius-max);
+    --krds-badge--dot-size: .6rem;
+    --krds-badge--dot-padding: 0;
+    --krds-badge--number-size-height: var(--krds-size-height-3);
+    --krds-badge--pc-font-size: var(--krds-pc-font-size-label-small);
+    --krds-badge--mobile-font-size: var(--krds-mobile-font-size-label-small);
+    --krds-badge--pc-font-size-large: var(--krds-pc-font-size-label-medium);
+    --krds-badge--mobile-font-size-large: var(--krds-mobile-font-size-label-medium);
+    --krds-badge--size-height-large: var(--krds-size-height-5);
+}
+//컬러 정의
+@mixin badge-color-variable($mode) {
+    //컬러 변수 배열 생성
+   $badge-color-variable: (
+        primary:(
+            element: var(--krds-#{$mode}-color-element-primary),
+            element-lighter: var(--krds-#{$mode}-color-element-primary-lighter),
+            text: var(--krds-#{$mode}-color-text-primary),
+        ),
+        secondary:(
+            element: var(--krds-#{$mode}-color-element-secondary),
+            element-lighter: var(--krds-#{$mode}-color-element-secondary-lighter),
+            text: var(--krds-#{$mode}-color-text-secondary),
+        ),
+        gray:(
+            element: var(--krds-#{$mode}-color-element-gray),
+            element-lighter: var(--krds-#{$mode}-color-element-gray-light),
+            text: var(--krds-#{$mode}-color-text-subtle),
+        ),
+        point:(
+            element: var(--krds-#{$mode}-color-element-point),
+            element-lighter: var(--krds-#{$mode}-color-element-point-lighter),
+            text: var(--krds-#{$mode}-color-text-point),
+        ),
+        danger:(
+            element: var(--krds-#{$mode}-color-element-danger),
+            element-lighter: var(--krds-#{$mode}-color-element-danger-lighter),
+            text: var(--krds-#{$mode}-color-text-danger),
+        ),
+        warning:(
+            element: var(--krds-#{$mode}-color-element-warning),
+            element-lighter: var(--krds-#{$mode}-color-element-warning-lighter),
+            text: var(--krds-#{$mode}-color-text-warning),
+        ),
+        success:(
+            element: var(--krds-#{$mode}-color-element-success),
+            element-lighter: var(--krds-#{$mode}-color-element-success-lighter),
+            text: var(--krds-#{$mode}-color-text-success),
+        ),
+        information:(
+            element: var(--krds-#{$mode}-color-element-information),
+            element-lighter: var(--krds-#{$mode}-color-element-information-lighter),
+            text: var(--krds-#{$mode}-color-text-information),
+        ),
+        disabled:(
+            element: var(--krds-#{$mode}-color-element-disabled-dark),
+            element-lighter: var(--krds-#{$mode}-color-element-disabled-light),
+            text: var(--krds-#{$mode}-color-text-disabled-on),
+        ),
+    ) !default;
+
+    //css variable 생성
+    @each  $color, $types in $badge-color-variable {
+        @each $type, $value in $types {
+            --krds-badge--color-#{"#{$color}"}-#{$type}: #{$value};
+        }
+    }
+    --krds-badge--color-background-basic: var(--krds-#{$mode}-color-background-white);
+    --krds-badge--color-text-basic: var(--krds-#{$mode}-color-text-inverse-static);
+    --krds-badge--color-text-warning: var(--krds-#{$mode}-color-text-static);
+
+    //class 정의
+    & {
+        @each  $color, $types in $badge-color-variable {
+            &.outline-#{"#{$color}"} {
+                @include color-border(#{$color});
+                @include color-text(#{$color});
+            }
+
+            &.bg-#{"#{$color}"} {
+                @include color-background(#{$color});
+                color:var(--krds-badge--color-text-basic);
+            }
+
+            &.bg-light-#{"#{$color}"} {
+                @include color-background-light(#{$color});
+                @include color-text(#{$color});
+            }
+        }
+    }
+    //warning text color
+    &.bg-warning {
+        color: var(--krds-badge--color-text-warning);
+    }
+}
+
+//badge color border
+@mixin color-border($color, $mode: light) {
+    @include border-size-mode(#{$mode});
+    border-style: solid;
+	
+	@if ($color == "primary") {
+		border-color: var(--krds-badge--color-primary-element);
+	} @else {
+		border-color: var(--krds-badge--#{$mode}-color-#{$color}-element);
+	}
+}
+
+//badge color text 
+@mixin color-text($color) {
+	color: var(--krds-badge--color-#{$color}-text);
+}
+
+//badge color background 
+@mixin color-background($color) {
+    background-color: var(--krds-badge--color-#{$color}-element);
+}
+
+//badge color background light
+@mixin color-background-light($color) {
+    background-color: var(--krds-badge--color-#{$color}-element-lighter);
+}
+
+
+//모드 설정
+$mode-setting: light;
+.krds-badge {
+    @include flex-layout($d: inline-flex, $ai: center, $jc: center);
+
+    @include badge-size-variable();
+    @include badge-color-variable(#{$mode-setting});
+
+    & {
+        height: var(--krds-badge--size-height);
+        line-height: var(--krds-badge--line-height);
+        font-size: var(--krds-badge--pc-font-size);
+        font-weight: var(--krds-font-weight-regular);
+        padding: 0 var(--krds-badge--padding);
+        border-radius: var(--krds-badge--radius);
+
+        @include size-medium {
+            font-size: var(--krds-badge--mobile-font-size);
+        }
+    }
+
+    &.large {
+        height:var(--krds-badge--size-height-large);
+        font-size:var(--krds-badge--pc-font-size-large);
+        @include size-medium {
+            font-size: var(--krds-badge--mobile-font-size);
+        }
+    }
+    &.number {
+        height: var(--krds-badge--number-size-height);
+        border-radius: var(--krds-badge--radius-max);
+    }  
+    &.dot {
+        @include square(var(--krds-badge--dot-size));
+        padding:var(--krds-badge--dot-padding);
+        border-radius: var(--krds-badge--radius-max);
+    }
+}
+.krds-badge-wrap {
+    --krds-badge--wrap-gap: var(--krds-gap-3);
+
+    display: flex;
+    gap: var(--krds-badge--wrap-gap);
+}
+
+//고대비모드
+@include color-mode($mode: high-contrast) {
+    //모드 설정
+	$mode-setting: high-contrast;
+    .krds-badge {
+        @include badge-color-variable(#{$mode-setting});
+    }
+}
+
