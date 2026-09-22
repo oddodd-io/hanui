@@ -136,6 +136,8 @@ function MenuItemRow({
               onKeyDown={handleKeyDown}
               placeholder="메뉴 이름"
               className="w-32"
+              // 편집 버튼을 눌러 진입한 인라인 편집칸이므로 초점을 옮기는 것이 맞다
+              // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
             />
             <Input

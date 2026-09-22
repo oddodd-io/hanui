@@ -1,6 +1,7 @@
 {
   "name": "@hanui/vue-components",
   "version": "0.2.0",
+  "private": true,
   "description": "KRDS HTML ComponentKit 리소스를 그대로 사용하는 공공 웹사이트용 Vue 컴포넌트 라이브러리",
   "keywords": [
     "vue",

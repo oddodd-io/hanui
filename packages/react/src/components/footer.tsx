@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ComponentType } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { ChevronRight, X, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -29,7 +29,7 @@ export interface FooterContactInfo {
 /** SNS 링크 */
 export interface FooterSnsLink {
   name: string;
-  icon: React.ComponentType;
+  icon: ComponentType;
   href: string;
 }
 

@@ -22,6 +22,10 @@ export default [
       '*.config.js',
       '*.config.mjs',
       '*.config.cjs',
+      // React 테스트 파일은 packages/react/tsconfig.json exclude 대상이라 projectService가 파싱하지 못한다.
+      // React 패키지는 유지 범위 확정 전까지 최소 유지만 하므로 테스트 lint는 제외한다.
+      'packages/react/**/*.test.ts',
+      'packages/react/**/*.test.tsx',
     ],
   },
 
@@ -84,6 +88,8 @@ export default [
         },
       ],
       'jsx-a11y/label-has-associated-control': 'off',
+      // list-style:none인 목록은 Safari/VoiceOver가 목록 의미를 제거하므로 role="list" 명시를 허용한다
+      'jsx-a11y/no-redundant-roles': ['error', { ul: ['list'], ol: ['list'] }],
     },
     settings: {
       react: {
