@@ -34,6 +34,8 @@ function useHeadings() {
         level: Number(el.tagName[1]),
       };
     });
+    // 마운트 후 렌더된 본문 DOM을 읽어야 하므로 effect 안에서 상태를 설정한다 (1회만 실행)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHeadings(items);
   }, []);
 

@@ -254,9 +254,12 @@ type NavigationSection = {
 function SidebarSection({
   section,
   onActiveRef,
+  onNavigate,
 }: {
   section: NavigationSection;
   onActiveRef?: (el: HTMLAnchorElement | null) => void;
+  /** 링크 클릭 시 호출 (모바일 드로어 닫기) */
+  onNavigate?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -280,6 +283,7 @@ function SidebarSection({
                 <Link
                   href={item.href}
                   ref={isActive ? onActiveRef : undefined}
+                  onClick={onNavigate}
                   className={`flex items-center gap-1.5 py-1 px-2 rounded-md transition-colors text-sm ${
                     isActive
                       ? 'bg-krds-primary-base text-white font-medium'
@@ -363,10 +367,6 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   }, [pathname]);
 
   // 모바일에서 링크 클릭 시 드로어 닫기
-  const handleNavClick = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('a')) onClose?.();
-  };
-
   return (
     <>
       {/* KRDS medium(768px) 미만: 배경 딤 */}
@@ -398,11 +398,6 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       >
         <nav
           ref={navRef}
-          onClick={handleNavClick}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ')
-              handleNavClick(e as unknown as React.MouseEvent);
-          }}
           className="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto p-4 md:p-6 pb-20 scrollbar-hide"
         >
           <div className="space-y-8">
@@ -411,6 +406,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                 key={section.title}
                 section={section}
                 onActiveRef={handleActiveRef}
+                onNavigate={onClose}
               />
             ))}
           </div>
