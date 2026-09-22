@@ -25,7 +25,6 @@ const meta = {
     pure: { control: 'boolean' },
     basic: { control: 'boolean' },
     disabled: { control: 'boolean' },
-    loading: { control: 'boolean' },
     label: { control: 'text' },
     href: { control: 'text' },
     onClick: { action: 'click' },
@@ -34,7 +33,6 @@ const meta = {
     variant: 'primary',
     size: 'large',
     disabled: false,
-    loading: false,
   },
   render: (args) => ({
     components: { Button },
@@ -110,16 +108,6 @@ export const Disabled: Story = {
       <Button variant="text" disabled>text</Button>
       <Button href="/notice" disabled>disabled 링크</Button>
     `),
-};
-
-/** hanui 확장: loading = disabled + aria-busy + 스피너. 텍스트(접근성 이름)는 유지 */
-export const Loading: Story = {
-  args: { loading: true },
-  render: (args) => ({
-    components: { Button },
-    setup: () => ({ args }),
-    template: `<Button v-bind="args">저장</Button>`,
-  }),
 };
 
 /** href가 있으면 `<a>`로 렌더. target=_blank면 rel 자동 보강 */

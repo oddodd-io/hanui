@@ -166,39 +166,12 @@ describe('Button 상태·상호작용', () => {
     expect(event.defaultPrevented).toBe(true);
     expect(wrapper.emitted('click')).toBeUndefined();
   });
-
-  it('loading은 disabled 동작 + aria-busy + 스피너, 텍스트(접근성 이름)는 유지된다', async () => {
-    const wrapper = mount(Button, {
-      props: { loading: true },
-      slots: { default: '저장' },
-    });
-    expect((wrapper.element as HTMLButtonElement).disabled).toBe(true);
-    expect(wrapper.attributes('aria-busy')).toBe('true');
-    expect(wrapper.find('.hanui-btn-spinner').exists()).toBe(true);
-    expect(wrapper.find('.hanui-btn-spinner').attributes('aria-hidden')).toBe(
-      'true'
-    );
-    expect(wrapper.text()).toContain('저장');
-    await wrapper.trigger('click');
-    expect(wrapper.emitted('click')).toBeUndefined();
-  });
-
-  it('loading이 끝나면 다시 클릭할 수 있다', async () => {
-    const wrapper = mount(Button, {
-      props: { loading: true },
-      slots: { default: '저장' },
-    });
-    await wrapper.setProps({ loading: false });
-    await wrapper.trigger('click');
-    expect(wrapper.emitted('click')).toHaveLength(1);
-  });
 });
 
 describe('Button 접근성 (axe)', () => {
   it.each([
     ['기본', {}, '버튼'],
     ['disabled', { disabled: true }, '버튼'],
-    ['loading', { loading: true }, '저장'],
     ['링크', { href: '/notice' }, '공지'],
     ['disabled 링크', { href: '/notice', disabled: true }, '공지'],
   ])('%s 버튼은 접근성 위반이 없다', async (_name, props, text) => {

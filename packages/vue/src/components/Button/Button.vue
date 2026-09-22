@@ -3,7 +3,7 @@
  * Button — KRDS `.krds-btn` 래퍼
  *
  * 스타일은 vendor/krds-uiux의 _button.scss를 그대로 사용하고,
- * 이 컴포넌트는 클래스 조립 · 링크/버튼 분기 · disabled/loading 동작 · 접근성만 담당한다.
+ * 이 컴포넌트는 클래스 조립 · 링크/버튼 분기 · disabled 동작 · 접근성만 담당한다.
  * 기준: reference/krds-uiux/html/code/button*.html, docs/project-notes/krds-button-baseline.md
  */
 import { computed, useAttrs, useSlots, onMounted } from 'vue';
@@ -28,8 +28,6 @@ export interface ButtonProps {
   basic?: boolean;
   /** 비활성. `<button>`은 native disabled, `<a>`는 href 제거 + aria-disabled */
   disabled?: boolean;
-  /** 처리 중. disabled 동작 + aria-busy + 스피너 */
-  loading?: boolean;
   /** `<button>` type. 기본 button (폼 안 submit 오작동 방지) */
   type?: 'button' | 'submit' | 'reset';
   /** 지정 시 `<a>`로 렌더 */
@@ -47,7 +45,6 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   pure: false,
   basic: false,
   disabled: false,
-  loading: false,
   type: 'button',
   href: undefined,
   target: undefined,
@@ -64,7 +61,7 @@ const attrs = useAttrs();
 const slots = useSlots();
 
 const isLink = computed(() => !!props.href);
-const isInactive = computed(() => props.disabled || props.loading);
+const isInactive = computed(() => props.disabled);
 
 const classes = computed(() => [
   'krds-btn',
@@ -120,13 +117,11 @@ onMounted(() => {
     :target="target"
     :rel="linkRel"
     :aria-disabled="isInactive ? 'true' : undefined"
-    :aria-busy="loading ? 'true' : undefined"
     :tabindex="isInactive ? -1 : undefined"
     @click="onClick"
   >
     <span v-if="label" class="sr-only">{{ label }}</span>
     <slot />
-    <span v-if="loading" class="hanui-btn-spinner" aria-hidden="true" />
   </a>
   <button
     v-else
@@ -134,11 +129,9 @@ onMounted(() => {
     :class="classes"
     :type="type"
     :disabled="isInactive"
-    :aria-busy="loading ? 'true' : undefined"
     @click="onClick"
   >
     <span v-if="label" class="sr-only">{{ label }}</span>
     <slot />
-    <span v-if="loading" class="hanui-btn-spinner" aria-hidden="true" />
   </button>
 </template>
