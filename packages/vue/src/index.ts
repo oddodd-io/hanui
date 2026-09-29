@@ -7,3 +7,4 @@ export * from './components/Textarea';
 export * from './components/Select';
 export * from './components/Table';
 export * from './components/Pagination';
+export * from './components/Badge';
