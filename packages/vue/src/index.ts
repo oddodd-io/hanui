@@ -8,3 +8,4 @@ export * from './components/Select';
 export * from './components/Table';
 export * from './components/Pagination';
 export * from './components/Badge';
+export * from './components/Modal';
