@@ -17,3 +17,5 @@ export * from './components/DropMenu';
 export * from './components/Header';
 export * from './components/MainMenu';
 export * from './components/MobileMenu';
+export * from './components/Identifier';
+export * from './components/Footer';
