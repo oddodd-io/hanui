@@ -23,3 +23,6 @@ $url: '../../vendor/krds-uiux/resources';
 // ---- component.scss ----
 @import '../../vendor/krds-uiux/resources/scss/component/component';
 
+
+// ---- hanui 보완 (KRDS 결함 최소 보완, KRDS 다음에 적용) ----
+@import './hanui-fixes';

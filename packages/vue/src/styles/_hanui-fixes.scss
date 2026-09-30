@@ -1,0 +1,38 @@
+// hanui 보완 CSS — KRDS 원본 CSS의 결함 중 공공기관 검수에 걸리는 것만 최소한으로 보완한다.
+//
+// 원칙
+// - vendor(KRDS 원본)는 수정하지 않고, 이 파일을 KRDS 다음에 불러와 덮어쓴다.
+// - 규칙마다 KRDS 버전과 근거를 적는다. KRDS 업데이트로 원본이 고쳐지면 해당 규칙을 지운다.
+// - 새 디자인을 추가하지 않는다. 값은 KRDS 토큰만 쓴다.
+// 결정 기록: project-notes/decisions.md, 결함 목록: project-notes/krds-source-audit.md
+
+// ---------------------------------------------------------------------------
+// 1. Footer 개인정보처리방침 강조 (KRDS v1.1.0)
+// 샘플 마크업은 `.f-menu a.point`를 쓰지만 CSS 정의가 없어 다른 링크와 구별되지 않는다.
+// 개인정보처리방침은 다른 링크와 구별되게(색·굵기) 표시해야 한다.
+// ---------------------------------------------------------------------------
+#krds-footer .f-btm .f-menu .point {
+  font-weight: var(--krds-font-weight-bold);
+  color: var(--krds-light-color-text-primary);
+}
+
+[data-krds-mode='high-contrast'] #krds-footer .f-btm .f-menu .point {
+  color: var(--krds-high-contrast-color-text-primary);
+}
+
+// ---------------------------------------------------------------------------
+// 2. Breadcrumb 모바일 숨김 항목 초점 표시 (KRDS v1.1.0)
+// 모바일 폭에서 중간 항목을 sr-only로 숨기지만 링크는 Tab 초점을 받아, 보이지 않는 곳에 초점이 간다
+// (WCAG 2.4.7 초점 표시). 초점이 들어온 동안만 그 항목을 화면에 보인다.
+// ---------------------------------------------------------------------------
+@include size-medium {
+  .krds-breadcrumb-wrap .breadcrumb li:not(.home):not(:last-child):focus-within {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+  }
+}
