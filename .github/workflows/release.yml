@@ -32,14 +32,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # React 패키지는 전면 개편 전까지 게시하지 않으므로(private) 게시 대상만 빌드한다.
       - name: Build packages
-        run: pnpm build
+        run: pnpm --filter @hanui/vue-components build
 
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm release
+          publish: pnpm changeset publish
           version: pnpm version-packages
           commit: 'chore: version packages'
           title: 'chore: version packages'
