@@ -11,3 +11,4 @@ export * from './components/Badge';
 export * from './components/Modal';
 export * from './components/FileUpload';
 export * from './components/Breadcrumb';
+export * from './components/SkipLink';
