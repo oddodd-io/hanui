@@ -12,3 +12,4 @@ export * from './components/Modal';
 export * from './components/FileUpload';
 export * from './components/Breadcrumb';
 export * from './components/SkipLink';
+export * from './components/Masthead';
