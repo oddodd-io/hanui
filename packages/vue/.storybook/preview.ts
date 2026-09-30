@@ -31,8 +31,14 @@ const preview: Preview = {
     (story, context) => {
       const mode = context.globals.krdsMode ?? 'light';
       // KRDS 고대비 모드는 [data-krds-mode="high-contrast"] 셀렉터로 켜진다.
-      // KRDS 사이트처럼 <html>에도 붙여야 body로 Teleport되는 모달 등에도 적용된다.
-      document.documentElement.setAttribute('data-krds-mode', mode);
+      // 개별 스토리 화면에서는 KRDS 사이트처럼 <html>에도 붙여 body로 Teleport되는 모달 등에도 적용한다.
+      // Docs 페이지는 여러 스토리를 한 문서에 그리므로 <html>에 붙이면 마지막 스토리(HighContrast)의 모드가
+      // 페이지 전체에 번진다 → Docs에서는 각 스토리 래퍼에만 적용한다.
+      if (context.viewMode === 'story') {
+        document.documentElement.setAttribute('data-krds-mode', mode);
+      } else {
+        document.documentElement.removeAttribute('data-krds-mode');
+      }
       // 배경색은 KRDS 원본에서 body에 지정하므로 데모용으로만 검정을 준다.
       return {
         components: { story },
