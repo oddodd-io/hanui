@@ -19,3 +19,4 @@ export * from './components/MainMenu';
 export * from './components/MobileMenu';
 export * from './components/Identifier';
 export * from './components/Footer';
+export * from './components/SideNavigation';
