@@ -1,5 +1,5 @@
 {
-  "name": "@hanui/vue-components",
+  "name": "@hanui/vue",
   "version": "0.2.0",
   "description": "KRDS HTML ComponentKit 리소스를 그대로 사용하는 공공 웹사이트용 Vue 컴포넌트 라이브러리",
   "keywords": [
@@ -18,11 +18,11 @@
   "homepage": "https://hanui.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hanui-o/hanui.git",
+    "url": "https://github.com/oddodd-io/hanui.git",
     "directory": "packages/vue"
   },
   "bugs": {
-    "url": "https://github.com/hanui-o/hanui/issues"
+    "url": "https://github.com/oddodd-io/hanui/issues"
   },
   "author": "hanui-o",
   "license": "MIT",

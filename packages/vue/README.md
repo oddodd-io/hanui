@@ -1,4 +1,4 @@
-# @hanui/vue-components
+# @hanui/vue
 
 KRDS(대한민국 정부 디자인 시스템) HTML ComponentKit 리소스를 그대로 사용하는 공공 웹사이트용 Vue 3 컴포넌트 라이브러리입니다.
 
@@ -8,7 +8,7 @@ KRDS(대한민국 정부 디자인 시스템) HTML ComponentKit 리소스를 그
 ## 설치
 
 ```bash
-pnpm add @hanui/vue-components
+pnpm add @hanui/vue
 ```
 
 Vue `^3.5.0`이 필요합니다.
@@ -17,12 +17,12 @@ Vue `^3.5.0`이 필요합니다.
 
 ```ts
 // main.ts
-import '@hanui/vue-components/styles.css';
+import '@hanui/vue/styles.css';
 ```
 
 ```vue
 <script setup lang="ts">
-import { Button } from '@hanui/vue-components';
+import { Button } from '@hanui/vue';
 </script>
 
 <template>

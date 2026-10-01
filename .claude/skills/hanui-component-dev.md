@@ -9,7 +9,7 @@ HANUI는 KRDS(한국 정부 디자인 시스템) 기반의 React/Vue 컴포넌�
 ```
 packages/
 ├── react/          # React 컴포넌트 (@hanui/react)
-├── vue/            # Vue 3 컴포넌트 (@hanui/vue-components)
+├── vue/            # Vue 3 컴포넌트 (@hanui/vue)
 ├── cli/            # CLI 도구 (@hanui/cli)
 └── registry/       # 컴포넌트 레지스트리
 

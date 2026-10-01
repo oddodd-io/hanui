@@ -413,7 +413,7 @@ importers:
         version: 18.3.7(@types/react@18.3.26)
       '@vitejs/plugin-react':
         specifier: ^5.1.0
-        version: 5.1.0(vite@6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))
+        version: 5.1.0(vite@6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))
       axe-core:
         specifier: ^4.11.0
         version: 4.11.0
@@ -431,16 +431,16 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^6.0.7
-        version: 6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
+        version: 6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
       vite-plugin-dts:
         specifier: ^4.5.4
-        version: 4.5.4(@types/node@24.10.1)(rollup@4.53.2)(typescript@5.9.3)(vite@6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))
+        version: 4.5.4(@types/node@24.10.1)(rollup@4.53.2)(typescript@5.9.3)(vite@6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))
       vitest:
         specifier: ^4.0.15
-        version: 4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@1.21.7)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
+        version: 4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
       vitest-axe:
         specifier: ^0.1.0
-        version: 0.1.0(vitest@4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@1.21.7)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))
+        version: 0.1.0(vitest@4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))
     optionalDependencies:
       shiki:
         specifier: ^1.29.2
@@ -511,46 +511,6 @@ importers:
       vue-tsc:
         specifier: ^2.2.0
         version: 2.2.12(typescript@5.9.3)
-
-  packages/vue-cli:
-    dependencies:
-      chalk:
-        specifier: ^5.4.1
-        version: 5.6.2
-      commander:
-        specifier: ^12.1.0
-        version: 12.1.0
-      execa:
-        specifier: ^8.0.1
-        version: 8.0.1
-      fs-extra:
-        specifier: ^11.2.0
-        version: 11.3.2
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
-      ora:
-        specifier: ^8.1.1
-        version: 8.2.0
-      prompts:
-        specifier: ^2.4.2
-        version: 2.4.2
-    devDependencies:
-      '@types/fs-extra':
-        specifier: ^11.0.4
-        version: 11.0.4
-      '@types/node':
-        specifier: ^22.10.2
-        version: 22.19.0
-      '@types/prompts':
-        specifier: ^2.4.9
-        version: 2.4.9
-      tsup:
-        specifier: ^8.3.5
-        version: 8.5.0(@microsoft/api-extractor@7.54.0(@types/node@22.19.0))(jiti@2.6.1)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.1)
-      typescript:
-        specifier: ^5.7.3
-        version: 5.9.3
 
 packages:
 
@@ -9263,7 +9223,7 @@ snapshots:
       d3-time-format: 4.1.0
       internmap: 2.0.3
 
-  '@vitejs/plugin-react@5.1.0(vite@6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))':
+  '@vitejs/plugin-react@5.1.0(vite@6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -9271,7 +9231,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.43
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -9316,13 +9276,13 @@ snapshots:
     optionalDependencies:
       vite: 6.4.1(@types/node@22.19.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
 
-  '@vitest/mocker@4.0.15(vite@6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))':
+  '@vitest/mocker@4.0.15(vite@6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))':
     dependencies:
       '@vitest/spy': 4.0.15
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
 
   '@vitest/pretty-format@3.2.4':
     dependencies:
@@ -13511,7 +13471,7 @@ snapshots:
       - rollup
       - supports-color
 
-  vite-plugin-dts@4.5.4(@types/node@24.10.1)(rollup@4.53.2)(typescript@5.9.3)(vite@6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)):
+  vite-plugin-dts@4.5.4(@types/node@24.10.1)(rollup@4.53.2)(typescript@5.9.3)(vite@6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)):
     dependencies:
       '@microsoft/api-extractor': 7.54.0(@types/node@24.10.1)
       '@rollup/pluginutils': 5.3.0(rollup@4.53.2)
@@ -13524,7 +13484,7 @@ snapshots:
       magic-string: 0.30.21
       typescript: 5.9.3
     optionalDependencies:
-      vite: 6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
@@ -13547,7 +13507,7 @@ snapshots:
       sass-embedded: 1.104.1
       yaml: 2.8.1
 
-  vite@6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1):
+  vite@6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
@@ -13558,7 +13518,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.10.1
       fsevents: 2.3.3
-      jiti: 1.21.7
+      jiti: 2.6.1
       lightningcss: 1.30.2
       sass: 1.104.1
       sass-embedded: 1.104.1
@@ -13574,7 +13534,7 @@ snapshots:
       redent: 3.0.0
       vitest: 4.0.15(@types/node@22.19.0)(happy-dom@20.0.11)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
 
-  vitest-axe@0.1.0(vitest@4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@1.21.7)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)):
+  vitest-axe@0.1.0(vitest@4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)):
     dependencies:
       aria-query: 5.3.2
       axe-core: 4.11.0
@@ -13582,7 +13542,7 @@ snapshots:
       dom-accessibility-api: 0.5.16
       lodash-es: 4.17.21
       redent: 3.0.0
-      vitest: 4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@1.21.7)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
+      vitest: 4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
 
   vitest@4.0.15(@types/node@22.19.0)(happy-dom@20.0.11)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1):
     dependencies:
@@ -13623,10 +13583,10 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@1.21.7)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1):
+  vitest@4.0.15(@types/node@24.10.1)(happy-dom@20.0.11)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.15
-      '@vitest/mocker': 4.0.15(vite@6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))
+      '@vitest/mocker': 4.0.15(vite@6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1))
       '@vitest/pretty-format': 4.0.15
       '@vitest/runner': 4.0.15
       '@vitest/snapshot': 4.0.15
@@ -13643,7 +13603,7 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 6.4.1(@types/node@24.10.1)(jiti@1.21.7)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
+      vite: 6.4.1(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.8.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.10.1

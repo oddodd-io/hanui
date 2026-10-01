@@ -17,17 +17,20 @@ HANUI
 ## 3가지 핵심 가치
 
 ### 1. KRDS 2.2 준수
+
 - 한국 정부 디자인 시스템 100% 준수
 - 디자인 토큰 (색상, 타이포그래피, 간격) 내장
 - 공공 웹사이트 디자인 가이드라인 자동 적용
 
 ### 2. 접근성 내장 (KWCAG 2.2 / WCAG 2.1 AA)
+
 - 모든 컴포넌트에 ARIA 속성 기본 탑재
 - 키보드 네비게이션 완전 지원
 - 스크린 리더 호환성
 - 포커스 관리 자동화
 
 ### 3. 최적화
+
 - Tree-shaking 지원 (ESM)
 - 번들 사이즈 최소화
 - React 18+ 최적화
@@ -39,12 +42,11 @@ HANUI
 hanui/
 ├── packages/
 │   ├── react/          # @hanui/react (v0.2.0) - 55+ 컴포넌트
-│   ├── vue/            # @hanui/vue (v0.1.0) - Vue 3 컴포넌트
+│   ├── vue/            # @hanui/vue (v0.2.0) - Vue 3 컴포넌트 (KRDS 리소스 기반)
 │   ├── cli/            # @hanui/cli (v0.3.15) - CLI 도구
 │   ├── registry/       # 컴포넌트 레지스트리
 │   ├── core/           # 공통 유틸리티
-│   ├── create-hanui-app/
-│   └── vue-cli/
+│   └── create-hanui-app/
 └── apps/
     └── docs/           # Next.js 15 문서 사이트 (hanui.io)
 ```
@@ -75,14 +77,14 @@ npm install @hanui/react
 
 ```tsx
 // ✅ Good
-'bg-krds-primary-60'
-'text-krds-gray-90'
-'p-krds-4'
+'bg-krds-primary-60';
+'text-krds-gray-90';
+'p-krds-4';
 
 // ❌ Bad
-'bg-blue-600'
-'text-gray-900'
-'p-4'
+'bg-blue-600';
+'text-gray-900';
+'p-4';
 ```
 
 ### 3. 접근성 우선

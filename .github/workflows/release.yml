@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
+      # npm Trusted Publishing(OIDC). npm 토큰 없이 게시한다.
       id-token: write
     steps:
       - name: Checkout code
@@ -22,42 +22,42 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
+      # Trusted Publishing은 Node 22.14+ / npm CLI 11.5.1+ 필요
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Update npm
+        run: npm install -g npm@latest && npm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       # React 패키지는 전면 개편 전까지 게시하지 않으므로(private) 게시 대상만 빌드한다.
       - name: Build packages
-        run: pnpm --filter @hanui/vue-components build
+        run: pnpm --filter @hanui/vue build
 
-      - name: Create Release Pull Request or Publish
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          publish: pnpm changeset publish
-          version: pnpm version-packages
-          commit: 'chore: version packages'
-          title: 'chore: version packages'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # npm에 없는 버전일 때만 게시한다. Trusted Publishing은 npm CLI만 지원하므로 npm publish를 쓴다.
+      - name: Publish @hanui/vue
+        id: publish
+        working-directory: packages/vue
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "${name}@${version}" version >/dev/null 2>&1; then
+            echo "${name}@${version} 은 이미 게시됨. 건너뜀."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          else
+            npm publish
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "tag=${name}@${version}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Create GitHub Release
-        if: steps.changesets.outputs.published == 'true'
-        run: |
-          echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -c '.[]' | while read -r package; do
-            name=$(echo "$package" | jq -r '.name')
-            version=$(echo "$package" | jq -r '.version')
-            tag="${name}@${version}"
-            echo "Creating release for $tag"
-            gh release create "$tag" --generate-notes || echo "Release $tag already exists or failed"
-          done
+        if: steps.publish.outputs.published == 'true'
+        run: gh release create "${{ steps.publish.outputs.tag }}" --generate-notes || echo "Release already exists or failed"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
