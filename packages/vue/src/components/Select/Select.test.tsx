@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { createSSRApp, h } from 'vue';
+import { renderToString } from 'vue/server-renderer';
 import { axe } from '../../test/setup';
 import Select from './Select.vue';
 import FormField from '../FormField/FormField.vue';
@@ -209,5 +211,36 @@ describe('Select 접근성', () => {
     });
     expect(await axe(wrapper.element)).toHaveNoViolations();
     wrapper.unmount();
+  });
+});
+
+describe('Select 서버 렌더링', () => {
+  it('SSR HTML에 선택된 option의 selected가 들어간다 (JS 실행 전에도 올바른 선택 표시)', async () => {
+    const app = createSSRApp({
+      render: () =>
+        h(Select, {
+          options,
+          modelValue: 'published',
+          placeholder: '선택',
+          'aria-label': '상태',
+        }),
+    });
+    const html = await renderToString(app);
+    expect(html).toMatch(/<option value="published" selected>/);
+    // 빈 값 option은 HTML에 value=""가 아니라 value로 출력된다
+    expect(html).not.toMatch(/<option value selected>/);
+  });
+
+  it('값이 비어 있으면 placeholder option이 selected', async () => {
+    const app = createSSRApp({
+      render: () =>
+        h(Select, {
+          options,
+          modelValue: '',
+          placeholder: '선택',
+          'aria-label': '상태',
+        }),
+    });
+    expect(await renderToString(app)).toMatch(/<option value selected>/);
   });
 });

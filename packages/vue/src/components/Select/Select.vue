@@ -5,6 +5,8 @@
  * 네이티브 select를 그대로 쓰므로 키보드·스크린리더 동작은 브라우저가 담당한다.
  * 이 컴포넌트는 v-model · 크기 · completed/is-error 클래스 · FormField 연결만 담당한다.
  * FormField 없이 단독으로 쓸 때는 aria-label 로 이름을 준다 (title 만으로는 부족하다).
+ * option마다 selected를 붙여 서버 렌더링(SSR) HTML에도 선택 상태가 들어가게 한다
+ * (select의 value는 DOM 속성이라 HTML에 남지 않아, JS 실행 전에는 첫 option이 선택돼 보인다).
  * 기준: reference/krds-uiux/html/code/select*.html, resources/scss/component/_select.scss
  */
 import { computed, ref, useAttrs } from 'vue';
@@ -60,7 +62,9 @@ const isDisabled = computed(() => props.disabled || !!field?.disabled.value);
 const isRequired = computed(() => props.required || !!field?.required.value);
 const isInvalid = computed(() => field?.status.value === 'error' || undefined);
 const describedBy = computed(
-  () => (attrs['aria-describedby'] as string | undefined) ?? field?.describedBy.value
+  () =>
+    (attrs['aria-describedby'] as string | undefined) ??
+    field?.describedBy.value
 );
 
 // KRDS 기본 크기: 폼용은 large, 정렬용은 medium (CSS 기본값과 같으므로 클래스는 지정했을 때만 붙인다)
@@ -102,7 +106,12 @@ defineExpose({
     :aria-describedby="describedBy"
     @change="onChange"
   >
-    <option v-if="placeholder !== undefined" value="" :disabled="isRequired">
+    <option
+      v-if="placeholder !== undefined"
+      value=""
+      :disabled="isRequired"
+      :selected="modelValue === ''"
+    >
       {{ placeholder }}
     </option>
     <template v-if="options">
@@ -111,6 +120,7 @@ defineExpose({
         :key="option.value"
         :value="option.value"
         :disabled="option.disabled"
+        :selected="option.value === modelValue"
       >
         {{ option.label }}
       </option>
