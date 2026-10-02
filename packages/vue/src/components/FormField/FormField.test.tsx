@@ -84,6 +84,15 @@ describe('FormField 상태 (text_input_state.html 기준)', () => {
     wrapper.unmount();
   });
 
+  it('required면 레이블에 보이는 필수 표시를 붙인다 (낭독은 aria-required로, 표시는 aria-hidden)', () => {
+    const wrapper = mountField({ required: true });
+    const mark = wrapper.find('label .hanui-required');
+    expect(mark.exists()).toBe(true);
+    expect(mark.text()).toBe('(필수)');
+    expect(mark.attributes('aria-hidden')).toBe('true');
+    expect(mountField({}).find('.hanui-required').exists()).toBe(false);
+  });
+
   it('required·disabled가 input으로 전달된다', () => {
     const wrapper = mountField({ required: true, disabled: true });
     const el = wrapper.find('input').element as HTMLInputElement;

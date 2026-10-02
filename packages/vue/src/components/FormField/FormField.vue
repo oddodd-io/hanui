@@ -89,7 +89,8 @@ provideFormField({
 <template>
   <div class="form-group">
     <div class="form-tit">
-      <label :for="id">{{ label }}</label>
+      <!-- 필수 표시는 눈으로 보이게(WCAG 3.3.2). 화면낭독기는 컨트롤의 aria-required로 듣으므로 중복 낭독을 피해 숨긴다 -->
+      <label :for="id">{{ label }}<span v-if="required" class="hanui-required" aria-hidden="true"> (필수)</span></label>
     </div>
     <div :class="contsClass" :data-delete="deletable ? 'true' : undefined">
       <slot />

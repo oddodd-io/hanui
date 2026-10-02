@@ -36,3 +36,17 @@
     white-space: normal !important;
   }
 }
+
+// ---------------------------------------------------------------------------
+// 3. 필수 입력 표시 (KRDS v1.1.0에 패턴 없음)
+// KRDS 폼 레이블에는 필수 표시가 없어 보는 사용자가 무엇이 필수인지 미리 알 수 없다(WCAG 3.3.2).
+// FormField가 required일 때 레이블 뒤에 "(필수)"를 보인다(화면낭독기는 aria-required로 듣는다).
+// ---------------------------------------------------------------------------
+.hanui-required {
+  margin-left: 0.2rem;
+  font-size: var(--krds-pc-font-size-body-small);
+  color: var(--krds-light-color-text-danger);
+}
+[data-krds-mode='high-contrast'] .hanui-required {
+  color: var(--krds-high-contrast-color-text-danger);
+}
