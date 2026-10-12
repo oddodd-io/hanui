@@ -86,22 +86,13 @@ onBeforeUnmount(() => {
             </ul>
           </div>
           <div class="header-branding">
-            <!-- 이미지 로고는 KRDS 고정 너비(13.7rem·모바일 9.4rem)를 풀고 높이에 맞춰 원래 비율대로 넓힌다 -->
-            <component
-              :is="logoTag"
-              class="logo"
-              :style="logoSrc ? { width: 'auto' } : undefined"
-            >
+            <!-- 이미지 로고(.logo-img): KRDS 고정 너비 대신 높이에 맞춰 원래 비율대로, 최대 너비까지 (styles/_hanui-fixes.scss 4) -->
+            <component :is="logoTag" :class="['logo', { 'logo-img': logoSrc }]">
               <a
                 :href="logoHref"
                 :style="logoSrc ? { backgroundImage: 'none' } : undefined"
               >
-                <img
-                  v-if="logoSrc"
-                  :src="logoSrc"
-                  :alt="logoText"
-                  style="display: block; width: auto; height: 100%"
-                />
+                <img v-if="logoSrc" :src="logoSrc" :alt="logoText" />
                 <span v-else class="sr-only">{{ logoText }}</span>
               </a>
             </component>

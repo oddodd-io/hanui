@@ -50,3 +50,29 @@
 [data-krds-mode='high-contrast'] .hanui-required {
   color: var(--krds-high-contrast-color-text-danger);
 }
+
+// ---------------------------------------------------------------------------
+// 4. Header 이미지 로고 너비 (KRDS v1.1.0)
+// KRDS `.logo`는 KRDS 로고(배경 그림)에 맞춘 고정 너비(13.7rem·모바일 9.4rem)라, 기관 로고 이미지를 넣으면 작게 줄어든다.
+// 이미지 로고는 KRDS 높이 그대로 두고 너비는 이미지 비율대로, 헤더 버튼과 겹치지 않게 최대 너비까지만 넓힌다.
+// 최대 너비는 사이트에서 --hanui-header-logo-max-width(PC)·--hanui-header-logo-max-width-mobile로 바꿀 수 있다.
+// ---------------------------------------------------------------------------
+#krds-header .header-container .logo.logo-img {
+  width: auto;
+  max-width: var(--hanui-header-logo-max-width, 32rem);
+
+  img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: left center;
+  }
+}
+
+@include size-medium {
+  #krds-header .header-container .logo.logo-img {
+    max-width: var(--hanui-header-logo-max-width-mobile, 18rem);
+  }
+}
