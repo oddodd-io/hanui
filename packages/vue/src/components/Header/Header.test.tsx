@@ -47,8 +47,10 @@ describe('Header 구조 (KRDS header.html 기준)', () => {
     expect(a.text()).toBe('한국기관');
   });
 
-  it('logoSrc가 있으면 img(alt=기관명)를 넣고 KRDS 기본 배경 로고를 끈다', () => {
+  it('logoSrc가 있으면 img(alt=기관명)를 넣고 KRDS 기본 배경 로고를 끈다 — 로고 너비는 KRDS 고정값 대신 이미지 비율대로', () => {
     const wrapper = mountHeader({ logoSrc: '/logo.svg', logoText: '한국기관' });
+    expect(wrapper.find('.logo').attributes('style')).toContain('width: auto');
+    expect(mountHeader().find('.logo').attributes('style')).toBeUndefined();
     const a = wrapper.find('.logo > a');
     expect(a.attributes('style')).toContain('background-image: none');
     const img = a.find('img');

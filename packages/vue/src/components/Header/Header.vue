@@ -86,7 +86,12 @@ onBeforeUnmount(() => {
             </ul>
           </div>
           <div class="header-branding">
-            <component :is="logoTag" class="logo">
+            <!-- 이미지 로고는 KRDS 고정 너비(13.7rem·모바일 9.4rem)를 풀고 높이에 맞춰 원래 비율대로 넓힌다 -->
+            <component
+              :is="logoTag"
+              class="logo"
+              :style="logoSrc ? { width: 'auto' } : undefined"
+            >
               <a
                 :href="logoHref"
                 :style="logoSrc ? { backgroundImage: 'none' } : undefined"
@@ -95,12 +100,7 @@ onBeforeUnmount(() => {
                   v-if="logoSrc"
                   :src="logoSrc"
                   :alt="logoText"
-                  style="
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: contain;
-                  "
+                  style="display: block; width: auto; height: 100%"
                 />
                 <span v-else class="sr-only">{{ logoText }}</span>
               </a>

@@ -20,4 +20,5 @@ export * from './components/MobileMenu';
 export * from './components/Identifier';
 export * from './components/Footer';
 export * from './components/SideNavigation';
+export * from './components/InPageNavigation';
 export * from './components/Spinner';
