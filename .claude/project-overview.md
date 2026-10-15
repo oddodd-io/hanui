@@ -71,7 +71,7 @@ hanui/
 │   │   │   └── variables.css # KRDS 디자인 토큰
 │   │   └── package.json
 │   │
-│   ├── vue/                # @hanui/vue (v0.2.0)
+│   ├── vue/                # @hanui/vue (v0.3.0)
 │   │   ├── src/
 │   │   │   ├── components/  # Vue 3 컴포넌트
 │   │   │   └── composables/ # Vue composables
@@ -109,7 +109,7 @@ hanui/
 | 패키지           | 버전    | 역할                                         | 상태       |
 | ---------------- | ------- | -------------------------------------------- | ---------- |
 | @hanui/react     | v0.2.0  | React 컴포넌트 라이브러리                    | ✅ 배포    |
-| @hanui/vue       | v0.2.0  | Vue 3 컴포넌트 라이브러리 (KRDS 리소스 기반) | 🚧 Preview |
+| @hanui/vue       | v0.3.0  | Vue 3 컴포넌트 라이브러리 (KRDS 리소스 기반) | 🚧 Preview |
 | @hanui/cli       | v0.3.15 | CLI 설치 도구                                | ✅ 배포    |
 | @hanui/registry  | -       | 컴포넌트 레지스트리                          | 내부       |
 | @hanui/core      | -       | 공통 유틸리티                                | 내부       |

@@ -32,7 +32,7 @@ export default function Home() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-krds-primary-base"></span>
                 </span>
                 <span className="text-krds-primary-text font-semibold">
-                  {isVue ? 'v0.1.0 Preview' : 'v0.2.0 Preview'}
+                  {isVue ? 'v0.3.0 Preview' : 'v0.2.0 Preview'}
                 </span>
               </span>
               <span className="h-3 w-px bg-krds-gray-20"></span>

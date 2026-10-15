@@ -42,7 +42,7 @@ HANUI
 hanui/
 ├── packages/
 │   ├── react/          # @hanui/react (v0.2.0) - 55+ 컴포넌트
-│   ├── vue/            # @hanui/vue (v0.2.0) - Vue 3 컴포넌트 (KRDS 리소스 기반)
+│   ├── vue/            # @hanui/vue (v0.3.0) - Vue 3 컴포넌트 (KRDS 리소스 기반)
 │   ├── cli/            # @hanui/cli (v0.3.15) - CLI 도구
 │   ├── registry/       # 컴포넌트 레지스트리
 │   ├── core/           # 공통 유틸리티
