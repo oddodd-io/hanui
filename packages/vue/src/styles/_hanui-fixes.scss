@@ -82,3 +82,9 @@
 .krds-table-wrap {
   position: relative;
 }
+
+// 선택 상자의 안내 문구(선택 전) 색 — KRDS 기본(text-disabled #8a949e, 흰 바탕 3.08:1)은 글자 명도 대비 4.5:1(KWCAG 1.4.3)에 못 미친다.
+// 같은 계열의 text-disabled-on(#6d7882, 4.51:1)으로 올려, 선택 후 색(text-subtle)보다 옅게 보이면서 기준을 지킨다
+.krds-form-select {
+  --krds-form-select--color-text: var(--krds-light-color-text-disabled-on);
+}

@@ -21,7 +21,10 @@ describe('Select 구조 (KRDS select.html 기준)', () => {
     const el = wrapper.element as HTMLSelectElement;
     expect(el.tagName).toBe('SELECT');
     expect(el.classList.contains('krds-form-select')).toBe(true);
-    expect(el.className).toBe('krds-form-select');
+    // 크기 클래스(small·medium·large)는 지정했을 때만 (안내 문구 없는 선택 상자는 선택 상태 completed가 붙는다)
+    expect(
+      ['small', 'medium', 'large'].some((c) => el.classList.contains(c))
+    ).toBe(false);
   });
 
   it.each(['small', 'medium', 'large'] as const)(
@@ -78,13 +81,24 @@ describe('Select 구조 (KRDS select.html 기준)', () => {
     );
   });
 
-  it('값이 선택되면 .completed 가 붙는다', async () => {
+  it('안내 문구(placeholder)가 보이는 동안은 .completed 가 없고, 값을 고르면 붙는다', async () => {
     const wrapper = mount(Select, {
-      props: { options, modelValue: '' },
+      props: { options, modelValue: '', placeholder: '선택하세요' },
       attrs: { 'aria-label': '상태' },
     });
     expect(wrapper.classes()).not.toContain('completed');
     await wrapper.setProps({ modelValue: 'draft' });
+    expect(wrapper.classes()).toContain('completed');
+  });
+
+  it('안내 문구가 없으면 값이 빈 옵션(예: "전체")도 실제 선택지라 .completed 다 — 옅은 안내 색으로 대비가 떨어지지 않게', () => {
+    const wrapper = mount(Select, {
+      props: {
+        options: [{ value: '', label: '전체' }, ...options],
+        modelValue: '',
+      },
+      attrs: { 'aria-label': '상태' },
+    });
     expect(wrapper.classes()).toContain('completed');
   });
 

@@ -72,8 +72,8 @@ const classes = computed(() => [
   props.variant === 'sort' ? 'krds-form-select-sort' : 'krds-form-select',
   props.size,
   {
-    // 값이 선택된 상태 (KRDS "선택완료" 색)
-    completed: props.variant === 'default' && props.modelValue !== '',
+    // 값이 선택된 상태 (KRDS "선택완료" 색). 안내 문구(placeholder) 옵션이 없으면 보이는 옵션은 늘 실제 선택지(예: 값이 빈 "전체")이므로 선택된 상태로 본다
+    completed: props.variant === 'default' && (props.modelValue !== '' || props.placeholder === undefined),
     'is-error': props.variant === 'default' && isInvalid.value,
   },
 ]);
