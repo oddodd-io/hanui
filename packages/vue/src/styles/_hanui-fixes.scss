@@ -76,3 +76,9 @@
     max-width: var(--hanui-header-logo-max-width-mobile, 18rem);
   }
 }
+
+// 표 래퍼 — 가로 스크롤 안의 화면낭독기 전용 글자(.sr-only, position:absolute)가 래퍼 밖 기준으로 놓여
+// 페이지 전체에 가로 넘침을 만들지 않게 래퍼를 위치 기준으로 둔다
+.krds-table-wrap {
+  position: relative;
+}

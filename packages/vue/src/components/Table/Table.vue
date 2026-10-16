@@ -9,7 +9,7 @@
  * columns 없이 default 슬롯에 colgroup/thead/tbody를 직접 넣어도 된다.
  * 기준: reference/krds-uiux/html/code/table.html, resources/scss/component/_table.scss
  */
-import { computed, useId } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, useId } from 'vue';
 
 export interface TableColumn {
   /** rows 객체의 키. `#cell-{key}` / `#head-{key}` 슬롯 이름에도 쓰인다 */
@@ -82,7 +82,24 @@ if (import.meta.env.DEV && !props.caption && !slots.caption) {
 }
 
 // 스크롤 가능한 영역은 키보드로 포커스해 방향키로 스크롤할 수 있어야 한다 (axe scrollable-region-focusable)
-const isScrollable = computed(() => props.scroll || props.mobScroll);
+// scroll·mobScroll을 주지 않아도 KRDS 모바일 규칙(표 최소 너비 73.2rem)으로 실제로 넘치면 같은 처리를 한다 — 크기가 바뀔 때마다 다시 잰다
+const wrapRef = ref<HTMLElement | null>(null);
+const overflowing = ref(false);
+let resizeObserver: ResizeObserver | null = null;
+const measure = () => {
+  const el = wrapRef.value;
+  overflowing.value = !!el && el.scrollWidth > el.clientWidth + 1;
+};
+onMounted(() => {
+  measure();
+  if (typeof ResizeObserver === 'undefined' || !wrapRef.value) return;
+  resizeObserver = new ResizeObserver(measure);
+  resizeObserver.observe(wrapRef.value);
+  const table = wrapRef.value.querySelector('table');
+  if (table) resizeObserver.observe(table);
+});
+onBeforeUnmount(() => resizeObserver?.disconnect());
+const isScrollable = computed(() => props.scroll || props.mobScroll || overflowing.value);
 
 const wrapClasses = computed(() => [
   'krds-table-wrap',
@@ -102,6 +119,7 @@ const cellText = (value: unknown) => (value == null ? '' : String(value));
 
 <template>
   <div
+    ref="wrapRef"
     :class="wrapClasses"
     :role="isScrollable ? 'region' : undefined"
     :tabindex="isScrollable ? 0 : undefined"

@@ -195,6 +195,37 @@ describe('Table 스크롤 래퍼', () => {
     expect(wrapper.attributes('tabindex')).toBeUndefined();
   });
 
+  it('옵션이 없어도 실제로 가로로 넘치면(좁은 화면의 KRDS 최소 너비) 키보드 스크롤용 region·tabindex를 붙인다', async () => {
+    const sw = Object.getOwnPropertyDescriptor(
+      HTMLElement.prototype,
+      'scrollWidth'
+    );
+    const cw = Object.getOwnPropertyDescriptor(
+      HTMLElement.prototype,
+      'clientWidth'
+    );
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', {
+      configurable: true,
+      get: () => 732,
+    });
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+      configurable: true,
+      get: () => 288,
+    });
+    try {
+      const wrapper = mount(Table, { props: { caption, columns, rows } });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.attributes('role')).toBe('region');
+      expect(wrapper.attributes('tabindex')).toBe('0');
+      expect(wrapper.attributes('aria-labelledby')).toBe(
+        wrapper.find('caption').attributes('id')
+      );
+    } finally {
+      if (sw) Object.defineProperty(HTMLElement.prototype, 'scrollWidth', sw);
+      if (cw) Object.defineProperty(HTMLElement.prototype, 'clientWidth', cw);
+    }
+  });
+
   it.each([
     ['scroll', 'scroll'],
     ['mobScroll', 'mob-scroll'],
