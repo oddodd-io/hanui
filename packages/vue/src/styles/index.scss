@@ -26,3 +26,6 @@ $url: '../../vendor/krds-uiux/resources';
 
 // ---- hanui 보완 (KRDS 결함 최소 보완, KRDS 다음에 적용) ----
 @import './hanui-fixes';
+
+// ---- hanui 추가 (KRDS에 없는 것, KRDS 다음에 적용) ----
+@import './hanui-additions';

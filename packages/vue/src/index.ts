@@ -6,6 +6,7 @@ export * from './components/Input';
 export * from './components/Textarea';
 export * from './components/Select';
 export * from './components/Table';
+export * from './components/CardList';
 export * from './components/Pagination';
 export * from './components/Badge';
 export * from './components/Modal';

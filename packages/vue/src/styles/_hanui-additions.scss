@@ -1,0 +1,47 @@
+// hanui 추가 CSS — KRDS에 없는 것을 더한다.
+//
+// `_hanui-fixes.scss`와 나누는 이유: 저쪽은 KRDS 원본 결함을 덮어쓰는 파일이라
+// 원본이 고쳐지면 규칙을 지우는 것이 목표다. 이 파일은 KRDS에 아예 없는 것을
+// 더하므로 KRDS가 업데이트돼도 사라지지 않는다. 두 파일을 섞으면
+// "지울 것"과 "남길 것"을 구분할 수 없게 된다.
+//
+// 원칙
+// - KRDS 원본 구조·클래스를 그대로 쓰고, 없는 부분만 `hanui-` 접두사 클래스로 더한다.
+// - 값은 KRDS 토큰만 쓴다.
+// - 규칙마다 KRDS에 없다는 근거를 적는다.
+// 결정 기록: project-notes/decisions.md
+
+// ---------------------------------------------------------------------------
+// 1. 카드 목록 썸네일 (KRDS v1.1.0에 없음)
+//
+// KRDS 구조화 목록(`scss/component/_structured_list.scss`)의 카드에는 이미지 영역이 없다 —
+// 파일 전체에 `img`·`object-fit`·`aspect-ratio` 규칙이 한 줄도 없고, `.card-top`은
+// 뱃지·체크박스가 들어가는 가로줄(`flex-layout($ai: center)`)이다.
+// 갤러리형 게시판 목록에 필요하므로 링크(`.c-text`) 안 맨 위에 썸네일 자리를 더한다.
+//
+// 카드 안쪽 여백(`.in`)을 음수 margin으로 거스르지 않고 그 안에 둔다 — 원본 간격 체계를 지킨다.
+// 모서리는 카드(`--krds-radius-xlarge2`)보다 한 단계 작게 둬서 안쪽 요소로 보이게 한다.
+//
+// 대체텍스트: 카드 전체가 제목을 이름으로 갖는 하나의 링크이므로 썸네일은 장식이다(`alt=""`).
+// 썸네일에 제목을 다시 넣으면 스크린리더가 같은 내용을 두 번 읽는다(KWCAG 1.1.1·2.4.4).
+// ---------------------------------------------------------------------------
+.krds-structured-list .hanui-card-thumb {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: var(--hanui-card-thumb-ratio, 4 / 3);
+  border-radius: var(--krds-radius-large1);
+  background-color: var(--krds-light-color-surface-gray-subtler);
+}
+
+.krds-structured-list .hanui-card-thumb > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-krds-mode='high-contrast']
+  .krds-structured-list
+  .hanui-card-thumb {
+  background-color: var(--krds-high-contrast-color-surface-gray-subtler);
+}
