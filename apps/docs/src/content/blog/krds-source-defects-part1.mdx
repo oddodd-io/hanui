@@ -1,0 +1,150 @@
+---
+title: 'KRDS를 그대로 가져다 쓰면 검수에 걸려요 — 원본은 안 고치고 보완한 기록'
+description: '정부 표준 디자인 시스템 KRDS 원본(v1.1.0) HTML·CSS·JS를 Vue로 옮기며 찾은 접근성 결함들. vendor는 건드리지 않고 보완만 쌓는 방식과, 가장 짧은 예시인 Breadcrumb 모바일 초점 문제를 공유해요.'
+date: '2026-11-11'
+tags: ['KRDS', '접근성', 'KWCAG', 'Vue', '공공기관', '디자인시스템']
+author: 'odada'
+series: 'KRDS 원본 보완'
+seriesOrder: 1
+---
+
+공공기관 사업에서 KRDS(정부 디자인 시스템)를 쓰기로 하면, 보통 이렇게 생각해요.
+
+> 정부가 만든 표준이니까, 가져다 쓰면 접근성은 알아서 해결되겠지.
+
+저도 그렇게 시작했어요. 그런데 `@hanui/vue`에 KRDS 컴포넌트를 22개까지 붙이면서 원본 HTML·CSS·JS를 한 줄씩 대조해봤더니, **원본 자체의 결함 목록이 따로 쌓였어요.** 그중 몇 개는 공공기관 검수에서 그대로 지적받을 만한 것들이었습니다.
+
+이 시리즈는 그 기록이에요. 오늘 1편은 **"왜 그대로 쓰면 안 되는지"**와 **원본을 안 고치면서 보완하는 방식**까지입니다.
+
+## 전제 — 무엇을 보고 말하는 건가
+
+- 대상: [KRDS-uiux/krds-uiux](https://github.com/KRDS-uiux/krds-uiux) — `package.json` 버전 `1.1.0`
+- 확인 시점: **2026-09-21 ~ 09-30**
+- 비교 대상: `html/code/*.html`, `resources/scss/component/*`, `resources/js/component/ui-script.js`
+
+여기 적는 내용은 **그 시점의 원본** 이야기예요. KRDS가 업데이트되면서 고쳐졌을 수 있으니, 지금 받아서 쓰실 분은 해당 부분만 다시 확인해보세요. 저도 그래서 보완 규칙마다 KRDS 버전을 적어둡니다.
+
+그리고 하나 더. KRDS 저장소는 **HTML Component Kit**이에요. Vue나 React 컴포넌트 라이브러리가 아니라, HTML·CSS·JS 원본 구현입니다. 그래서 "가져다 쓴다"는 말이 실제로는 "마크업을 베껴서 내 프레임워크로 다시 쓴다"가 돼요. 이 과정에서 원본의 JS 동작은 따라오지 않습니다.
+
+## 왜 문제인가 — 검수는 KRDS를 안 봐요
+
+공공기관 웹접근성 검수는 **KWCAG 2.2** 기준으로 봅니다. "KRDS를 썼습니다"는 통과 근거가 아니에요. 그러니까 이런 상황이 가능해요.
+
+```
+KRDS 원본 마크업 그대로 사용 → 그런데 KWCAG 지적 사항 발생
+```
+
+제가 찾은 것 중 가장 알기 쉬운 예를 하나 볼게요.
+
+## 가장 짧은 예 — 안 보이는 곳으로 초점이 가요
+
+KRDS Breadcrumb은 JS 동작이 없는 순수 마크업이에요. 모바일 폭에서 홈과 현재 위치만 보이는 것도 CSS로 처리합니다. 중간 항목을 `sr-only`로 숨기는 방식인데요.
+
+문제는 이거예요.
+
+**숨긴 건 화면에서만이고, 그 링크는 여전히 Tab 초점을 받습니다.**
+
+키보드로 Tab을 누르면 초점이 **보이지 않는 항목으로 들어가요.** 사용자 화면에는 초점 표시가 아무 데도 안 보입니다. 지금 어디에 있는지 알 수 없는 상태로 Tab을 몇 번 더 눌러야 다음 항목이 나와요. KWCAG 2.4.7(초점 표시) 지적 소지가 있는 동작입니다.
+
+고친 방식은 간단해요. **초점이 들어온 동안만 그 항목을 화면에 보이게** 합니다.
+
+```scss
+// 2. Breadcrumb 모바일 숨김 항목 초점 표시 (KRDS v1.1.0)
+// 모바일 폭에서 중간 항목을 sr-only로 숨기지만 링크는 Tab 초점을 받아,
+// 보이지 않는 곳에 초점이 간다(WCAG 2.4.7 초점 표시).
+// 초점이 들어온 동안만 그 항목을 화면에 보인다.
+@include size-medium {
+  .krds-breadcrumb-wrap .breadcrumb li:not(.home):not(:last-child):focus-within {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+  }
+}
+```
+
+`:focus-within`과 `!important` 조합이 전부예요. 새 디자인을 만들지 않고, 원본이 이미 가진 "보이는 상태"로 되돌려놓기만 합니다.
+
+같은 Breadcrumb에서 하나 더 있었어요. 현재 페이지 항목에 **`aria-current="page"`가 없습니다.** 이건 CSS로 못 고쳐서 Vue 컴포넌트에서 보탰어요.
+
+```
+Breadcrumb — KRDS `nav.krds-breadcrumb-wrap > ol.breadcrumb` 래퍼
+
+KRDS 브레드크럼은 JS 동작이 없는 순수 마크업이다(모바일에서 홈·현재 위치만 보이는 것도 CSS).
+첫 항목에 `.home`(홈 아이콘)을 붙이고, 원본에 없는 `aria-current="page"`를 마지막 항목에 보탠다.
+```
+
+## 원칙 — 원본은 안 고쳐요
+
+여기서 선택이 갈려요. 원본 SCSS를 열어서 직접 고치는 게 제일 빠릅니다. 그런데 그러면 **KRDS가 업데이트될 때마다 내 수정이 어디 있는지 찾아야 해요.** 한 번 갈라지면 다시 못 합칩니다.
+
+그래서 규칙을 세 줄로 정했어요.
+
+```scss
+// hanui 보완 CSS — KRDS 원본 CSS의 결함 중 공공기관 검수에 걸리는 것만 최소한으로 보완한다.
+//
+// 원칙
+// - vendor(KRDS 원본)는 수정하지 않고, 이 파일을 KRDS 다음에 불러와 덮어쓴다.
+// - 규칙마다 KRDS 버전과 근거를 적는다. KRDS 업데이트로 원본이 고쳐지면 해당 규칙을 지운다.
+// - 새 디자인을 추가하지 않는다. 값은 KRDS 토큰만 쓴다.
+```
+
+불러오는 순서는 이렇게 한 줄이에요.
+
+```scss
+// ---- component.scss ----
+@import '../../vendor/krds-uiux/resources/scss/component/component';
+
+// ---- hanui 보완 (KRDS 결함 최소 보완, KRDS 다음에 적용) ----
+@import './hanui-fixes';
+```
+
+이 방식의 좋은 점은 **보완한 게 전부 한 파일에 모인다**는 거예요. KRDS 새 버전이 나오면 이 파일만 위에서 아래로 읽으면서 "이건 고쳐졌나?" 확인하고, 고쳐진 규칙은 지웁니다. 지우는 게 목표인 파일이에요.
+
+세 번째 원칙("새 디자인 추가 금지")도 중요해요. 보완한다고 색을 예쁘게 바꾸기 시작하면 그건 더 이상 KRDS가 아니고, 검수에서 "KRDS 기반"이라고 말하기 어려워집니다. 값은 `var(--krds-...)` 토큰만 씁니다.
+
+## 찾은 것들 — 다음 편 예고
+
+지금까지 기록한 목록이에요. 성격이 셋으로 나뉩니다.
+
+| 컴포넌트 | 성격 | 내용 |
+| --- | --- | --- |
+| Breadcrumb | CSS로 보완 | 모바일 숨김 항목에 초점 표시 없음, `aria-current` 없음 |
+| Footer | CSS로 보완 | 마크업은 `a.point`를 쓰는데 CSS 정의가 없어 개인정보처리방침이 다른 링크와 똑같이 보임 |
+| Select | CSS로 보완 | 안내 문구 색이 흰 바탕에서 3.08:1 — 글자 명도 대비 4.5:1(KWCAG 1.4.3) 미달 |
+| Badge | 기록만 | `outline` 테두리 색 믹스인이 정의 없는 변수를 참조해, primary 외 8색 테두리가 글자색으로 대체됨 |
+| Modal | JS 다시 씀 | Esc 리스너가 `{ once: true }`, 초점 가두기 대상 한 번만 계산, `body.scroll-no` CSS 없음, `aria-modal` 누락 |
+| 주메뉴(PC) | JS 다시 씀 | Home/End가 2depth에서도 1depth로 이동, Esc로 닫아도 초점 복귀 없음, 이름을 `ul`에 붙여 랜드마크로 못 찾음 |
+| 모바일 전체메뉴 | JS 다시 씀 | `aria-expanded` 주석 처리, Esc로 안 닫힘, `inert`를 고정 id에 걸어 KRDS 푸터가 빠짐, tab 역할인데 방향키 없음 — 9건 |
+| SideNavigation | 역할 설계 변경 | `menubar`/`menu`/`menuitem` 역할을 쓰는데 방향키 동작이 없음, 팝업 밖으로 Tab 하면 초점을 강제로 되돌림 |
+| DropMenu | 속성 제거 | 링크에 `aria-selected` — link 역할에 허용되지 않는 속성 |
+| FileUpload | 동작 채움 | JS가 주석대로 "drag 임시" — drop 시 테두리만 바뀌고 파일 처리 없음. `<label for><button>` 중첩은 HTML 규칙 위반 |
+| Spinner | 중복 제거 | 화면 문구와 sr-only "로딩 중"이 같이 들어가 두 번 읽힘 |
+
+눈에 보이는 건 거의 없어요. **전부 키보드와 화면낭독기에서만 드러나는 것들이에요.** 그래서 디자인 QA로는 안 걸리고 접근성 검수에서 걸립니다.
+
+제일 무거운 건 **JS를 다시 쓴 쪽**이에요. 모바일 전체메뉴 하나에서 9건이 나왔고, Modal은 "열린 직후 첫 초점이 안 들어가는" 이유를 찾는 데 제일 오래 걸렸어요. 원본은 350ms 고정 지연으로 피해 갔는데, 저는 다르게 풀었습니다. 그 얘기를 2편에서 할게요.
+
+## 오늘 정리
+
+1. **KRDS는 HTML Component Kit이에요.** Vue·React로 쓰려면 다시 쓰는 과정이 들어가고, 원본 JS 동작은 따라오지 않습니다.
+2. **"KRDS 썼다"는 KWCAG 통과 근거가 아니에요.** 검수는 KWCAG를 봅니다.
+3. **보완은 한 파일에, 버전과 근거를 적어서.** 원본을 직접 고치면 업데이트 때 합칠 수 없어요. 지우는 걸 목표로 쌓습니다.
+
+KRDS로 공공 사업을 하신다면, 최소한 **Tab만 끝까지 한 번 눌러보세요.** 초점이 사라지는 지점이 있으면 거기가 보완할 자리예요.
+
+## 관련 링크
+
+- [KRDS-uiux/krds-uiux](https://github.com/KRDS-uiux/krds-uiux) — KRDS 원본 저장소
+- [KWCAG 2.2](https://www.wa.or.kr/m1/sub1.asp) — 한국형 웹 콘텐츠 접근성 지침
+- [WCAG 2.4.7 Focus Visible](https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html)
+- [HANUI — KRDS 기반 디자인 시스템](https://hanui.io)
+- [claude-settings](https://github.com/hanui-o/claude-settings) — `/a11y`, `/review` 커맨드 저장소
+
+## 시리즈: KRDS 원본 보완
+
+- **1편: KRDS를 그대로 가져다 쓰면 검수에 걸려요 — 원본은 안 고치고 보완한 기록** ← 현재 글
+- 2편: Modal JS를 다시 쓴 이유 (예정)
