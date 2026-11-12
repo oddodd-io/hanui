@@ -1,0 +1,158 @@
+---
+title: 'Modal JS를 다시 쓴 이유 — Esc가 안 먹는 리스너와 350ms의 정체'
+description: 'KRDS 모달의 Esc가 어떤 조건에서 안 먹는지, 배경 스크롤 잠금이 왜 동작하지 않는지, 그리고 원본이 첫 초점을 350ms 기다리는 진짜 이유를 추적했어요. 그 자리를 고정 지연 대신 프레임 재시도로 바꾼 기록입니다.'
+date: '2026-11-13'
+tags: ['KRDS', '접근성', 'Vue', '모달', 'KWCAG']
+author: 'odada'
+series: 'KRDS 원본 보완'
+seriesOrder: 2
+---
+
+[1편](/blog/krds-source-defects-part1)에서 KRDS 원본(v1.1.0)의 결함 목록을 보여드렸어요. 그중 **JS를 통째로 다시 쓴 것**이 셋 있었는데, 오늘은 그 첫 번째인 Modal입니다.
+
+모달은 접근성에서 가장 까다로운 컴포넌트예요. 초점을 가두고, Esc로 닫고, 배경을 못 만지게 하고, 닫으면 원래 자리로 초점을 돌려줘야 합니다. KRDS 원본 `ui-script.js`의 `krds_modal`은 이걸 다 시도하는데, **다섯 군데가 어긋나 있었어요.**
+
+## 1. Esc가 안 먹는 조건이 있어요
+
+제일 당황한 게 이거예요. Esc를 눌렀는데 안 닫혔습니다. 그런데 어떨 때는 닫혀요.
+
+원인은 리스너 등록 방식이었어요. 원본은 Esc 리스너를 `{ once: true }`로 답니다.
+
+`once`는 **"한 번 실행되면 스스로 떨어진다"**는 뜻인데, 여기서 "한 번"은 Esc가 아니라 **키 이벤트 한 번**이에요. 그러니까 모달을 열고 Tab을 한 번 누르면, 그 Tab이 리스너를 소진합니다. 그 뒤로는 Esc가 아무 일도 안 해요.
+
+실제 사용 흐름을 생각해보면 **Tab을 안 누르고 Esc를 누르는 경우가 오히려 드물어요.** 모달을 열면 보통 내용을 보고 버튼 사이를 Tab으로 옮겨 다니죠. 그 순간 Esc는 죽습니다.
+
+KWCAG 2.1.2(초점 이동과 갇힘 방지) 관점에서는 꽤 무거운 문제예요. 키보드 사용자가 모달에서 나갈 길이 "닫기 버튼까지 Tab으로 가기" 하나만 남습니다.
+
+고친 건 단순해요. 키 처리를 한 핸들러에서 하고, Esc는 **항상** 동작하게 했습니다.
+
+```ts
+const onKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' || event.key === 'Esc') {
+    if (!props.closeOnEsc) return;
+    event.stopPropagation();
+    close();
+    return;
+  }
+  if (event.key !== 'Tab') return;
+  // ... 초점 가두기
+};
+```
+
+## 2. 초점 가둘 대상을 열 때 한 번만 계산해요
+
+원본은 모달을 열 때 초점 가능한 요소 목록을 한 번 구해서 들고 있습니다. 내용이 고정된 모달이면 괜찮아요.
+
+문제는 **모달 안이 변하는 경우**예요. 입력 오류가 나서 메시지와 버튼이 늘어나거나, 목록을 불러와 항목이 생기거나, 조건부로 "확인" 버튼이 나타나는 경우. 그때 새로 생긴 요소는 **초점 가두기 목록에 없어요.** Tab을 돌리면 그 요소를 건너뛰거나, 마지막 요소 판정이 틀려서 초점이 모달 밖으로 새어 나갑니다.
+
+그래서 Tab을 누를 때마다 다시 계산하게 했어요. 비활성·숨김 요소도 그때그때 걸러냅니다.
+
+```ts
+const getFocusables = () =>
+  Array.from(contentRef.value?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []).filter(
+    (el) => !el.closest('[inert]') && el.getAttribute('aria-hidden') !== 'true'
+  );
+```
+
+선택자 자체는 원본 `common.focusTrap`과 같은 것을 씁니다. 바꾼 건 **언제 계산하느냐**예요.
+
+## 3. 배경 스크롤 잠금이 아예 동작하지 않아요
+
+원본은 모달을 열 때 `body`에 `scroll-no` 클래스를 붙입니다. 의도는 분명해요 — 배경이 스크롤되지 않게.
+
+그런데 **KRDS CSS에 `scroll-no` 정의가 없어요.** 클래스만 붙고 아무 일도 안 일어납니다. 모달을 열어둔 채 마우스 휠을 돌리면 뒤 페이지가 그대로 움직여요.
+
+그리고 배경을 못 만지게 하는 쪽도 어긋나 있었습니다. 원본은 `#wrap`이라는 id에만 `inert`를 걸어요. 그 구조를 쓰는 페이지에서는 되지만, **`#wrap` 밖에 있는 요소는 그대로 Tab으로 닿습니다.** KRDS 푸터는 `#krds-footer`라서 `#wrap` 바깥이에요.
+
+그래서 id에 기대지 않고, 모달에서 `body`까지 올라가며 **형제 요소를 전부** `inert`로 만들었어요. Teleport로 어디에 렌더되든 동작하게요.
+
+```ts
+/** el에서 body까지 올라가며 형제 요소를 inert로 만든다 (Teleport 여부와 무관하게 동작) */
+const inertOutside = (el: HTMLElement): HTMLElement[] => { /* ... */ };
+```
+
+중첩 모달이 있으니 **자기가 inert로 만든 것만 기억해뒀다가 그것만 되돌립니다.** 먼저 열린 모달이 나를 inert로 만들어 놨을 수도 있어서, 열 때 그걸 먼저 풀어줘야 해요. 이 관리를 `modal-stack.ts`에 모았습니다.
+
+## 4. `aria-modal`이 없어요
+
+화면낭독기에 "지금 이 대화상자 밖은 없는 것으로 취급하라"고 알리는 속성인데 빠져 있었습니다. 추가했어요.
+
+## 5. 350ms의 정체
+
+가장 오래 본 게 이거예요. 원본은 모달을 열고 **350ms 뒤에** 첫 요소에 초점을 줍니다. 처음엔 "애니메이션 기다리는 거겠지" 하고 넘겼는데, 왜 하필 그 시간인지가 궁금했어요.
+
+그래서 350ms를 지우고 바로 `focus()`를 불러봤습니다. **초점이 안 들어갔어요.** 에러도 없고, 그냥 무시됩니다.
+
+이유는 CSS였어요. `.krds-modal`은 `visibility`를 전환하고(0.15s), 안의 `.krds-btn`도 자체 transition을 가집니다. 열린 직후 몇 프레임 동안 **대상이 아직 hidden 상태**예요. 숨겨진 요소에 `focus()`를 부르면 브라우저는 조용히 무시합니다.
+
+즉 350ms는 "애니메이션 감상 시간"이 아니라 **"초점이 들어갈 수 있을 때까지 넉넉히 기다린 값"**이었어요.
+
+그런데 고정 지연은 양쪽으로 틀립니다. 느린 기기에서는 350ms도 부족할 수 있고, 빠른 기기에서는 **이미 준비된 요소를 350ms 동안 놀려둬요.** 그 사이 키보드 사용자는 초점이 어디 있는지 모르는 상태로 기다립니다.
+
+그래서 시간을 재는 대신 **들어갔는지 확인**하게 바꿨어요.
+
+```ts
+/**
+ * KRDS CSS는 visibility를 전환하고(.krds-modal .15s) 버튼 등 자식도 자체 transition을 가져
+ * 열린 직후 몇 프레임 동안은 대상이 아직 hidden이라 focus()가 무시된다
+ * (KRDS 원본이 350ms를 기다리는 이유). 초점이 실제로 들어갈 때까지 프레임마다 다시 시도한다.
+ */
+const focusWhenReady = async (maxFrames = 30) => {
+  for (let i = 0; i <= maxFrames; i++) {
+    if (!isIn.value) return false; // 기다리는 사이 닫혔으면 중단
+    const [first] = getFocusables();
+    const target = first ?? contentRef.value;
+    target?.focus();
+    if (!target || document.activeElement === target) return true;
+    if (typeof requestAnimationFrame !== 'function') return false;
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+  }
+  return false;
+};
+```
+
+`focus()`를 부른 뒤 `document.activeElement`가 실제로 그 요소인지 확인하고, 아니면 다음 프레임에 다시 시도해요. 준비되면 바로 끝나고, 안 되면 30프레임까지만 시도하고 포기합니다.
+
+세 가지가 같이 해결됐어요.
+
+- 빠른 기기에서는 **첫 프레임에 초점이 들어가요.** 350ms 기다리지 않습니다.
+- 느린 기기에서는 **350ms보다 더 기다릴 수 있어요.**
+- 기다리는 동안 사용자가 모달을 닫으면 **중단합니다.** 닫힌 모달에 초점을 꽂지 않아요. (고정 지연 방식의 경쟁 상태)
+
+## 왜 vendor를 안 고쳤나
+
+[1편](/blog/krds-source-defects-part1)에서 쓴 원칙 그대로예요. 원본 JS는 건드리지 않고, Vue 컴포넌트가 같은 역할을 다시 합니다. 대신 **무엇을 왜 다르게 했는지 컴포넌트 머리에 적어둬요.**
+
+```
+ * 마크업·클래스 전환(shown → in, 닫을 때 in 제거 후 350ms 뒤 shown 제거)·첫 초점·
+ * 바깥 클릭 시 첫 요소로 초점 이동·중첩 z-index는 KRDS ui-script.js krds_modal을 따른다.
+ * 원본 JS의 결함은 여기서 바로잡는다.
+ * - Esc 리스너가 `{ once: true }`라 다른 키를 먼저 누르면 Esc로 닫히지 않음 → 항상 동작
+ * - 초점 가두기 대상 요소를 열 때 한 번만 계산 → Tab마다 다시 계산
+ * - `#wrap` inert·`body.scroll-no`(CSS 없음)에 의존 → 바깥 전체 inert, body 스크롤 직접 잠금
+ * - aria-modal 누락 → 추가
+```
+
+마크업과 클래스 전환은 **원본을 그대로 따릅니다.** 닫을 때 350ms 뒤에 `shown`을 떼는 것도 그대로예요 — 그건 실제로 CSS 전환 시간이고, 초점과 달리 "끝났는지" 확인할 필요가 없으니까요. 고친 건 어긋난 다섯 군데뿐입니다.
+
+## 오늘 정리
+
+1. **`{ once: true }`는 "그 키 한 번"이 아니라 "이벤트 한 번"이에요.** 조건부로 처리할 키에는 쓰면 안 됩니다.
+2. **초점 가두기 목록은 Tab마다 다시 계산하세요.** 모달 안이 변하면 열 때 구한 목록은 틀려 있어요.
+3. **고정 지연 뒤에는 보통 "확인할 수 없어서 넉넉히 잡은 값"이 숨어 있어요.** 무엇을 기다리는지 알아내면 그 조건을 직접 확인할 수 있고, 그게 모든 기기에서 맞습니다.
+
+본인 모달에서 확인해보실 거라면 순서는 이거예요. **모달을 열고 → Tab을 한 번 누르고 → Esc를 누르세요.** 안 닫히면 같은 문제예요.
+
+## 관련 링크
+
+- [`inert` — MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert)
+- [ARIA APG — Dialog (Modal) Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+- [KRDS-uiux/krds-uiux](https://github.com/KRDS-uiux/krds-uiux) — 원본 저장소 (이 글은 v1.1.0 기준, 2026-09-29 확인)
+- [@hanui/vue](https://www.npmjs.com/package/@hanui/vue)
+- [claude-settings](https://github.com/hanui-o/claude-settings) — `/a11y`, `/review` 커맨드 저장소
+
+## 시리즈: KRDS 원본 보완
+
+- 1편: [KRDS를 그대로 가져다 쓰면 검수에 걸려요 — 원본은 안 고치고 보완한 기록](/blog/krds-source-defects-part1)
+- **2편: Modal JS를 다시 쓴 이유 — Esc가 안 먹는 리스너와 350ms의 정체** ← 현재 글
+- 3편: 모바일 전체메뉴 하나에서 결함 9건 (예정)
