@@ -71,6 +71,20 @@ describe('CardList 구조 (KRDS structured_list.html 기준)', () => {
     );
   });
 
+  it('같은 글이 두 번 나오는 목록은 key로 구별한다 (상단고정 글)', () => {
+    // 상단고정 글은 맨 위와 원래 자리에 모두 보이므로 href가 겹친다 — key가 없으면 Vue 키가 중복된다
+    const pinnedTwice: CardListItem[] = [
+      { key: '0-12', title: '공지', href: '/boards/gallery/12' },
+      { key: '3-12', title: '공지', href: '/boards/gallery/12' },
+    ];
+    const wrapper = mount(CardList, { props: { items: pinnedTwice } });
+    expect(wrapper.findAll('li')).toHaveLength(2);
+    expect(wrapper.findAll('a').map((a) => a.attributes('href'))).toEqual([
+      '/boards/gallery/12',
+      '/boards/gallery/12',
+    ]);
+  });
+
   it('항목이 없으면 emptyText를, 그마저 없으면 아무것도 렌더하지 않는다', () => {
     const empty = mount(CardList, {
       props: { items: [], emptyText: '등록된 글이 없습니다.' },

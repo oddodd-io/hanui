@@ -27,6 +27,12 @@ export interface CardListMeta {
 }
 
 export interface CardListItem {
+  /**
+   * 목록에서 이 카드를 구별하는 값 (Vue key).
+   * 없으면 `href`를 쓰는데, 같은 글이 목록에 두 번 나오는 경우(상단고정 글은 맨 위와 원래 자리에
+   * 모두 보인다) 주소가 겹쳐 키가 중복된다. 그런 목록은 이 칸을 직접 채운다.
+   */
+  key?: string;
   /** 카드 제목 — 링크의 이름이 된다. 목록에서 카드를 구별하는 유일한 수단이므로 비울 수 없다 */
   title: string;
   href: string;
@@ -90,7 +96,7 @@ const newWindow = (external?: boolean) =>
     :style="listStyle"
     :aria-label="label"
   >
-    <li v-for="(item, index) in items" :key="item.href || index" class="structured-item">
+    <li v-for="(item, index) in items" :key="item.key ?? item.href ?? index" class="structured-item">
       <div class="in">
         <div v-if="item.badge" class="card-top">
           <Badge variant="bg-light" :color="item.badgeColor ?? 'primary'">
