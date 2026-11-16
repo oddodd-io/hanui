@@ -48,19 +48,37 @@ jobs:
           git commit -m "publish: 예약 글 ${COUNT}편 발행 — ${TITLES}"
           git push
 
-      - name: 재고 부족 알림 이슈
-        if: steps.publish.outputs.low_stock == 'true'
+      # 재고 알림. 열린 이슈가 있으면 건너뛰던 예전 방식은, 이슈를 한 번 안 닫으면
+      # 그 뒤로 영영 알림이 오지 않았다(2026-07-01 이슈가 11-16까지 열린 채 알람이 죽어 있었다).
+      # 그래서 재고가 회복되면 스스로 닫고, 부족한 동안은 현재 편수로 갱신한다.
+      - name: 재고 알림 (열기·갱신·닫기)
         env:
           GH_TOKEN: ${{ github.token }}
           REMAINING: ${{ steps.publish.outputs.remaining }}
+          LOW_STOCK: ${{ steps.publish.outputs.low_stock }}
         run: |
-          EXISTING=$(gh issue list --state open --label "blog-restock" --json number --jq 'length')
-          if [ "$EXISTING" -gt 0 ]; then
-            echo "이미 열린 재고 알림 이슈가 있어 생략."
-            exit 0
-          fi
           gh label create "blog-restock" --color FBCA04 --description "블로그 예약글 재고 알림" 2>/dev/null || true
-          gh issue create \
-            --title "📝 블로그 예약글 재고 부족 (남은 ${REMAINING}편)" \
-            --label "blog-restock" \
-            --body "예약 큐(apps/docs/blog-queue/)에 남은 글이 ${REMAINING}편이에요. 시간 날 때 글을 더 써서 큐에 쟁여두면(프론트매터 date를 미래 발행일로) 발행일에 자동으로 올라갑니다. 자세히는 apps/docs/blog-queue/README.md 참고. 재고를 채우면 이 이슈를 닫아주세요."
+          NUM=$(gh issue list --state open --label "blog-restock" --json number --jq '.[0].number // empty')
+          TITLE="📝 블로그 예약글 재고 부족 (남은 ${REMAINING}편)"
+          BODY=$(printf '%s\n\n%s' \
+            "예약 큐(apps/docs/blog-queue/)에 남은 글이 **${REMAINING}편**이에요. 글을 더 써서 큐에 쟁여두면(프론트매터 date를 미래 발행일로) 발행일에 자동으로 올라갑니다. 자세히는 apps/docs/blog-queue/README.md 참고." \
+            "재고가 3편 이상으로 회복되면 이 이슈는 **자동으로 닫힙니다.** 직접 닫지 않아도 돼요.")
+
+          if [ "$LOW_STOCK" = "true" ]; then
+            if [ -z "$NUM" ]; then
+              gh issue create --title "$TITLE" --label "blog-restock" --body "$BODY"
+              echo "재고 알림 이슈를 새로 열었다(남은 ${REMAINING}편)."
+            else
+              gh issue edit "$NUM" --title "$TITLE" --body "$BODY"
+              gh issue comment "$NUM" --body "오늘 기준 남은 예약글 **${REMAINING}편**."
+              echo "열린 이슈 #${NUM}을 현재 편수로 갱신했다."
+            fi
+          else
+            if [ -n "$NUM" ]; then
+              gh issue comment "$NUM" --body "재고가 **${REMAINING}편**으로 회복돼 자동으로 닫습니다."
+              gh issue close "$NUM"
+              echo "재고 회복(${REMAINING}편) — 이슈 #${NUM}을 닫았다."
+            else
+              echo "재고 ${REMAINING}편 — 알림 없음."
+            fi
+          fi
