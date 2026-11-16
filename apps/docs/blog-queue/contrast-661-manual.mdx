@@ -1,0 +1,194 @@
+---
+title: 'axe가 "판단 불가"로 남긴 661곳을 직접 계산했어요 — 명도 대비 3.08:1의 발견'
+description: '자동 점검 결과는 위반 0건이었어요. 그런데 axe는 "판단 불가"를 따로 적어둡니다. 그 목록을 입력으로 삼아 661곳의 대비를 직접 계산했더니 34곳이 기준에 못 미쳤고, 34곳 전부 똑같은 값이었어요. 범인은 KRDS 색 토큰 하나였습니다.'
+date: '2026-11-19'
+tags: ['접근성', 'KRDS', 'KWCAG', 'axe', '명도대비', '자동화']
+author: 'odada'
+series: 'KRDS 원본 보완'
+seriesOrder: 5
+---
+
+공공 CMS 화면 36개를 axe로 돌렸습니다. 결과가 이랬어요.
+
+```
+- 위반: 0건 (규칙 0종), 320px 가로 넘침: 0화면
+```
+
+**위반 0건.** 기분이 좋았는데, 하나가 걸렸어요. 명도 대비 위반이 0건이라는 게 믿기지 않았거든요. 화면 36개에 글자가 몇 천 개인데요.
+
+> **확인 기준: axe-core 4.14(WCAG 2.0~2.2 A·AA), HANUI CMS 1.0.0, 2026-10-16 자체 점검.** 화면 36개를 PC(1440px)와 좁은 화면(320px)에서 검사했습니다.
+
+## axe는 세 칸으로 답합니다
+
+axe 결과에는 `violations`만 있는 게 아니에요. `incomplete`가 따로 있습니다. **"위반은 아니고, 통과도 아니고, 내가 판단을 못 하겠다"**는 칸이에요.
+
+거기에 `color-contrast`가 잔뜩 들어 있었습니다. 이유도 적혀 있어요.
+
+```json
+{ "target": "#hanui-field-v-0-0-0",
+  "reason": "Element's background color could not be determined due to a background image" }
+{ "target": ".prev",
+  "reason": "Element's background color could not be determined because it's partially obscured by another element" }
+```
+
+**배경이 그림이거나, 다른 요소에 일부 가려졌을 때** axe는 배경색을 못 정합니다. 배경색을 모르면 대비를 계산할 수 없고, 계산을 못 하니 위반이라고 말하지 않아요.
+
+틀린 동작이 아닙니다. 추측해서 "위반"이라고 하면 그게 더 나빠요. 문제는 **읽는 쪽이 `violations`만 보고 "통과"라고 결론 내리는 것**입니다. 제가 그럴 뻔했고요.
+
+## 판단 불가를 입력으로 썼어요
+
+그래서 점검 스크립트에 한 단계를 붙였습니다. **axe가 못 정한 그 목록을 그대로 받아서 직접 계산**하게요.
+
+```js
+// axe가 배경을 정하지 못한 대비 항목(겹침·배경 그림)은 글자색과
+// 실제 배경색(위로 올라가며 처음 칠해진 색)으로 직접 계산한다
+const contrastTargets = result.incomplete
+  .filter((v) => v.id === 'color-contrast')
+  .flatMap((v) => v.nodes.map((n) => n.target.join(' ')));
+```
+
+핵심은 **배경색을 구하는 방법**이에요. axe가 포기한 지점이 여기니까요. 요소에서 부모로 올라가면서 **처음으로 실제 칠해진 색**을 찾습니다.
+
+```js
+const bgOf = (el) => {
+  for (let e = el; e; e = e.parentElement) {
+    const [r, g, b, a = 1] = parse(getComputedStyle(e).backgroundColor);
+    if (a > 0) return [r, g, b];
+  }
+  return [255, 255, 255];
+};
+```
+
+대비 공식은 WCAG 상대 휘도 그대로예요.
+
+```js
+const lum = ([r, g, b]) => {
+  const f = (v) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+};
+const ratio = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+const large = size >= 24 || (size >= 18.66 && Number(cs.fontWeight) >= 700);
+const need = large ? 3 : 4.5;
+```
+
+**큰 글자 판정을 넣은 게 중요해요.** 24px 이상이거나 18.66px 이상이면서 굵으면 기준이 3:1입니다. 이걸 빼면 큰 제목들이 전부 미달로 나와서 결과를 못 봐요.
+
+## 결과
+
+```
+- 661곳 계산, 기준 미달 34곳, 가장 낮은 대비 3.08:1
+```
+
+**34곳이 기준 미달이었습니다.** axe가 위반 0건이라고 한 그 화면들에서요.
+
+그리고 목록을 보다가 이상한 걸 발견했어요.
+
+```
+공개 게시판 목록(pc)   #hanui-field-v-0-0-0   3.08:1 (기준 4.5:1)
+공개 게시판 목록(pc)   .prev                  3.08:1 (기준 4.5:1)
+관리자 게시글 목록(pc) #hanui-field-v-2       3.08:1 (기준 4.5:1)
+관리자 글 작성(pc)     #post-boardKey         3.08:1 (기준 4.5:1)
+관리자 메뉴 설정(pc)   #menu-add-g-about      3.08:1 (기준 4.5:1)
+...
+```
+
+**34곳 전부 3.08:1입니다.** 하나도 다르지 않아요.
+
+같은 값이 34번 나온다는 건 **34개의 문제가 아니라 하나의 문제**라는 뜻이에요. 색을 정하는 자리가 한 군데고, 그게 34곳에 퍼져 있는 거죠.
+
+## 범인은 토큰 하나였어요
+
+찾아보니 KRDS 색 토큰이었습니다.
+
+```css
+--krds-light-color-text-disabled: var(--krds-color-light-gray-40);  /* #8a949e */
+```
+
+`#8a949e`를 흰 배경에 놓으면 **3.08:1**이에요. KWCAG 1.4.3이 요구하는 4.5:1에 못 미칩니다.
+
+그리고 이 토큰이 쓰인 자리가 여기였어요.
+
+```css
+--krds-form-select--color-text: var(--krds-light-color-text-disabled);
+```
+
+**선택 상자의 "선택 전" 안내 문구**입니다. "전체"나 "선택하세요" 같은 글자요. 흔하니까 34곳에 퍼진 거예요.
+
+## 역전돼 있었습니다
+
+같은 파일에서 바로 아래 줄을 보고 좀 놀랐어요.
+
+| 상태 | KRDS가 쓰는 토큰 | 색 | 흰 바탕 대비 |
+| --- | --- | --- | --- |
+| 선택 전 안내 문구 | `text-disabled` | `#8a949e` | **3.08:1** |
+| 실제 **비활성** 상태 | `text-disabled-on` | `#6d7882` | **4.51:1** |
+
+**읽어야 하는 글자가, 못 쓰는 상태의 글자보다 옅습니다.**
+
+비활성 요소는 대비 기준에서 빠져요(WCAG 1.4.3이 비활성 UI를 제외합니다). 그러니까 **기준을 안 지켜도 되는 쪽은 지키고 있고, 지켜야 하는 쪽이 안 지키고 있는** 모양이에요.
+
+## 고친 건 한 줄
+
+새 색을 만들지 않았습니다. **이미 있는 토큰으로 바꿔 끼우기만** 했어요.
+
+```scss
+// 선택 상자의 안내 문구(선택 전) 색 — KRDS 기본(text-disabled #8a949e, 흰 바탕 3.08:1)은
+// 글자 명도 대비 4.5:1(KWCAG 1.4.3)에 못 미친다.
+// 같은 계열의 text-disabled-on(#6d7882, 4.51:1)으로 올려, 선택 후 색(text-subtle)보다
+// 옅게 보이면서 기준을 지킨다
+.krds-form-select {
+  --krds-form-select--color-text: var(--krds-light-color-text-disabled-on);
+}
+```
+
+**"선택 후 색보다는 옅게 보이면서"**가 조건이었어요. 안내 문구가 선택된 값과 똑같이 진해지면 "아직 안 골랐다"는 신호가 사라집니다. 접근성을 고치면서 사용성을 깨면 안 되죠. `text-disabled-on`이 그 사이에 정확히 들어맞았어요.
+
+컴포넌트 쪽도 한 줄 바꿨습니다. **안내 문구가 아예 없는 선택 상자**는 보이는 게 늘 실제 선택지라서, 옅은 색을 쓸 이유가 없거든요.
+
+```diff
+- completed: props.variant === 'default' && props.modelValue !== '',
++ completed: props.variant === 'default' && (props.modelValue !== '' || props.placeholder === undefined),
+```
+
+값이 빈 `"전체"` 같은 선택지가 여기 걸립니다. 빈 문자열이라 "아직 안 골랐다"로 판정되던 건데, 안내 문구가 없으면 그건 실제 선택이에요.
+
+## 34곳 중 절반은 결함이 아니었어요
+
+정직하게 나눠야 할 게 있습니다. 미달 34곳이 **두 종류**였어요.
+
+- **선택 상자 안내 문구** — 진짜 결함. 고쳤습니다.
+- **1쪽에 있을 때의 비활성 "이전" 버튼**(`.prev`) — **비활성 요소라 대비 기준에서 빠집니다.**
+
+두 번째를 "고쳤다"고 세면 안 돼요. 애초에 위반이 아니니까요. 점검표에 그렇게 적었습니다 — **기준 미달로 나왔지만 기준 대상이 아닌 것**으로요.
+
+자동 계산은 비활성 여부를 안 봅니다. 숫자가 나왔다고 다 결함인 건 아니에요. **판정은 사람이 해야 하는 자리**입니다.
+
+## 아직 안 끝났어요
+
+이 글을 쓰는 지금 기준으로 **재계산은 못 했습니다.** 고친 건 라이브러리(`@hanui/vue`) 쪽이고, 0.3.2를 게시해서 CMS에 반영한 뒤에 다시 돌려야 숫자가 바뀌어요. 점검표에도 "반영한 뒤 다시 계산합니다"로 남겨뒀습니다.
+
+고쳤다고 적고 숫자는 옛것인 상태가 제일 나빠요. **"고쳤고, 재측정은 아직"**이 지금 정확한 상태입니다.
+
+## 오늘 정리
+
+1. **`violations: 0`은 "통과"가 아니에요.** axe는 판단 못 한 걸 `incomplete`에 따로 적습니다. 그 칸을 안 보면 "통과"로 읽히는데, 저희 경우 거기에 34곳이 숨어 있었어요.
+2. **판단 불가 목록은 버리지 말고 다음 단계의 입력으로 쓰세요.** 도구가 멈춘 지점(배경색)만 직접 구하면 나머지는 공식대로 계산됩니다.
+3. **같은 값이 여러 번 나오면 문제가 여러 개가 아니에요.** 34곳 전부 3.08:1이었고, 범인은 토큰 하나였습니다. 값이 흩어져 있었으면 34곳을 하나씩 봐야 했을 거예요.
+
+본인 프로젝트에서 해보실 거라면 한 줄이면 됩니다. **axe 결과에서 `result.incomplete.filter(v => v.id === 'color-contrast').length`를 찍어보세요.** 0이 아니면 아직 모르는 상태입니다.
+
+## 관련 링크
+
+- [axe-core — Results Object](https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#results-object) — `violations`와 `incomplete`의 차이
+- [WCAG 2.2 — 1.4.3 Contrast (Minimum)](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) — 비활성 요소 제외 조항 포함
+- [한국형 웹 콘텐츠 접근성 지침 2.2](https://www.wa.or.kr/m1/sub1.asp)
+- [@hanui/vue](https://www.npmjs.com/package/@hanui/vue)
+- [HANUI CMS](https://github.com/hanui-o) — 점검 스크립트와 점검표가 들어 있는 공공기관 CMS (MIT)
+
+## 시리즈: KRDS 원본 보완
+
+- 1편: [KRDS를 그대로 가져다 쓰면 검수에 걸려요 — 원본은 안 고치고 보완한 기록](/blog/krds-source-defects-part1)
+- 2편: [Modal JS를 다시 쓴 이유 — Esc가 안 먹는 리스너와 350ms의 정체](/blog/krds-modal-rewrite)
+- 3편: [모바일 전체메뉴 하나에서 결함 9건](/blog/krds-mobile-menu-nine)
+- 4편: [`menubar` 역할을 버렸어요 — SideNavigation을 APG 권고로 되돌린 판단](/blog/krds-side-nav-roles)
+- **5편: axe가 "판단 불가"로 남긴 661곳을 직접 계산했어요** ← 현재 글

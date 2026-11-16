@@ -1,0 +1,238 @@
+---
+title: '본문 정리를 Node 도우미로 돌린 이유 — Java로 다시 짜지 않기로 한 판단'
+description: '화면은 TS로 본문을 정리해 미리보기를 보여주는데 서버는 Java예요. 같은 규칙을 Java로 다시 짜면 두 벌이 되고, 미리보기에서 통과한 본문이 저장할 때 달라집니다. 백엔드 옆에 작은 Node 도우미를 두고 같은 파일을 그대로 쓰게 한 기록이에요.'
+date: '2026-11-18'
+tags: ['아키텍처', 'Node', 'Spring', '전자정부프레임워크', '공공기관', 'TypeScript']
+author: 'odada'
+series: 'Vue로 공공 CMS 만들기'
+seriesOrder: 3
+---
+
+[2편](/blog/contract-parity-fixtures)에서 화면과 서버가 같은 입력 규칙을 쓰게 만든 이야기를 했어요. 오늘은 그중 **제일 어려웠던 하나**입니다.
+
+본문 HTML 정리예요. 담당자가 글을 쓰면 허용 목록으로 걸러냅니다 — `script`, `iframe`, `on*` 이벤트 속성, `javascript:` 링크를 지우고, 인라인 `style`은 기관 설정에 따라 일부만 남겨요.
+
+문제는 **이 규칙이 두 곳에서 돌아야 한다**는 거예요.
+
+- **브라우저** — 담당자가 글을 쓰는 동안 미리보기를 보여줘야 합니다
+- **서버** — 저장할 때 실제로 걸러내야 합니다. 브라우저를 믿을 수 없으니까요
+
+그리고 백엔드는 **Java**입니다. 전자정부 표준프레임워크(Spring Boot)예요.
+
+## "똑같이"가 왜 어려운가
+
+독립 검토에서 이 지점을 짚었어요. **Java가 TS 규칙을 똑같이 재현할 수 없다**는 겁니다.
+
+처음엔 과하다고 생각했어요. 허용 목록 정리인데 jsoup Safelist로 하면 되지 않나? 실제로 초기 계획이 그랬고, 코드 주석에도 흔적이 남아 있습니다.
+
+```
+화면(미리보기·저장 전 안내)과 서버(mock)가 같은 규칙을 쓴다.
+실제 백엔드는 같은 목록을 Java 정리기(jsoup Safelist 등)로 구현한다.
+```
+
+그런데 규칙을 뜯어보니 **"목록"이 아닌 게 많았어요.**
+
+```
+직렬화는 innerHTML에 맡기지 않고 직접 한다 — DOM 구현마다 속성값 이스케이프가 달라
+(linkedom은 &를 그대로 둠) 브라우저가 한 번 더 디코딩하면 정리를 통과한 값이
+금지 주소로 바뀌는 문제(독립 검토 보안 High 1)를 막는다.
+```
+
+**속성값을 어떻게 이스케이프하느냐**까지 보안에 걸려 있습니다. jsoup과 TS 구현이 `&`를 한 글자라도 다르게 쓰면, 한쪽에서 막은 게 다른 쪽에서 통과해요.
+
+예약 id 제거(DOM clobbering 방지), 인라인 style 속성별 허용 목록, 본문 CSS 변환까지 더하면 **"같은 목록"이 아니라 "같은 구현"이 필요**했습니다.
+
+## 세 가지를 놓고 골랐어요
+
+| 안 | 내용 | 결과 |
+| --- | --- | --- |
+| ① **Node 도우미** | 백엔드 옆에 작은 Node 서버를 두고 지금 TS를 그대로 실행 | **채택** |
+| ② Java로 다시 짜기 | jsoup Safelist 등으로 재구현 | 탈락 |
+| ③ GraalJS | JVM 안에서 JS 실행 | 탈락 |
+
+②를 버린 이유는 위에서 쓴 그대로예요. **규칙이 두 벌이 되고, 둘이 어긋나는 걸 영원히 쫓아다녀야** 합니다.
+
+③ GraalJS는 매력적이었어요. 프로세스가 안 늘어나니까요. 그런데 납품 환경이 폐쇄망 Docker고, JVM 안에 JS 엔진을 얹으면 **그 조합 자체가 새로운 위험**입니다. 기관에서 문제가 나면 원인 범위가 넓어져요.
+
+①을 고른 결정적 이유는 따로 있었습니다.
+
+> 공개 사이트(Nuxt)가 이미 Node로 돌아 **납품 묶음에 새 기술이 생기지 않는다.**
+
+이미 Node가 돌고 있어요. 도우미를 하나 더 띄우는 건 **기관 담당자 입장에서 새로 배울 게 없습니다.** 그게 공공 납품에서는 큰 값이에요.
+
+## "같은 코드"가 말 그대로 같은 파일이에요
+
+도우미는 번들러를 안 씁니다. Node가 TS를 그대로 실행해요.
+
+```json
+"rules": "node src/rules/server.ts"
+```
+
+Dockerfile도 `src/`만 복사해서 그대로 돌립니다. 그러니까 브라우저가 쓰는 `html-policy.ts`와 서버가 쓰는 `html-policy.ts`가 **빌드 산출물이 아니라 같은 파일**이에요. "같은 규칙"이 비유가 아니라 사실입니다.
+
+파싱만 호출하는 쪽에 맡겼어요. 브라우저는 `DOMParser`, Node는 `linkedom`을 넣습니다.
+
+```ts
+const parseDoc = (html: string) => parseHTML(html).document as unknown as Document;
+```
+
+규칙 파일 자체는 **표준 DOM API만** 써요. 그래서 양쪽에서 돕니다.
+
+## 무거운 본문이 다른 사람을 막지 않게
+
+도우미는 HTTP 서버 하나인데, 안에서 **일꾼 스레드**를 씁니다.
+
+```
+/** 본문 규칙 일꾼 스레드 — 무거운 정리·검사가 도우미의 요청 처리(이벤트 루프)를 막지 않게 */
+```
+
+이유가 분명해요. 본문 정리는 DOM을 재귀로 훑는 작업이라 큰 글에서 오래 걸립니다. 한 스레드에서 다 하면 **긴 글 하나가 다른 담당자 전부를 세워요.**
+
+설정값은 이렇습니다.
+
+```ts
+const WORKERS = Math.max(1, Math.min(4, Number(process.env.HANUI_RULES_WORKERS) || availableParallelism()));
+const JOB_TIMEOUT_MS = Number(process.env.HANUI_RULES_TIMEOUT_MS ?? 8000);
+const MAX_BODY = 8 * 1024 * 1024;  // 본문 1M자(계약) — 한글 UTF-8·JSON 이스케이프를 넉넉히
+```
+
+일꾼 **최대 4개**로 묶은 게 포인트예요. 최소 사양이 2코어·4GB라 CPU 수만큼 띄우면 안 됩니다. 대기 큐도 **200개**에서 끊고 503을 돌려줘요.
+
+그리고 **8초를 넘긴 일꾼은 고치지 않고 버립니다.**
+
+```ts
+slot.timer = setTimeout(() => {
+  console.error(`[rules] 작업이 ${JOB_TIMEOUT_MS}ms를 넘어 일꾼을 새로 띄웁니다`);
+  replace(slot, new HttpError(503, '본문 처리가 너무 오래 걸립니다.'));
+}, JOB_TIMEOUT_MS);
+```
+
+멈춘 스레드를 되살리는 방법이 마땅치 않거든요. **끄고 새로 띄우는 게 확실합니다.**
+
+## `<div>`를 20만 번 넣으면
+
+독립 검토에서 High로 잡힌 게 하나 더 있었어요. **너무 깊게 겹친 본문**입니다.
+
+재귀로 정리하니까, 겹침이 깊으면 오래 걸리거나 스택이 넘쳐요. 그래서 **파싱 전에** 깊이부터 봅니다.
+
+```ts
+export const MAX_DEPTH = 200;
+
+const guard = (html: string) => {
+  if (nestingDepth(html) > MAX_DEPTH)
+    throw new RuleInputError(`태그가 너무 깊게 겹쳐 있습니다(${MAX_DEPTH}단계까지). 본문 구조를 정리해 주세요.`);
+};
+```
+
+여기서 한 가지를 더 해야 했어요. **끝 태그를 생략해도 되는 요소는 깊이로 세면 안 됩니다.**
+
+옛날 퍼블리싱 소스에는 `</td>`나 `</li>`가 빠져 있는 게 흔해요. 그걸 그대로 세면 표 하나가 깊이 500이 됩니다. 멀쩡한 본문이 거부돼요.
+
+```ts
+expect(nestingDepth('<table>' + '<tr><td>칸'.repeat(500) + '</table>')).toBe(1);
+expect(nestingDepth('<ul>' + '<li>항목'.repeat(500) + '</ul>')).toBe(1);
+expect(nestingDepth('<div><div><span>a</span></div></div><br><img src="/x">')).toBe(3);
+expect(nestingDepth('<!-- <div><div> --><p>a')).toBe(0);
+```
+
+마지막 줄이 재밌어요. **주석 안의 태그도 안 셉니다.**
+
+막는 것만큼 중요한 게 **막는 동안 다른 요청이 살아 있느냐**였습니다. 그래서 테스트에 시간을 넣었어요.
+
+```ts
+it('너무 깊게 겹친 본문은 422로 바로 거부하고 다른 요청은 계속 처리한다', async () => {
+  const start = Date.now();
+  const deep = await post('/sanitize', { html: '<div>'.repeat(200_000), style: 'strict' });
+  expect(deep.status).toBe(422);
+  expect(Date.now() - start).toBeLessThan(3000);
+  expect((await post('/sanitize', { html: '<p>정상</p>', style: 'strict' })).data.html).toBe('<p>정상</p>');
+});
+```
+
+**`<div>` 20만 개를 3초 안에 거부하고, 바로 다음 정상 요청이 통과**하는지 봅니다.
+
+## 도우미가 죽으면 — 통과시키지 않습니다
+
+여기가 제일 중요한 결정이었어요. **도우미에 연결이 안 되면 어떻게 할 것인가.**
+
+그냥 저장해버리면 **정리되지 않은 본문이 DB에 들어갑니다.** `script` 태그째로요. 그래서 막았어요.
+
+```java
+/** 도우미가 없거나 느리면 503(잠시 후 다시) — 정리하지 않은 본문을 저장하지 않는다. */
+static final String UNAVAILABLE = "본문 정리 기능을 잠시 쓸 수 없습니다. 잠시 후 다시 시도해 주세요.";
+```
+
+`Retry-After: 30`도 같이 보냅니다.
+
+그런데 상태 확인은 다르게 했어요.
+
+```java
+/** 도우미가 없으면 글 저장·게시만 안 된다 — 로그인·공개 조회는 되므로
+    DOWN(서버 교체 대상)이 아니라 DEGRADED(200) */
+```
+
+**`DOWN`으로 두면 안 됩니다.** 기관 운영에서 `DOWN`은 "이 서버를 빼고 다른 걸 띄워라"는 신호예요. 그런데 도우미가 죽어도 **공개 사이트는 멀쩡히 보이고 로그인도 됩니다.** 글 저장만 안 돼요. 서버를 교체하면 오히려 멀쩡한 공개 서비스가 끊깁니다.
+
+이건 테스트로 못박았어요. 도우미가 없는 주소(`127.0.0.1:9`)를 가리켜 놓고 확인합니다.
+
+```java
+/** 도우미가 꺼져 있으면 503 + 다시 시도 안내 (정리하지 않은 본문을 저장하지 않는다), 상태 확인은 DEGRADED */
+```
+
+## 부작용은 적어둬야죠
+
+정직하게 쓰면 이 구조에 비용이 있어요.
+
+**도우미가 죽으면 로고 업로드도 503이 됩니다.** 나중에 SVG 업로드를 검토하면서 "정화는 Node 도우미가 한다"로 설계했거든요. 본문과 운명을 같이 하게 됐어요.
+
+그리고 **띄울 것이 하나 늘었습니다.** 설치 순서가 DB → 도우미 → 백엔드가 됐고, 기동 순서를 설치 문서에 적어야 했어요. 토큰도 양쪽에 같은 값을 넣어야 하고요(`127.0.0.1` 밖에 열면 토큰 없이는 아예 안 켜집니다).
+
+부하 시험에서 자원은 이랬어요.
+
+```
+| 본문 규칙 도우미 | CPU 2% | 메모리 282MB |
+```
+
+2코어·4GB 최소 사양에서 282MB면 받아들일 만하다고 봤습니다.
+
+## 그래서 정말 같은가
+
+"같은 코드니까 같다"는 믿음이고, 확인은 따로 해야 해요. **정답 예제**로 묶었습니다.
+
+```
+packages/api/fixtures/
+├── html-policy.json      # 정리 입력 → 결과
+├── content-check.json    # 검사 입력 → 결과
+└── site-css.json         # CSS 변환 입력 → 결과
+```
+
+TS가 만들고, **도우미도 백엔드도 같은 파일을 기준으로 검사**합니다.
+
+```
+npx vitest run src/rules/server.test.ts
+✓ 9 tests passed (6.65s)
+```
+
+Java 쪽에도 같은 짝이 있어요 — `RulesFixtureTest`가 "백엔드 → 도우미 연결이 정답 예제와 같은 결과를 내는지" 봅니다. 그리고 테스트는 **빈 포트에 지금 코드의 도우미를 직접 띄워서** 돌아요. 미리 켜둔 걸 쓰지 않습니다.
+
+## 오늘 정리
+
+1. **"같은 규칙"이 목록 수준이 아니면 두 벌로 못 만들어요.** 속성값 이스케이프 한 글자가 보안에 걸리면, 그건 같은 구현이 필요하다는 뜻입니다.
+2. **새 기술을 안 늘리는 게 공공 납품에서는 설계 조건이에요.** 이미 Node가 돌고 있다는 사실이 GraalJS보다 Node 도우미를 고르게 했습니다.
+3. **실패했을 때 통과시키지 마세요.** 정리기가 죽으면 저장을 막는 게 맞고, 다만 상태는 `DOWN`이 아니라 `DEGRADED`여야 멀쩡한 공개 서비스가 안 끊깁니다.
+
+비슷한 구조를 고민 중이라면 질문 하나로 좁혀보세요. **"규칙이 어긋났을 때 그걸 누가 어떻게 발견하나?"** 답이 "운영에서 사용자가"면 규칙은 한 벌이어야 합니다.
+
+## 관련 링크
+
+- [Node.js — Worker threads](https://nodejs.org/api/worker_threads.html)
+- [Node.js — Type stripping](https://nodejs.org/api/typescript.html#type-stripping) — 빌드 없이 TS를 그대로 실행
+- [linkedom](https://github.com/WebReflection/linkedom) — Node 쪽 DOM 구현
+- [Spring Boot — Health Indicators](https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.health) — 사용자 정의 상태(DEGRADED)
+- [HANUI CMS](https://github.com/hanui-o) — 이 도우미가 들어간 공공기관 CMS (MIT)
+
+## 시리즈: Vue로 공공 CMS 만들기
+
+- 1편: [JS가 실행되기 전 화면이 틀려 있었어요 — SSR과 선택 상자의 함정](/blog/ssr-select-selected)
+- 2편: [화면과 서버에 같은 요청을 보내 비교했더니 20곳이 달랐어요](/blog/contract-parity-fixtures)
+- **3편: 본문 정리를 Node 도우미로 돌린 이유 — Java로 다시 짜지 않기로 한 판단** ← 현재 글
