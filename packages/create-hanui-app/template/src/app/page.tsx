@@ -30,7 +30,7 @@ export default function Home() {
               <li>
                 ✓{' '}
                 <a
-                  href="https://hanui.oddodd.io/docs"
+                  href="https://hanui.io/docs/introduction"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary-60 hover:underline"

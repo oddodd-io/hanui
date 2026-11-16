@@ -38,7 +38,7 @@ export default function Page() {
 
 더 자세한 정보는 다음 문서를 참고하세요:
 
-- [HANUI 문서](https://hanui.oddodd.io/docs)
+- [HANUI 문서](https://hanui.io/docs/introduction)
 - [Next.js 문서](https://nextjs.org/docs)
 - [Tailwind CSS 문서](https://tailwindcss.com/docs)
 

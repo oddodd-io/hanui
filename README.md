@@ -187,7 +187,7 @@ HANUI는 오픈소스입니다. 기여를 환영합니다!
 - [GitHub Discussions](https://github.com/hanui-o/hanui/discussions)
 - [Dev Blog](https://dev.to/hanui)
 - [Velog (한국어)](https://velog.io/@hanui/)
-- Email: odada@oddodd.io
+- Email: mia@hanui.io
 
 <br />
 

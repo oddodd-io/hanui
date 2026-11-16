@@ -252,7 +252,7 @@ export default function CommunityPage() {
             </a>
 
             <a
-              href="mailto:odada@oddodd.io"
+              href="mailto:mia@hanui.io"
               className="flex items-start gap-4 p-4 border border-krds-gray-20 rounded-lg hover:border-krds-gray-30 hover:bg-krds-gray-5 transition-colors group"
             >
               <div className="flex-shrink-0 w-10 h-10 rounded-md bg-krds-gray-10 flex items-center justify-center group-hover:bg-krds-gray-20 transition-colors">
