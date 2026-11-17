@@ -52,11 +52,13 @@ jobs:
         env:
           COUNT: ${{ steps.publish.outputs.published_count }}
           TITLES: ${{ steps.publish.outputs.published_titles }}
+          REMAINING: ${{ steps.publish.outputs.remaining }}
         run: |
           git config user.name "hanui-bot"
           git config user.email "actions@github.com"
           git add -A
-          git commit -m "publish: 예약 글 ${COUNT}편 발행 — ${TITLES}"
+          # 남은 편수를 제목에 넣는다 — 이슈 알림을 놓쳐도 커밋 목록에서 재고가 보이게
+          git commit -m "publish: 예약 글 ${COUNT}편 발행 (남은 ${REMAINING}편) — ${TITLES}"
           git push
 
       # 늦은 발행 보고. 스크립트가 date <= today로 집기 때문에 밀린 글은 조용히
