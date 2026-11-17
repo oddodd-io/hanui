@@ -54,6 +54,36 @@ jobs:
           git commit -m "publish: 예약 글 ${COUNT}편 발행 — ${TITLES}"
           git push
 
+      # 늦은 발행 보고. 스크립트가 date <= today로 집기 때문에 밀린 글은 조용히
+      # 따라잡히고 끝난다 — 2026-11-16에 예약 두 번이 다 건너뛰어진 걸 사람이 보고 알았다.
+      # 늦게라도 돌았으면 늦었다고 말하게 둔다. (실행이 아예 없는 경우는 Vercel Cron
+      # 감시가 본다 — apps/docs/src/app/api/cron/blog-watch. 같은 스케줄러에 올리면
+      # 같은 이유로 같이 죽으므로 일부러 다른 곳에 뒀다.)
+      - name: 늦은 발행 보고
+        if: steps.publish.outputs.late_count != '0' && steps.publish.outputs.late_count != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LATE_COUNT: ${{ steps.publish.outputs.late_count }}
+          LATE_DETAIL: ${{ steps.publish.outputs.late_detail }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create "blog-publish-missed" --color D73A4A \
+            --description "예약 발행이 빠진 날 (부재 감지)" 2>/dev/null || true
+          NUM=$(gh issue list --state open --label "blog-publish-missed" --json number --jq '.[0].number // empty')
+          BODY=$(printf '%s\n\n%s\n\n%s' \
+            "방금 실행이 **발행일이 지난 글 ${LATE_COUNT}편**을 따라잡았습니다 — ${LATE_DETAIL}" \
+            "그만큼 **발행 실행이 없었던 날이 있었다**는 뜻입니다. Actions 탭에서 그 날짜의 예약 실행이 목록에 아예 없는지(스케줄러가 건너뜀) 아니면 빨간색인지(평소 실패) 확인하세요." \
+            "실행 기록: ${RUN_URL}")
+
+          if [ -z "$NUM" ]; then
+            gh issue create --title "🚨 블로그 예약 발행이 빠졌습니다 (${LATE_COUNT}편 뒤늦게 따라잡음)" \
+              --label "blog-publish-missed" --body "$BODY"
+            echo "늦은 발행 알림 이슈를 새로 열었다(${LATE_COUNT}편)."
+          else
+            gh issue comment "$NUM" --body "$BODY"
+            echo "열린 이슈 #${NUM}에 늦은 발행을 기록했다(${LATE_COUNT}편)."
+          fi
+
       # 재고 알림. 열린 이슈가 있으면 건너뛰던 예전 방식은, 이슈를 한 번 안 닫으면
       # 그 뒤로 영영 알림이 오지 않았다(2026-07-01 이슈가 11-16까지 열린 채 알람이 죽어 있었다).
       # 그래서 재고가 회복되면 스스로 닫고, 부족한 동안은 현재 편수로 갱신한다.

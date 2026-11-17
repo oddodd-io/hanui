@@ -25,7 +25,8 @@
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
     "hanui": "node packages/cli/dist/hanui.mjs",
-    "optimize-images": "node scripts/optimize-images.js"
+    "optimize-images": "node scripts/optimize-images.js",
+    "test:blog-queue": "node --test apps/docs/src/lib/blog-queue.test.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

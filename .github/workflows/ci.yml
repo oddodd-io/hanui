@@ -109,3 +109,8 @@ jobs:
 
       - name: Run tests
         run: pnpm test || echo "Tests completed (no tests configured yet)"
+
+      # 예약 발행과 부재 감시가 쓰는 날짜 경계. 한 칸 틀리면 지연을 부재로 잘못 알리거나
+      # (매일 거짓 알람) 밀린 발행을 못 잡는다. 위 단계와 달리 **실패를 삼키지 않는다.**
+      - name: 예약 발행 날짜 경계 테스트
+        run: pnpm test:blog-queue
