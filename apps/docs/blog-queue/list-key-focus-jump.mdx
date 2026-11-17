@@ -1,0 +1,114 @@
+---
+title: '목록 앞에 항목 하나가 생겼더니 초점이 다른 줄로 옮겨갔어요'
+description: 'index를 key로 쓰면 목록이 바뀔 때 초점이 엉뚱한 줄로 갑니다. 흔히 "리마운트돼서"라고 설명하는데, 실제로 재어보니 리마운트는 안 일어났어요. 진짜 원인은 다른 데 있었습니다.'
+date: '2026-11-23'
+tags: ['React', '접근성', '키보드', '프론트엔드', '렌더링']
+author: 'odada'
+---
+
+목록에서 어떤 줄에 초점을 두고 있는데, **앞쪽에 새 항목이 하나 추가되면** 초점이 엉뚱한 줄로 옮겨갑니다.
+
+키보드로 쓰는 사람에게는 꽤 나쁜 경험이에요. 읽고 있던 자리를 잃어버리니까요. 화면낭독기 사용자라면 **지금 어디인지 다시 찾아야** 합니다.
+
+원인은 `key`인데, 흔한 설명이 **틀렸다는 걸** 재어보고 알았어요.
+
+## 재현
+
+`key`만 다르게 한 같은 목록 두 개를 만들고, 마운트 횟수와 초점 위치를 쟀습니다.
+
+```tsx
+let mounts = 0;
+function Row({ label }: { label: string }) {
+  useEffect(() => { mounts++; }, []);           // 마운트될 때마다 센다
+  return <input aria-label={label} defaultValue={label} />;
+}
+
+function List({ items, useIndexKey }) {
+  return <div>{items.map((it, i) =>
+    <Row key={useIndexKey ? i : it} label={it} />
+  )}</div>;
+}
+```
+
+`a, b, c` 중 **가운데 `b`에 초점**을 주고, 앞에 `z`를 끼워 `z, a, b, c`로 바꿉니다.
+
+```tsx
+screen.getByLabelText('b').focus();
+rerender(<List items={['z', 'a', 'b', 'c']} useIndexKey={useIndexKey} />);
+```
+
+## 결과
+
+```
+[index key] {"afterFirst":3,"remounts":1,"focusedBefore":"b","focusedAfter":"a"}
+[안정 key ] {"afterFirst":3,"remounts":1,"focusedBefore":"b","focusedAfter":"b"}
+```
+
+index key 쪽은 **`b`에 있던 초점이 `a`로 옮겨갔습니다.** 안정 key는 `b` 그대로고요.
+
+그런데 **`remounts`를 보세요. 둘 다 1입니다.**
+
+## 리마운트가 아니었어요
+
+이 문제는 보통 이렇게 설명됩니다. "index key를 쓰면 리마운트돼서 초점이 날아간다."
+
+**측정값이 그걸 부정합니다.** 새로 마운트된 건 양쪽 다 **1개**예요. 추가된 `z` 하나뿐입니다. 나머지 세 줄은 **그대로 살아 있어요.**
+
+진짜로 일어난 건 **정체성 재배치**입니다.
+
+```
+바뀌기 전   key=0 → "a"   key=1 → "b"   key=2 → "c"
+바뀐 후     key=0 → "z"   key=1 → "a"   key=2 → "b"   key=3 → "c"
+```
+
+`key=1`인 DOM 요소는 **그대로 살아 있는데 담는 내용이 `b`에서 `a`로 바뀌었어요.** 초점은 DOM 요소에 붙어 있으니 **그 자리에 그대로 있습니다.** 다만 그 자리가 이제 다른 항목이에요.
+
+**초점이 날아간 게 아니라, 초점이 있는 자리의 의미가 바뀐 겁니다.**
+
+## 왜 이 구분이 중요한가
+
+"리마운트 때문"이라고 믿으면 **엉뚱한 걸 고칩니다.**
+
+리마운트를 줄이려고 `memo`를 씌우거나, 초점을 `useEffect`에서 되돌리는 코드를 붙이게 돼요. 둘 다 이 문제를 못 고칩니다. 리마운트가 아니었으니까요. 초점 복원 코드는 오히려 **다른 버그**를 만들어요 — 사용자가 일부러 옮긴 초점까지 끌고 옵니다.
+
+고칠 자리는 하나뿐이에요. **key를 항목의 정체성으로 바꾸는 것.**
+
+```tsx
+key={item.id}   // index가 아니라
+```
+
+그러면 React가 "이건 아까 그 항목"이라고 알아보고, DOM 요소와 항목의 짝이 유지됩니다.
+
+## 가상 스크롤에서 더 자주 터져요
+
+긴 목록을 가상 스크롤로 그릴 때 이게 더 자주 보입니다. 가상화 라이브러리는 **보이는 범위만** 그리는데, 스크롤할 때마다 그 범위가 움직여요.
+
+범위가 움직이면 **같은 index가 매번 다른 항목**을 가리킵니다. 목록을 건드리지 않아도, **스크롤만 해도** 정체성이 재배치돼요.
+
+그래서 가상화 라이브러리들은 보통 **항목 키를 직접 지정하는 옵션**을 제공합니다(`getItemKey` 같은 이름으로). 안 주면 index가 기본값이고요. **기본값을 그대로 쓰면 위 문제가 그대로 따라옵니다.**
+
+## 확인하는 법
+
+`key` 문제는 눈으로는 잘 안 보입니다. 화면은 멀쩡하게 그려지거든요. **초점이나 입력 중인 값**처럼 DOM 요소에 붙어 있는 상태가 어긋날 때만 드러나요.
+
+테스트로 잡으려면 이 두 가지를 보세요.
+
+- **초점**: `document.activeElement`가 바뀌기 전후로 같은 항목을 가리키는지
+- **입력값**: 제어하지 않는 입력(`defaultValue`)에 글자를 치고 목록을 바꿔보기. 값이 다른 줄로 옮겨가면 같은 문제예요
+
+마운트 횟수만 세면 **못 잡습니다.** 위 결과처럼 둘 다 1로 같게 나와요.
+
+## 오늘 정리
+
+1. **index key의 문제는 리마운트가 아니라 정체성 재배치예요.** DOM은 살아 있고 담는 내용만 바뀝니다. 그래서 초점은 그 자리에 남고, 그 자리가 다른 항목이 돼요.
+2. **원인을 틀리게 알면 고치는 자리도 틀립니다.** `memo`나 초점 복원 코드로는 안 고쳐져요.
+3. **가상 스크롤은 목록이 안 바뀌어도 터집니다.** 스크롤만 해도 index가 가리키는 항목이 바뀌니까요.
+
+본인 목록에서 확인하실 거라면 하나만 해보세요. **가운데 줄에 초점을 두고 맨 앞에 항목을 추가**해보세요. 초점이 다른 줄로 가면 `key`를 보세요.
+
+## 관련 링크
+
+- [React — Rendering Lists: keys](https://react.dev/learn/rendering-lists#why-does-react-need-keys)
+- [React — Preserving and Resetting State](https://react.dev/learn/preserving-and-resetting-state)
+- [MDN — `document.activeElement`](https://developer.mozilla.org/en-US/docs/Web/API/Document/activeElement)
+- [@hanui/react](https://www.npmjs.com/package/@hanui/react)
