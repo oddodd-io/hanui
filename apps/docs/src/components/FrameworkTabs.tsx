@@ -1,6 +1,12 @@
 'use client';
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 
 export type Framework = 'react' | 'vue';
 
@@ -20,24 +26,27 @@ export function useFramework() {
   return context;
 }
 
+/** 서브도메인 ↔ 프레임워크. 새 프레임워크는 여기만 추가하면 된다 */
+const SUBDOMAIN: Record<string, Framework> = { vue: 'vue', react: 'react' };
+
+/** 서브도메인을 떼어내고 기본 도메인만 남긴다 (www.hanui.io·react.hanui.io → hanui.io) */
+function baseHostname(hostname: string): string {
+  const known = [...Object.keys(SUBDOMAIN), 'www'];
+  const parts = hostname.split('.');
+  return known.includes(parts[0]) ? parts.slice(1).join('.') : hostname;
+}
+
 /**
  * 서브도메인에서 프레임워크 감지
- * vue.hanui.io → vue
- * hanui.io → react
- * localhost → react (기본값)
+ * vue.hanui.io → vue / react.hanui.io·hanui.io → react / localhost → react
  */
 function getFrameworkFromHostname(): Framework {
-  if (typeof window === 'undefined') return 'react';
-
-  const hostname = window.location.hostname;
-
-  // vue.hanui.io 또는 vue.localhost
-  if (hostname.startsWith('vue.')) {
-    return 'vue';
-  }
-
-  return 'react';
+  if (typeof window === 'undefined') return DEFAULT_FRAMEWORK;
+  return SUBDOMAIN[window.location.hostname.split('.')[0]] ?? DEFAULT_FRAMEWORK;
 }
+
+/** 서버 렌더 결과는 주소를 모르므로 늘 이 값이다 (브라우저에서 맞춘다) */
+const DEFAULT_FRAMEWORK: Framework = 'react';
 
 interface FrameworkProviderProps {
   children: ReactNode;
@@ -48,11 +57,18 @@ export function FrameworkProvider({
   children,
   defaultFramework,
 }: FrameworkProviderProps) {
-  // Lazy initialization - compute initial value on first render (client-side)
-  const [framework, setFramework] = useState<Framework>(() => {
-    if (defaultFramework) return defaultFramework;
-    return getFrameworkFromHostname();
-  });
+  // 첫 렌더는 서버와 같은 값으로 두고(하이드레이션 어긋남 방지),
+  // 붙은 뒤에 실제 주소를 보고 맞춘다. useState 초기값으로 주소를 읽으면
+  // 서버는 react로 그리고 브라우저는 vue로 계산해, vue.hanui.io인데
+  // React 탭이 켜져 보이는 상태가 된다.
+  const [framework, setFramework] = useState<Framework>(
+    defaultFramework ?? DEFAULT_FRAMEWORK
+  );
+
+  useEffect(() => {
+    if (defaultFramework) return;
+    setFramework(getFrameworkFromHostname());
+  }, [defaultFramework]);
 
   const isVueSubdomain = framework === 'vue';
 
@@ -70,19 +86,17 @@ export function FrameworkProvider({
       return;
     }
 
-    // www. 접두사 제거하여 기본 도메인 추출 (www.hanui.io → hanui.io)
-    const baseHostname = hostname.replace(/^(vue\.|www\.)+/, '');
+    // 알려진 서브도메인을 떼고 기본 도메인을 구한다
+    // (react.hanui.io에서 vue로 갈 때 vue.react.hanui.io가 되지 않게)
+    const base = baseHostname(hostname);
+    const target =
+      newFramework === DEFAULT_FRAMEWORK ? base : `${newFramework}.${base}`;
 
-    // 프로덕션: 서브도메인으로 리다이렉트
-    if (newFramework === 'vue' && !hostname.startsWith('vue.')) {
-      // hanui.io, www.hanui.io → vue.hanui.io
-      window.location.href = `${protocol}//vue.${baseHostname}${pathname}`;
-    } else if (newFramework === 'react' && hostname.startsWith('vue.')) {
-      // vue.hanui.io → hanui.io
-      window.location.href = `${protocol}//${baseHostname}${pathname}`;
-    } else {
+    if (target === hostname) {
       setFramework(newFramework);
+      return;
     }
+    window.location.href = `${protocol}//${target}${pathname}`;
   };
 
   return (

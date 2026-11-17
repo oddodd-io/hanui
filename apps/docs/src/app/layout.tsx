@@ -85,9 +85,8 @@ export const metadata: Metadata = {
     },
   },
   metadataBase: new URL('https://hanui.io'),
-  alternates: {
-    canonical: '/',
-  },
+  // 여기에 canonical을 두면 자기 canonical이 없는 모든 페이지가 홈을 가리킨다
+  // (= 홈의 중복본으로 색인됨). 페이지마다 각자 선언하고, 없으면 자기 주소로 인식된다.
 };
 
 export default function RootLayout({
