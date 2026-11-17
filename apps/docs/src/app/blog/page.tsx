@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     url: 'https://hanui.io/blog',
   },
   alternates: {
+    canonical: '/blog',
     types: {
       'application/rss+xml': '/blog/rss.xml',
     },

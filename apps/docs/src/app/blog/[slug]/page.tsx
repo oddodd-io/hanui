@@ -46,9 +46,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   };
 
-  if (post.canonicalUrl) {
-    metadata.alternates = { canonical: post.canonicalUrl };
-  }
+  // 글마다 자기 주소를 canonical로 둔다. 없으면 루트 레이아웃의 canonical: '/'를
+  // 물려받아 모든 글이 홈페이지를 가리킨다(= 색인에서 홈과 중복 취급).
+  // metadataBase가 https://hanui.io 이므로 vue.hanui.io로 들어와도 한 주소로 모인다.
+  metadata.alternates = { canonical: post.canonicalUrl ?? `/blog/${slug}` };
 
   return metadata;
 }
