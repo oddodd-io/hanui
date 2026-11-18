@@ -1,7 +1,6 @@
 'use client';
 
 import type { BlogPost, BlogSeries } from '@/lib/blog';
-import { TAG_AXES } from '@/lib/blog-tags';
 import { Input } from '@hanui/react';
 import { Search } from 'lucide-react';
 import Link from 'next/link';
@@ -24,31 +23,16 @@ interface BlogListProps {
 export function BlogList({ posts, series }: BlogListProps) {
   const [query, setQuery] = useState('');
   const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  // 태그별 글 수 — 0건인 태그는 필터에 내보내지 않는다
-  const tagCounts = new Map<string, number>();
-  for (const post of posts) {
-    for (const tag of post.tags) {
-      tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
-    }
-  }
-
-  const toggleTag = (tag: string) =>
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-
-  // 필터링 — 태그는 AND(고른 것을 모두 가진 글만)
+  // 필터링
   const filtered = posts.filter((post) => {
     const matchesQuery =
       !query || post.title.toLowerCase().includes(query.toLowerCase());
     const matchesSeries = !selectedSeries || post.series === selectedSeries;
-    const matchesTags = selectedTags.every((t) => post.tags.includes(t));
-    return matchesQuery && matchesSeries && matchesTags;
+    return matchesQuery && matchesSeries;
   });
 
-  const hasFilter = !!query || !!selectedSeries || selectedTags.length > 0;
+  const hasFilter = !!query || !!selectedSeries;
 
   return (
     <>
@@ -111,63 +95,6 @@ export function BlogList({ posts, series }: BlogListProps) {
           leftAddon={<Search className="w-4 h-4 text-krds-gray-40" />}
           className="max-w-md"
         />
-      </div>
-
-      {/* Tag Filter */}
-      <div className="pb-6 space-y-2">
-        {TAG_AXES.map((axis) => {
-          const tags = axis.tags.filter((t) => (tagCounts.get(t) ?? 0) > 0);
-          if (tags.length === 0) return null;
-          return (
-            <div
-              key={axis.label}
-              className="flex flex-wrap items-center gap-1.5"
-            >
-              <span className="w-10 shrink-0 text-xs font-medium text-krds-gray-50">
-                {axis.label}
-              </span>
-              {tags.map((tag) => {
-                const on = selectedTags.includes(tag);
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() => toggleTag(tag)}
-                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                      on
-                        ? 'bg-krds-primary-base text-white'
-                        : 'bg-krds-gray-5 text-krds-gray-60 hover:text-krds-primary-base'
-                    }`}
-                  >
-                    {tag}
-                    {/* 숫자는 색을 따로 주지 않고 글자 크기로만 구분한다 —
-                        krds-gray-40(#8a949e)을 gray-5 배경에 쓰면 2.82:1로 KWCAG 1.4.3 미달 */}
-                    <span className="text-xs">{tagCounts.get(tag)}</span>
-                  </button>
-                );
-              })}
-            </div>
-          );
-        })}
-        {hasFilter && (
-          <div className="flex items-center gap-2 pt-1">
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedTags([]);
-                setSelectedSeries(null);
-                setQuery('');
-              }}
-              className="text-sm text-krds-gray-50 underline hover:text-krds-primary-base"
-            >
-              필터 지우기
-            </button>
-            <span className="text-sm text-krds-gray-60" aria-live="polite">
-              {filtered.length}편
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Mobile Series (xl 미만에서만 표시) */}
