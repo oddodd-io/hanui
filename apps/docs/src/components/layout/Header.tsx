@@ -90,11 +90,6 @@ export function Header() {
       isActive: pathname?.startsWith('/blocks'),
     },
     {
-      label: 'Kits',
-      href: '/kits',
-      isActive: pathname?.startsWith('/kits'),
-    },
-    {
       label: 'Blog',
       href: '/blog',
       isActive: pathname?.startsWith('/blog'),

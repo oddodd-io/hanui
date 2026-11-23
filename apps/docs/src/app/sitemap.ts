@@ -116,19 +116,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'user-management',
   ];
 
-  // All kits
-  const kits = [
-    'auth',
-    'board',
-    'dashboard',
-    'form',
-    'getting-started',
-    'notification',
-    'search',
-    'settings',
-    'table',
-  ];
-
   const docsRoutes = docs.map((doc) => ({
     url: `${baseUrl}/docs/${doc}`,
     lastModified: new Date(),
@@ -148,13 +135,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,
-  }));
-
-  const kitRoutes = kits.map((kit) => ({
-    url: `${baseUrl}/kits/${kit}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
   }));
 
   return [
@@ -191,7 +171,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...docsRoutes,
     ...componentRoutes,
     ...blockRoutes,
-    ...kitRoutes,
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),

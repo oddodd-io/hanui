@@ -221,24 +221,6 @@ const templatesNavigation = [
   },
 ];
 
-const kitsNavigation = [
-  {
-    title: 'Kits',
-    items: [
-      { title: 'Overview', href: '/kits' },
-      { title: 'Getting Started', href: '/kits/getting-started' },
-      { title: 'Board Kit', href: '/kits/board' },
-      { title: 'Auth Kit', href: '/kits/auth' },
-      { title: 'Table Kit', href: '/kits/table' },
-      { title: 'Form Kit', href: '/kits/form' },
-      { title: 'Dashboard Kit', href: '/kits/dashboard' },
-      { title: 'Search Kit', href: '/kits/search' },
-      { title: 'Notification Kit', href: '/kits/notification' },
-      { title: 'Settings Kit', href: '/kits/settings' },
-    ],
-  },
-];
-
 type NavigationItem = {
   title: string;
   href: string;
@@ -326,7 +308,6 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
     if (pathname?.startsWith('/components')) return componentsNavigation;
     if (pathname?.startsWith('/blocks')) return blocksNavigation;
     if (pathname?.startsWith('/templates')) return templatesNavigation;
-    if (pathname?.startsWith('/kits')) return kitsNavigation;
     return componentsNavigation;
   };
 

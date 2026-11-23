@@ -59,26 +59,6 @@
       "import": "./dist/charts.mjs",
       "require": "./dist/charts.js"
     },
-    "./kits/authentication": {
-      "types": "./dist/kits/authentication/index.d.ts",
-      "import": "./dist/kits/authentication/index.mjs",
-      "require": "./dist/kits/authentication/index.js"
-    },
-    "./kits/dashboard": {
-      "types": "./dist/kits/dashboard/index.d.ts",
-      "import": "./dist/kits/dashboard/index.mjs",
-      "require": "./dist/kits/dashboard/index.js"
-    },
-    "./kits/form": {
-      "types": "./dist/kits/form/index.d.ts",
-      "import": "./dist/kits/form/index.mjs",
-      "require": "./dist/kits/form/index.js"
-    },
-    "./kits/settings": {
-      "types": "./dist/kits/settings/index.d.ts",
-      "import": "./dist/kits/settings/index.mjs",
-      "require": "./dist/kits/settings/index.js"
-    },
     "./styles.css": "./dist/react.css",
     "./react.css": "./dist/react.css",
     "./variables.css": "./src/variables.css",

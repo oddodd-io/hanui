@@ -24,6 +24,14 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
 
+      // Kit 문서는 2026-11-23에 내렸다. `/kits`만 안내 페이지로 남기고 하위는 그쪽으로 보낸다.
+      // 발행된 글(`hanui-kits.mdx`)이 `/kits/board`로 링크하고 있어 404로 두지 않는다.
+      {
+        source: '/kits/:rest+',
+        destination: '/kits',
+        permanent: false,
+      },
+
       // 이전 경로 → 현재 경로
       {
         source: '/design-system/typography',

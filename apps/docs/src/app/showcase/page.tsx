@@ -3,14 +3,7 @@
 import Link from 'next/link';
 import { PageSection, Heading } from '@/components/content';
 import { Card, CardBody, Badge, Button, Body } from '@hanui/react';
-import {
-  ExternalLink,
-  Github,
-  Globe,
-  Sparkles,
-  Layers,
-  Package,
-} from 'lucide-react';
+import { ExternalLink, Github, Globe, Sparkles, Layers } from 'lucide-react';
 
 interface ShowcaseItem {
   id: string;
@@ -21,7 +14,6 @@ interface ShowcaseItem {
   github?: string;
   tags: string[];
   featured?: boolean;
-  kits?: string[];
 }
 
 const showcaseItems: ShowcaseItem[] = [
@@ -38,18 +30,16 @@ const showcaseItems: ShowcaseItem[] = [
     id: 'admin-dashboard',
     title: '관리자 대시보드',
     description:
-      'HANUI 컴포넌트와 Dashboard Kit으로 구축한 관리자 대시보드. 통계 카드, 차트, 테이블, 활동 피드를 포함합니다.',
+      'HANUI 컴포넌트와 Block으로 구축한 관리자 대시보드. 통계 카드, 차트, 테이블, 활동 피드를 포함합니다.',
     tags: ['Dashboard', 'Admin', 'Recharts'],
-    kits: ['Dashboard Kit', 'Table Kit', 'Auth Kit'],
     featured: true,
   },
   {
     id: 'community-board',
     title: '커뮤니티 게시판',
     description:
-      'Board Kit을 활용한 게시판 서비스. 글 목록, 상세 보기, 작성, 수정, 삭제, 댓글 기능을 제공합니다.',
+      'HANUI Block으로 만든 게시판 서비스. 글 목록, 상세 보기, 작성, 수정, 삭제, 댓글 기능을 제공합니다.',
     tags: ['Community', 'Board', 'Social'],
-    kits: ['Board Kit', 'Auth Kit', 'Notification Kit'],
     featured: true,
   },
   {
@@ -58,23 +48,20 @@ const showcaseItems: ShowcaseItem[] = [
     description:
       'KRDS 표준을 준수하는 정부 포털 사이트 템플릿. 마스트헤드, 헤더, 푸터, 사이드 네비게이션을 포함합니다.',
     tags: ['Government', 'Portal', 'KRDS'],
-    kits: ['Auth Kit', 'Search Kit'],
   },
   {
     id: 'settings-demo',
     title: '설정 페이지 데모',
     description:
-      'Settings Kit을 활용한 설정 페이지. 테마, 언어, 알림, 개인정보 설정을 관리합니다.',
+      'HANUI Block으로 만든 설정 페이지. 테마, 언어, 알림, 개인정보 설정을 관리합니다.',
     tags: ['Settings', 'Dark Mode', 'i18n'],
-    kits: ['Settings Kit', 'Notification Kit'],
   },
   {
     id: 'search-demo',
     title: '통합 검색 데모',
     description:
-      'Search Kit을 활용한 검색 페이지. 자동완성, 인기검색어, 최근검색어, 검색결과를 제공합니다.',
+      'SearchBar Block을 활용한 검색 페이지. 자동완성, 인기검색어, 최근검색어, 검색결과를 제공합니다.',
     tags: ['Search', 'Autocomplete'],
-    kits: ['Search Kit'],
   },
 ];
 
@@ -128,23 +115,6 @@ function ShowcaseCard({ item }: { item: ShowcaseItem }) {
           ))}
         </div>
 
-        {/* 사용된 Kits */}
-        {item.kits && item.kits.length > 0 && (
-          <div className="mb-4 pt-3 border-t border-krds-gray-10">
-            <p className="text-xs text-krds-gray-50 mb-2 flex items-center gap-1">
-              <Package className="w-3 h-3" />
-              사용된 Kits:
-            </p>
-            <div className="flex flex-wrap gap-1.5">
-              {item.kits.map((kit) => (
-                <Badge key={kit} variant="secondary" className="text-xs">
-                  {kit}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* 링크 버튼 */}
         <div className="flex items-center gap-2 pt-2">
           {item.url && (
@@ -183,7 +153,7 @@ export default function ShowcasePage() {
       <Heading
         level="h1"
         title="Showcase"
-        description="HANUI로 만들어진 프로젝트들을 소개합니다. 컴포넌트와 Kits가 실제로 어떻게 활용되는지 확인하세요."
+        description="HANUI로 만들어진 프로젝트들을 소개합니다. Component와 Block이 실제로 어떻게 활용되는지 확인하세요."
       />
 
       {/* Featured 프로젝트 */}
@@ -199,73 +169,20 @@ export default function ShowcasePage() {
         </div>
       </PageSection>
 
-      {/* Kits 데모 프로젝트 */}
+      {/* 그 밖의 데모 */}
       <PageSection>
         <div className="flex items-center gap-2 mb-6">
           <Layers className="w-5 h-5 text-krds-primary-base" />
-          <Heading level="h2" id="kits-demos" title="Kits Demos" />
+          <Heading level="h2" id="more-demos" title="더 보기" />
         </div>
         <Body className="text-krds-gray-60 mb-6">
-          HANUI Kits를 활용한 데모 프로젝트들입니다. 각 Kit이 어떻게 사용되는지
-          확인하세요.
+          HANUI Component와 Block으로 만든 데모입니다. 실제 화면에서 어떻게
+          조합되는지 확인하세요.
         </Body>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {otherItems.map((item) => (
             <ShowcaseCard key={item.id} item={item} />
           ))}
-        </div>
-      </PageSection>
-
-      {/* Available Kits 소개 */}
-      <PageSection>
-        <div className="p-6 bg-krds-primary-5 rounded-lg border border-krds-primary-20">
-          <Heading
-            level="h3"
-            title="Available Kits"
-            className="text-krds-gray-90 mb-4"
-          />
-          <Body className="text-krds-gray-70 mb-6">
-            HANUI Kits는 재사용 가능한 기능 단위 패키지입니다. API 주소만
-            변경하면 바로 사용할 수 있습니다.
-          </Body>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            {[
-              { name: 'Board Kit', desc: '게시판 기능', href: '/kits/board' },
-              { name: 'Auth Kit', desc: '인증 기능', href: '/kits/auth' },
-              { name: 'Table Kit', desc: '데이터 테이블', href: '/kits/table' },
-              { name: 'Form Kit', desc: '폼 기능', href: '/kits/form' },
-              {
-                name: 'Dashboard Kit',
-                desc: '대시보드',
-                href: '/kits/dashboard',
-              },
-              { name: 'Search Kit', desc: '검색 기능', href: '/kits/search' },
-              {
-                name: 'Notification Kit',
-                desc: '알림 기능',
-                href: '/kits/notification',
-              },
-              {
-                name: 'Settings Kit',
-                desc: '설정 기능',
-                href: '/kits/settings',
-              },
-            ].map((kit) => (
-              <Link
-                key={kit.name}
-                href={kit.href}
-                className="p-3 bg-white rounded-lg border border-krds-gray-20 hover:border-krds-primary-base hover:shadow-sm transition-all"
-              >
-                <p className="font-medium text-sm text-krds-gray-90">
-                  {kit.name}
-                </p>
-                <p className="text-xs text-krds-gray-50">{kit.desc}</p>
-              </Link>
-            ))}
-          </div>
-          <Button asChild>
-            <Link href="/kits">모든 Kits 보기</Link>
-          </Button>
         </div>
       </PageSection>
 

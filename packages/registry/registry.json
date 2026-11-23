@@ -899,274 +899,6 @@
       }
     ]
   },
-  "kit/board": {
-    "name": "kit/board",
-    "type": "kit",
-    "description": "게시판 기능 키트 (목록, 상세, 작성, 수정, 삭제, 댓글)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "react-hook-form",
-      "@hookform/resolvers",
-      "zod",
-      "lucide-react"
-    ],
-    "registryDependencies": [
-      "button",
-      "input",
-      "card",
-      "badge",
-      "pagination",
-      "skeleton",
-      "alert-dialog",
-      "textarea",
-      "select"
-    ],
-    "files": [
-      { "path": "kits/board/types/post.ts", "type": "lib" },
-      { "path": "kits/board/api/posts.ts", "type": "lib" },
-      { "path": "kits/board/hooks/usePosts.ts", "type": "hook" },
-      { "path": "kits/board/stores/postStore.ts", "type": "lib" },
-      { "path": "kits/board/components/PostCard.tsx", "type": "component" },
-      { "path": "kits/board/components/PostList.tsx", "type": "component" },
-      { "path": "kits/board/components/PostDetail.tsx", "type": "component" },
-      { "path": "kits/board/components/PostForm.tsx", "type": "component" },
-      { "path": "kits/board/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/auth": {
-    "name": "kit/auth",
-    "type": "kit",
-    "description": "인증 기능 키트 (로그인, 회원가입, 비밀번호 찾기, 토큰 갱신)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "react-hook-form",
-      "@hookform/resolvers",
-      "zod",
-      "lucide-react"
-    ],
-    "registryDependencies": ["button", "input", "card", "checkbox", "label"],
-    "files": [
-      { "path": "kits/auth/types/auth.ts", "type": "lib" },
-      { "path": "kits/auth/api/auth.ts", "type": "lib" },
-      { "path": "kits/auth/hooks/useAuth.ts", "type": "hook" },
-      { "path": "kits/auth/stores/authStore.ts", "type": "lib" },
-      { "path": "kits/auth/components/LoginForm.tsx", "type": "component" },
-      { "path": "kits/auth/components/SignupForm.tsx", "type": "component" },
-      {
-        "path": "kits/auth/components/ForgotPasswordForm.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/auth/components/ResetPasswordForm.tsx",
-        "type": "component"
-      },
-      { "path": "kits/auth/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/table": {
-    "name": "kit/table",
-    "type": "kit",
-    "description": "데이터 테이블 키트 (정렬, 필터, 페이지네이션, CSV 내보내기)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "lucide-react"
-    ],
-    "registryDependencies": [
-      "table",
-      "button",
-      "input",
-      "select",
-      "checkbox",
-      "pagination",
-      "skeleton"
-    ],
-    "files": [
-      { "path": "kits/table/types/table.ts", "type": "lib" },
-      { "path": "kits/table/hooks/useTable.ts", "type": "hook" },
-      { "path": "kits/table/stores/tableStore.ts", "type": "lib" },
-      { "path": "kits/table/components/DataTableKit.tsx", "type": "component" },
-      { "path": "kits/table/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/form": {
-    "name": "kit/form",
-    "type": "kit",
-    "description": "폼 기능 키트 (다단계 폼, 파일 업로드, 동적 필드)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "react-hook-form",
-      "@hookform/resolvers",
-      "zod",
-      "uuid",
-      "lucide-react"
-    ],
-    "registryDependencies": ["button", "input", "card", "progress", "label"],
-    "files": [
-      { "path": "kits/form/types/form.ts", "type": "lib" },
-      { "path": "kits/form/hooks/useMultiStepForm.ts", "type": "hook" },
-      { "path": "kits/form/hooks/useFileUpload.ts", "type": "hook" },
-      { "path": "kits/form/hooks/useDynamicFields.ts", "type": "hook" },
-      { "path": "kits/form/stores/formStore.ts", "type": "lib" },
-      { "path": "kits/form/components/MultiStepForm.tsx", "type": "component" },
-      {
-        "path": "kits/form/components/FileUploadField.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/form/components/DynamicFieldList.tsx",
-        "type": "component"
-      },
-      { "path": "kits/form/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/dashboard": {
-    "name": "kit/dashboard",
-    "type": "kit",
-    "description": "대시보드 키트 (통계 카드, 차트, 활동 피드, 실시간 업데이트)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "recharts",
-      "lucide-react"
-    ],
-    "registryDependencies": ["card", "badge", "skeleton"],
-    "files": [
-      { "path": "kits/dashboard/types/dashboard.ts", "type": "lib" },
-      { "path": "kits/dashboard/api/dashboard.ts", "type": "lib" },
-      { "path": "kits/dashboard/hooks/useDashboard.ts", "type": "hook" },
-      { "path": "kits/dashboard/stores/dashboardStore.ts", "type": "lib" },
-      {
-        "path": "kits/dashboard/components/StatCardGrid.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/dashboard/components/ActivityFeed.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/dashboard/components/DashboardChart.tsx",
-        "type": "component"
-      },
-      { "path": "kits/dashboard/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/search": {
-    "name": "kit/search",
-    "type": "kit",
-    "description": "검색 기능 키트 (검색바, 자동완성, 인기검색어, 최근검색어)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "lucide-react"
-    ],
-    "registryDependencies": [
-      "button",
-      "input",
-      "card",
-      "badge",
-      "pagination",
-      "skeleton"
-    ],
-    "files": [
-      { "path": "kits/search/types/search.ts", "type": "lib" },
-      { "path": "kits/search/api/search.ts", "type": "lib" },
-      { "path": "kits/search/hooks/useSearch.ts", "type": "hook" },
-      { "path": "kits/search/stores/searchStore.ts", "type": "lib" },
-      { "path": "kits/search/components/SearchBar.tsx", "type": "component" },
-      {
-        "path": "kits/search/components/SearchResults.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/search/components/PopularSearches.tsx",
-        "type": "component"
-      },
-      { "path": "kits/search/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/notification": {
-    "name": "kit/notification",
-    "type": "kit",
-    "description": "알림 기능 키트 (알림 센터, 토스트, 실시간 알림, 푸시 알림)",
-    "dependencies": [
-      "axios",
-      "zustand",
-      "@tanstack/react-query",
-      "lucide-react"
-    ],
-    "registryDependencies": ["button", "skeleton"],
-    "files": [
-      { "path": "kits/notification/types/notification.ts", "type": "lib" },
-      { "path": "kits/notification/api/notification.ts", "type": "lib" },
-      { "path": "kits/notification/hooks/useNotification.ts", "type": "hook" },
-      {
-        "path": "kits/notification/stores/notificationStore.ts",
-        "type": "lib"
-      },
-      {
-        "path": "kits/notification/components/NotificationBell.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/notification/components/NotificationItem.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/notification/components/NotificationCenter.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/notification/components/ToastContainer.tsx",
-        "type": "component"
-      },
-      { "path": "kits/notification/index.ts", "type": "lib" }
-    ]
-  },
-  "kit/settings": {
-    "name": "kit/settings",
-    "type": "kit",
-    "description": "설정 기능 키트 (테마, 언어, 접근성, 알림 설정, 프로필 관리)",
-    "dependencies": ["zustand", "lucide-react"],
-    "registryDependencies": [
-      "button",
-      "card",
-      "switch",
-      "radio",
-      "input",
-      "select"
-    ],
-    "files": [
-      { "path": "kits/settings/types/settings.ts", "type": "lib" },
-      { "path": "kits/settings/hooks/useSettings.ts", "type": "hook" },
-      { "path": "kits/settings/stores/settingsStore.ts", "type": "lib" },
-      {
-        "path": "kits/settings/components/ThemeSwitcher.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/settings/components/LanguageSelector.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/settings/components/SettingsSection.tsx",
-        "type": "component"
-      },
-      {
-        "path": "kits/settings/components/SettingsPage.tsx",
-        "type": "component"
-      },
-      { "path": "kits/settings/index.ts", "type": "lib" }
-    ]
-  },
   "login-form": {
     "name": "login-form",
     "type": "block",
@@ -1182,7 +914,10 @@
       "body"
     ],
     "files": [
-      { "path": "components/blocks/login-form.tsx", "type": "component" }
+      {
+        "path": "components/blocks/login-form.tsx",
+        "type": "component"
+      }
     ]
   },
   "signup-form": {
@@ -1202,7 +937,10 @@
       "step-indicator"
     ],
     "files": [
-      { "path": "components/blocks/signup-form.tsx", "type": "component" }
+      {
+        "path": "components/blocks/signup-form.tsx",
+        "type": "component"
+      }
     ]
   },
   "forgot-password": {
@@ -1219,7 +957,10 @@
       "tabs"
     ],
     "files": [
-      { "path": "components/blocks/forgot-password.tsx", "type": "component" }
+      {
+        "path": "components/blocks/forgot-password.tsx",
+        "type": "component"
+      }
     ]
   },
   "otp-verify": {
@@ -1229,7 +970,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "input", "button", "body"],
     "files": [
-      { "path": "components/blocks/otp-verify.tsx", "type": "component" }
+      {
+        "path": "components/blocks/otp-verify.tsx",
+        "type": "component"
+      }
     ]
   },
   "payment-card": {
@@ -1239,7 +983,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "input", "button", "label", "body"],
     "files": [
-      { "path": "components/blocks/payment-card.tsx", "type": "component" }
+      {
+        "path": "components/blocks/payment-card.tsx",
+        "type": "component"
+      }
     ]
   },
   "billing-address": {
@@ -1256,7 +1003,10 @@
       "select"
     ],
     "files": [
-      { "path": "components/blocks/billing-address.tsx", "type": "component" }
+      {
+        "path": "components/blocks/billing-address.tsx",
+        "type": "component"
+      }
     ]
   },
   "contact-form": {
@@ -1266,7 +1016,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "input", "textarea", "button", "label"],
     "files": [
-      { "path": "components/blocks/contact-form.tsx", "type": "component" }
+      {
+        "path": "components/blocks/contact-form.tsx",
+        "type": "component"
+      }
     ]
   },
   "profile-card": {
@@ -1276,7 +1029,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "badge", "button", "body"],
     "files": [
-      { "path": "components/blocks/profile-card.tsx", "type": "component" }
+      {
+        "path": "components/blocks/profile-card.tsx",
+        "type": "component"
+      }
     ]
   },
   "settings-section": {
@@ -1286,7 +1042,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "switch", "label", "body"],
     "files": [
-      { "path": "components/blocks/settings-section.tsx", "type": "component" }
+      {
+        "path": "components/blocks/settings-section.tsx",
+        "type": "component"
+      }
     ]
   },
   "notification-settings": {
@@ -1309,7 +1068,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "badge", "body"],
     "files": [
-      { "path": "components/blocks/stats-card.tsx", "type": "component" }
+      {
+        "path": "components/blocks/stats-card.tsx",
+        "type": "component"
+      }
     ]
   },
   "bar-chart": {
@@ -1432,7 +1194,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "button", "badge", "body"],
     "files": [
-      { "path": "components/blocks/team-members.tsx", "type": "component" }
+      {
+        "path": "components/blocks/team-members.tsx",
+        "type": "component"
+      }
     ]
   },
   "pricing-table": {
@@ -1442,7 +1207,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "button", "badge", "body", "list"],
     "files": [
-      { "path": "components/blocks/pricing-table.tsx", "type": "component" }
+      {
+        "path": "components/blocks/pricing-table.tsx",
+        "type": "component"
+      }
     ]
   },
   "search-bar": {
@@ -1452,7 +1220,10 @@
     "dependencies": [],
     "registryDependencies": ["input", "button", "select"],
     "files": [
-      { "path": "components/blocks/search-bar.tsx", "type": "component" }
+      {
+        "path": "components/blocks/search-bar.tsx",
+        "type": "component"
+      }
     ]
   },
   "empty-state": {
@@ -1462,7 +1233,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "button", "body"],
     "files": [
-      { "path": "components/blocks/empty-state.tsx", "type": "component" }
+      {
+        "path": "components/blocks/empty-state.tsx",
+        "type": "component"
+      }
     ]
   },
   "error-page": {
@@ -1472,7 +1246,10 @@
     "dependencies": [],
     "registryDependencies": ["button", "body", "display"],
     "files": [
-      { "path": "components/blocks/error-page.tsx", "type": "component" }
+      {
+        "path": "components/blocks/error-page.tsx",
+        "type": "component"
+      }
     ]
   },
   "gov-login": {
@@ -1490,7 +1267,10 @@
       "body"
     ],
     "files": [
-      { "path": "components/blocks/gov-login.tsx", "type": "component" }
+      {
+        "path": "components/blocks/gov-login.tsx",
+        "type": "component"
+      }
     ]
   },
   "application-form": {
@@ -1509,7 +1289,10 @@
       "body"
     ],
     "files": [
-      { "path": "components/blocks/application-form.tsx", "type": "component" }
+      {
+        "path": "components/blocks/application-form.tsx",
+        "type": "component"
+      }
     ]
   },
   "service-card-grid": {
@@ -1519,7 +1302,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "badge", "body"],
     "files": [
-      { "path": "components/blocks/service-card-grid.tsx", "type": "component" }
+      {
+        "path": "components/blocks/service-card-grid.tsx",
+        "type": "component"
+      }
     ]
   },
   "sidebar": {
@@ -1528,7 +1314,12 @@
     "description": "어드민/대시보드용 좌측 사이드바 (접기/펼치기, 2depth 메뉴)",
     "dependencies": ["lucide-react"],
     "registryDependencies": [],
-    "files": [{ "path": "components/sidebar.tsx", "type": "component" }]
+    "files": [
+      {
+        "path": "components/sidebar.tsx",
+        "type": "component"
+      }
+    ]
   },
   "site-settings": {
     "name": "site-settings",
@@ -1537,7 +1328,10 @@
     "dependencies": [],
     "registryDependencies": ["card", "input", "textarea", "button", "label"],
     "files": [
-      { "path": "components/blocks/site-settings.tsx", "type": "component" }
+      {
+        "path": "components/blocks/site-settings.tsx",
+        "type": "component"
+      }
     ]
   },
   "user-management": {
@@ -1555,7 +1349,10 @@
       "modal"
     ],
     "files": [
-      { "path": "components/blocks/user-management.tsx", "type": "component" }
+      {
+        "path": "components/blocks/user-management.tsx",
+        "type": "component"
+      }
     ]
   },
   "trash-list": {
@@ -1565,7 +1362,10 @@
     "dependencies": ["lucide-react"],
     "registryDependencies": ["card", "button", "badge", "select", "checkbox"],
     "files": [
-      { "path": "components/blocks/trash-list.tsx", "type": "component" }
+      {
+        "path": "components/blocks/trash-list.tsx",
+        "type": "component"
+      }
     ]
   },
   "media-gallery": {
@@ -1575,7 +1375,10 @@
     "dependencies": ["lucide-react"],
     "registryDependencies": ["card", "button", "badge", "input", "modal"],
     "files": [
-      { "path": "components/blocks/media-gallery.tsx", "type": "component" }
+      {
+        "path": "components/blocks/media-gallery.tsx",
+        "type": "component"
+      }
     ]
   },
   "board-management": {
@@ -1592,7 +1395,10 @@
       "tabs"
     ],
     "files": [
-      { "path": "components/blocks/board-management.tsx", "type": "component" }
+      {
+        "path": "components/blocks/board-management.tsx",
+        "type": "component"
+      }
     ]
   }
 }
