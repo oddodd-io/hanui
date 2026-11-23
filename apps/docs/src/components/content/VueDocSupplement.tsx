@@ -8,8 +8,8 @@ import {
   CardBody,
   Code,
   Table,
-  TableHead,
   TableHeader,
+  TableHead,
   TableBody,
   TableRow,
   TableCell,
@@ -123,14 +123,16 @@ export function VueDocSupplement({
           <>
             <Body className="mt-6">Props</Body>
             <Table>
-              <TableHead>
+              {/* TableHeader가 <thead>, TableHead가 <th>다. 뒤집어 쓰면
+                  머리글이 한 줄이 아니라 세로로 쌓인다. */}
+              <TableHeader>
                 <TableRow>
-                  <TableHeader>이름</TableHeader>
-                  <TableHeader>타입</TableHeader>
-                  <TableHeader>기본값</TableHeader>
-                  <TableHeader>설명</TableHeader>
+                  <TableHead>이름</TableHead>
+                  <TableHead>타입</TableHead>
+                  <TableHead>기본값</TableHead>
+                  <TableHead>설명</TableHead>
                 </TableRow>
-              </TableHead>
+              </TableHeader>
               <TableBody>
                 {api.props.map((p) => (
                   <TableRow key={p.name}>
@@ -158,13 +160,13 @@ export function VueDocSupplement({
           <>
             <Body className="mt-6">이벤트</Body>
             <Table>
-              <TableHead>
+              <TableHeader>
                 <TableRow>
-                  <TableHeader>이름</TableHeader>
-                  <TableHeader>페이로드</TableHeader>
-                  <TableHeader>설명</TableHeader>
+                  <TableHead>이름</TableHead>
+                  <TableHead>페이로드</TableHead>
+                  <TableHead>설명</TableHead>
                 </TableRow>
-              </TableHead>
+              </TableHeader>
               <TableBody>
                 {api.emits.map((e) => (
                   <TableRow key={e.name}>
