@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useFramework } from '@/components/FrameworkTabs';
 
 interface NavItem {
   id: string;
@@ -11,6 +12,10 @@ interface NavItem {
 
 export function PageNav() {
   const pathname = usePathname();
+  // 프레임워크가 바뀌면 본문 h2가 달라진다(Vue에 없는 묶음은 통째로 사라진다).
+  // 마운트 때 한 번만 훑으면 **없어진 묶음이 목차에 남아 죽은 링크가 된다** —
+  // FrameworkProvider가 주소를 보고 값을 맞추는 건 첫 렌더 '뒤'라 반드시 걸린다.
+  const { framework } = useFramework();
   const [headings, setHeadings] = useState<NavItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
@@ -24,9 +29,8 @@ export function PageNav() {
     }));
 
     // Update headings state in a separate microtask to avoid cascading renders
-    if (items.length > 0) {
-      Promise.resolve().then(() => setHeadings(items));
-    }
+    // 0개여도 반영한다. 안 그러면 거르기 전 목차가 그대로 남는다.
+    Promise.resolve().then(() => setHeadings(items));
 
     // Set up intersection observer for active section highlighting
     if (elements.length > 0) {
@@ -49,7 +53,7 @@ export function PageNav() {
         observer.disconnect();
       };
     }
-  }, [pathname]);
+  }, [pathname, framework]);
 
   if (headings.length === 0) {
     return null;

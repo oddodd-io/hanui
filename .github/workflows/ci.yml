@@ -59,6 +59,9 @@ jobs:
       - name: 문서 보충 판단 테스트
         run: node --test apps/docs/src/lib/vue-availability.test.mjs
 
+      - name: 컴포넌트 링크 검사
+        run: node --test apps/docs/src/lib/component-links.test.mjs
+
       - name: 발행 큐 날짜 판정 테스트
         run: node --test apps/docs/src/lib/blog-queue.test.mjs
 

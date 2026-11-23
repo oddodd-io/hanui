@@ -30,3 +30,32 @@ export function vueDocMode(framework, pathname, vueApi) {
     ? { mode: 'api', slug }
     : { mode: 'unsupported' };
 }
+
+/**
+ * 컴포넌트 목록을 현재 프레임워크에서 **실제로 쓸 수 있는 것만** 남긴다.
+ *
+ * 목록 페이지와 사이드바가 쓴다. 거르지 않으면 vue.hanui.io 사이드바에 63개가 뜨는데
+ * 그중 42개는 Vue에 없다 — 눌러서 들어가야 없다는 걸 알게 된다.
+ *
+ * href에서 슬러그를 뽑아 판단한다. 이름(`Main Menu`)과 슬러그(`main-menu`)가
+ * 달라서 이름으로 맞추면 어긋난다.
+ *
+ * @template {{href: string}} T
+ * @param {T[]} components
+ * @param {string} framework 'react' | 'vue'
+ * @param {Record<string, unknown>} vueApi
+ * @returns {T[]}
+ */
+export function filterByFramework(components, framework, vueApi) {
+  if (framework !== 'vue') return components;
+  return components.filter((c) => {
+    const segments = String(c?.href ?? '')
+      .split('/')
+      .filter(Boolean);
+    // 컴포넌트 **상세** 링크(`/components/<슬러그>`)만 거른다.
+    // 사이드바의 'Overview'(`/components`)처럼 상세가 아닌 항목은 그대로 둔다 —
+    // 걸러버리면 Vue에서 목록으로 돌아갈 길이 사라진다.
+    if (segments[0] !== 'components' || segments.length < 2) return true;
+    return Object.prototype.hasOwnProperty.call(vueApi, segments[1]);
+  });
+}

@@ -1,5 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import { SquareArrowOutUpRight } from 'lucide-react';
+import { useFramework } from '@/components/FrameworkTabs';
+import { filterByFramework } from '@/lib/vue-availability.mjs';
+import vueApi from '@/lib/vue-api.json';
 // Docs layout components
 import { PageSection as Section, Heading } from '@/components/content';
 
@@ -59,12 +64,18 @@ const navigationMainComponents = [
   {
     name: 'Main Menu',
     description: '주 메뉴',
-    href: '/components/mainmenu',
+    // 라우트는 `main-menu`다. `mainmenu`로 적혀 있어 줄곧 404였다.
+    href: '/components/main-menu',
   },
   {
     name: 'Side Navigation',
     description: '사이드 메뉴',
     href: '/components/side-navigation',
+  },
+  {
+    name: 'Sidebar',
+    description: '어드민/대시보드 좌측 사이드바',
+    href: '/components/sidebar',
   },
   {
     name: 'Tab Bars',
@@ -367,6 +378,11 @@ const contentComponents: Array<{
   updated?: boolean;
 }> = [
   {
+    name: 'Structured List',
+    description: '구조화 목록 (카드 형식)',
+    href: '/components/structured-list',
+  },
+  {
     name: 'Visually Hidden',
     description: '스크린리더 전용 숨김 콘텐츠',
     href: '/components/visually-hidden',
@@ -390,7 +406,10 @@ function ComponentSection({
   }>;
   id: string;
 }) {
-  if (components.length === 0) return null;
+  // Vue 주소에서는 Vue에 있는 것만 남긴다. 다 비면 그 묶음은 통째로 사라진다.
+  const { framework } = useFramework();
+  const visible = filterByFramework(components, framework, vueApi);
+  if (visible.length === 0) return null;
 
   return (
     <Section>
@@ -401,7 +420,7 @@ function ComponentSection({
       </Heading>
 
       <Wrap gap="lg">
-        {components.map((component) => (
+        {visible.map((component) => (
           <Link
             key={component.name}
             href={component.href}
@@ -430,12 +449,40 @@ function ComponentSection({
 }
 
 export default function ComponentsPage() {
+  const { framework } = useFramework();
+  // Vue에서는 목록을 거르므로 "모든"이 사실이 아니다. 편수를 세어 적는다.
+  //
+  // vueApi의 키 수(23)를 쓰면 안 된다 — DropMenu·MobileMenu는 Vue에 있지만 문서
+  // 페이지가 없어서 목록에 뜨지 않는다. **화면에 실제로 보이는 수**를 센다.
+  const vueCount = filterByFramework(
+    [
+      ...typographyComponents,
+      ...identityComponents,
+      ...navigationMainComponents,
+      ...navigationContentComponents,
+      ...navigationLinkComponents,
+      ...presentationComponents,
+      ...actionComponents,
+      ...selectionComponents,
+      ...feedbackComponents,
+      ...helpComponents,
+      ...inputComponents,
+      ...contentComponents,
+    ],
+    'vue',
+    vueApi
+  ).length;
+
   return (
     <>
       <Heading
         level="h1"
         title="Components"
-        description="HANUI 라이브러리에서 제공하는 모든 컴포넌트를 KRDS(Korean Design System) 분류 체계에 따라 정리했습니다."
+        description={
+          framework === 'vue'
+            ? `Vue에서 쓸 수 있는 컴포넌트 ${vueCount}개를 KRDS(Korean Design System) 분류 체계에 따라 정리했습니다. React 쪽에는 레이아웃 프리미티브 등이 더 있습니다.`
+            : 'HANUI 라이브러리에서 제공하는 모든 컴포넌트를 KRDS(Korean Design System) 분류 체계에 따라 정리했습니다.'
+        }
       />
 
       {/* 플레이그라운드 링크 */}
@@ -472,39 +519,18 @@ export default function ComponentsPage() {
         id="identity"
       />
 
-      <Section>
-        <Heading
-          level="h2"
-          id="navigation"
-          title="탐색"
-          description="사용자가 콘텐츠를 탐색하고 이동하는 데 사용하는 컴포넌트"
-        />
-
-        <Wrap gap="lg">
-          {[
-            ...navigationMainComponents,
-            ...navigationContentComponents,
-            ...navigationLinkComponents,
-          ].map((component) => (
-            <Link
-              key={component.name}
-              href={component.href}
-              className="relative rounded-lg transition-all group flex items-center gap-2 min-w-[200px]"
-            >
-              <div className="flex flex-col gap-1">
-                <span className="text-base font-medium text-krds-gray-95 group-hover:underline transition-all">
-                  {component.name}
-                </span>
-                {component.description && (
-                  <span className="text-sm text-krds-gray-70">
-                    {component.description}
-                  </span>
-                )}
-              </div>
-            </Link>
-          ))}
-        </Wrap>
-      </Section>
+      {/* 탐색은 하위 분류 셋을 합쳐 한 묶음으로 보여준다.
+          직접 렌더하던 걸 ComponentSection으로 바꿔 프레임워크 거르기를 공유한다. */}
+      <ComponentSection
+        title="탐색"
+        description="사용자가 콘텐츠를 탐색하고 이동하는 데 사용하는 컴포넌트"
+        components={[
+          ...navigationMainComponents,
+          ...navigationContentComponents,
+          ...navigationLinkComponents,
+        ]}
+        id="navigation"
+      />
 
       <ComponentSection
         title="레이아웃 및 표현"

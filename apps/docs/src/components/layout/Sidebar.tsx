@@ -1,5 +1,8 @@
 'use client';
 
+import { useFramework } from '@/components/FrameworkTabs';
+import { filterByFramework } from '@/lib/vue-availability.mjs';
+import vueApi from '@/lib/vue-api.json';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useRef } from 'react';
@@ -302,10 +305,18 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const activeRef = useRef<HTMLAnchorElement | null>(null);
   const pathname = usePathname();
 
+  const { framework } = useFramework();
+
   const getNavigation = () => {
     if (pathname?.startsWith('/docs')) return getStartedNavigation;
     if (pathname?.startsWith('/design-system')) return designSystemNavigation;
-    if (pathname?.startsWith('/components')) return componentsNavigation;
+    // Vue 주소에서는 Vue에 있는 컴포넌트만 남긴다. 거르지 않으면 63개가 뜨는데
+    // 그중 42개는 Vue에 없어서, 눌러서 들어가야 없다는 걸 알게 된다.
+    if (pathname?.startsWith('/components'))
+      return componentsNavigation.map((section) => ({
+        ...section,
+        items: filterByFramework(section.items, framework, vueApi),
+      }));
     if (pathname?.startsWith('/blocks')) return blocksNavigation;
     if (pathname?.startsWith('/templates')) return templatesNavigation;
     return componentsNavigation;
