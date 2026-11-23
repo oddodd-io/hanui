@@ -41,7 +41,7 @@ const AI_PROMPT_REACT = `HANUI 라이브러리를 설치하고 모든 컴포넌�
 import { Button } from '@/components/hanui/button';
 import { Card } from '@/components/hanui/card';
 
-공식 문서: https://hanui.io/docs/quick-start`;
+공식 문서: https://react.hanui.io/docs/quick-start`;
 
 const AI_PROMPT_VUE = `HANUI Vue 라이브러리를 설치하고 모든 컴포넌트를 추가해줘.
 
@@ -62,7 +62,7 @@ import Card from '@/components/hanui/Card.vue';
   </Card>
 </template>
 
-공식 문서: https://hanui.io/docs/quick-start`;
+공식 문서: https://vue.hanui.io/docs/quick-start`;
 
 export default function QuickStartPage() {
   const [aiCopied, setAiCopied] = useState(false);

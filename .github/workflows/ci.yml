@@ -34,7 +34,7 @@ jobs:
         run: pnpm lint
 
   registry:
-    name: Registry 일치 검사
+    name: 생성물 일치 검사
     runs-on: ubuntu-latest
     # 레지스트리는 손으로 쓰지 않는다. 소스에서 생성한 결과와 다르면 여기서 깨진다.
     # 2026-09-22에 packages/vue를 재구축하면서 구조가 바뀌었는데 레지스트리가 안 따라왔고,
@@ -50,6 +50,17 @@ jobs:
 
       - name: registry-vue.json이 소스와 일치하는지
         run: node scripts/build-registry-vue.mjs --check
+
+      - name: vue-api.json이 소스와 일치하는지
+        run: node scripts/build-vue-docs-meta.mjs --check
+
+      # 주소(hostname)로 프레임워크를 고른 뒤 브라우저에서만 도는 로직이라
+      # 서버 렌더로는 확인할 수 없다. 순수 함수로 빼서 여기서 고정한다.
+      - name: 문서 보충 판단 테스트
+        run: node --test apps/docs/src/lib/vue-availability.test.mjs
+
+      - name: 발행 큐 날짜 판정 테스트
+        run: node --test apps/docs/src/lib/blog-queue.test.mjs
 
   typecheck:
     name: Type Check

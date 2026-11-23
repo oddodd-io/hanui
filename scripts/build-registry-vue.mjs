@@ -27,6 +27,7 @@ import path from 'node:path';
 
 const SRC = 'packages/vue/src';
 const OUT = 'packages/registry/registry-vue.json';
+
 const COMPONENTS = path.join(SRC, 'components');
 
 /** PascalCase → kebab-case (InPageNavigation → in-page-navigation) */
@@ -163,22 +164,30 @@ async function format(value) {
 const output = await format(registry);
 
 if (process.argv.includes('--check')) {
-  const current = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf-8') : '';
   // **내용**으로 비교한다. 서식 차이(prettier가 짧은 배열을 한 줄로 접는다)로 CI가 깨지면
   // 사람이 검사를 꺼버리고, 꺼진 검사는 검사가 아니다.
-  let same = false;
-  try {
-    same = JSON.stringify(JSON.parse(current)) === JSON.stringify(registry);
-  } catch {
-    same = false;
-  }
-  if (same) {
+  const matches = (file, expected) => {
+    try {
+      return (
+        JSON.stringify(JSON.parse(fs.readFileSync(file, 'utf-8'))) ===
+        JSON.stringify(expected)
+      );
+    } catch {
+      return false;
+    }
+  };
+  const stale = [[OUT, registry]].filter(
+    ([file, expected]) => !matches(file, expected)
+  );
+
+  if (stale.length === 0) {
     console.log(`✅ ${OUT} 이(가) 소스와 일치합니다 (${items.length}개).`);
     process.exit(0);
   }
-  console.error(
-    `❌ ${OUT} 이(가) 소스와 다릅니다. \`node scripts/build-registry-vue.mjs\`로 다시 생성하세요.`
-  );
+  for (const [file] of stale) {
+    console.error(`❌ ${file} 이(가) 소스와 다릅니다.`);
+  }
+  console.error('`node scripts/build-registry-vue.mjs`로 다시 생성하세요.');
   process.exit(1);
 }
 

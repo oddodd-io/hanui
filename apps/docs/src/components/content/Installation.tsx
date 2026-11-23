@@ -28,8 +28,10 @@ export function Installation({
       yarn: 'yarn',
       bun: 'bun',
     };
-    const cliName = framework === 'vue' ? 'hanui-vue' : 'hanui';
-    return `${runners[packageManager]} ${cliName} add ${componentName}`;
+    // `hanui-vue`라는 명령은 **없다.** vue-cli 패키지는 2026-10-01에 제거됐고
+    // @hanui/cli의 bin은 `hanui` 하나뿐이다. Vue는 플래그로 고른다.
+    const suffix = framework === 'vue' ? ' --framework vue' : '';
+    return `${runners[packageManager]} hanui add ${componentName}${suffix}`;
   };
 
   const pascalName =
@@ -38,7 +40,7 @@ export function Installation({
 
   const getAiPrompt = () => {
     const frameworkLabel = framework === 'vue' ? 'Vue' : 'React';
-    const cliName = framework === 'vue' ? 'hanui-vue' : 'hanui';
+    const suffix = framework === 'vue' ? ' --framework vue' : '';
     const importExample =
       framework === 'vue'
         ? `import { ${pascalName} } from '@/components/hanui/${componentName}.vue';`
@@ -46,11 +48,11 @@ export function Installation({
     const docsUrl =
       framework === 'vue'
         ? `https://vue.hanui.io/components/${componentName}`
-        : `https://hanui.io/components/${componentName}`;
+        : `https://react.hanui.io/components/${componentName}`;
 
     return `HANUI 라이브러리에서 ${componentName} 컴포넌트를 설치해줘. (${frameworkLabel})
 
-설치 명령어: npx ${cliName} add ${componentName}
+설치 명령어: npx hanui add ${componentName}${suffix}
 
 설치 후 사용법:
 ${importExample}

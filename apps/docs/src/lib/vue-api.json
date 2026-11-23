@@ -1,0 +1,1259 @@
+{
+  "badge": {
+    "component": "Badge",
+    "install": "badge",
+    "description": "Badge — KRDS `span.krds-badge` 래퍼",
+    "props": [
+      {
+        "name": "variant",
+        "type": "'outline' | 'bg' | 'bg-light'",
+        "required": false,
+        "description": "outline: 테두리 / bg: 진한 배경 / bg-light: 연한 배경",
+        "default": "'bg'"
+      },
+      {
+        "name": "color",
+        "type": "'primary' | 'secondary' | 'gray' | 'point' | 'danger' | 'warning' | 'success' | 'information' | 'disabled'",
+        "required": false,
+        "description": "",
+        "default": "'primary'"
+      },
+      {
+        "name": "size",
+        "type": "'small' | 'medium' | 'large'",
+        "required": false,
+        "description": "KRDS CSS는 large만 크기를 바꾼다. small·medium은 원본 예제처럼 클래스만 붙는다",
+        "default": null
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "description": "숫자형 배지(`.number`). 주면 슬롯 대신 숫자를 표시한다",
+        "default": null
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "description": "count가 이 값을 넘으면 \"{max}+\"로 표시한다",
+        "default": "999"
+      },
+      {
+        "name": "dot",
+        "type": "boolean",
+        "required": false,
+        "description": "점형 배지(`.dot`). 내용이 없으므로 label이 필요하다",
+        "default": "false"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "스크린리더용 설명 (sr-only). 예: count와 함께 \"읽지 않은 알림\", dot과 함께 \"새 글\"",
+        "default": null
+      }
+    ],
+    "emits": [],
+    "slots": ["default"]
+  },
+  "breadcrumb": {
+    "component": "Breadcrumb",
+    "install": "breadcrumb",
+    "description": "Breadcrumb — KRDS `nav.krds-breadcrumb-wrap > ol.breadcrumb` 래퍼",
+    "props": [
+      {
+        "name": "items",
+        "type": "BreadcrumbItem[]",
+        "required": true,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "nav 랜드마크 이름",
+        "default": "'현재 경로'"
+      },
+      {
+        "name": "home",
+        "type": "boolean",
+        "required": false,
+        "description": "첫 항목에 홈 아이콘(`.home`)을 붙인다",
+        "default": "true"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      }
+    ],
+    "emits": [],
+    "slots": ["item"]
+  },
+  "button": {
+    "component": "Button",
+    "install": "button",
+    "description": "Button — KRDS `.krds-btn` 래퍼",
+    "props": [
+      {
+        "name": "variant",
+        "type": "'primary' | 'secondary' | 'tertiary' | 'text' | 'link'",
+        "required": false,
+        "description": "KRDS 계층. 기본 primary",
+        "default": "'primary'"
+      },
+      {
+        "name": "size",
+        "type": "'xsmall' | 'small' | 'medium' | 'large' | 'xlarge'",
+        "required": false,
+        "description": "KRDS 크기. 기본 large (KRDS 기본값)",
+        "default": "'large'"
+      },
+      {
+        "name": "icon",
+        "type": "boolean",
+        "required": false,
+        "description": "아이콘 전용 버튼 (`.icon`). `label`로 접근성 이름을 반드시 제공한다",
+        "default": "false"
+      },
+      {
+        "name": "border",
+        "type": "boolean",
+        "required": false,
+        "description": "아이콘 전용 버튼의 테두리형 (`.icon.border`)",
+        "default": "false"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "아이콘 전용 버튼의 접근성 이름. `sr-only`로 렌더된다",
+        "default": null
+      },
+      {
+        "name": "pure",
+        "type": "boolean",
+        "required": false,
+        "description": "link 계층: hover/visited 색 변화 없음 (`.pure`)",
+        "default": "false"
+      },
+      {
+        "name": "basic",
+        "type": "boolean",
+        "required": false,
+        "description": "link 계층: 본문 텍스트 색 (`.basic`)",
+        "default": "false"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "비활성. `<button>`은 native disabled, `<a>`는 href 제거 + aria-disabled",
+        "default": "false"
+      },
+      {
+        "name": "type",
+        "type": "'button' | 'submit' | 'reset'",
+        "required": false,
+        "description": "`<button>` type. 기본 button (폼 안 submit 오작동 방지)",
+        "default": "'button'"
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "required": false,
+        "description": "지정 시 `<a>`로 렌더",
+        "default": null
+      },
+      {
+        "name": "target",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "rel",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      }
+    ],
+    "emits": [
+      {
+        "name": "click",
+        "payload": "event: MouseEvent",
+        "description": ""
+      }
+    ],
+    "slots": ["default"]
+  },
+  "structured-list": {
+    "component": "CardList",
+    "install": "card-list",
+    "description": "CardList — KRDS `ul.krds-structured-list` (구조화 목록) 래퍼",
+    "props": [
+      {
+        "name": "items",
+        "type": "CardListItem[]",
+        "required": true,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "variant",
+        "type": "'card' | 'full'",
+        "required": false,
+        "description": "card: KRDS 기본 카드 격자(1280px↑ 3열 → 2열 → 1열) full: KRDS `.type-full` 한 줄 전체 너비",
+        "default": "'card'"
+      },
+      {
+        "name": "thumbRatio",
+        "type": "string",
+        "required": false,
+        "description": "썸네일 가로세로 비율 (CSS aspect-ratio 값)",
+        "default": null
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "목록 이름 — 한 화면에 목록이 둘 이상일 때 구별용",
+        "default": null
+      },
+      {
+        "name": "emptyText",
+        "type": "string",
+        "required": false,
+        "description": "항목이 없을 때 보여줄 문구. 비우면 아무것도 렌더하지 않는다",
+        "default": null
+      }
+    ],
+    "emits": [],
+    "slots": []
+  },
+  "drop-menu": {
+    "component": "DropMenu",
+    "install": "drop-menu",
+    "description": "DropMenu — KRDS `.krds-drop-wrap` 드롭다운 (헤더 유틸 메뉴 · 나의 GOV · 페이지 타이틀 메뉴)",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "버튼 텍스트",
+        "default": null
+      },
+      {
+        "name": "items",
+        "type": "DropMenuItem[]",
+        "required": false,
+        "description": "",
+        "default": "() => []"
+      },
+      {
+        "name": "buttonClass",
+        "type": "string",
+        "required": false,
+        "description": "버튼 클래스. 기본은 헤더 유틸 메뉴의 `krds-btn small text`",
+        "default": "'krds-btn small text'"
+      },
+      {
+        "name": "toggleIcon",
+        "type": "boolean",
+        "required": false,
+        "description": "버튼 뒤 토글 아이콘(ico-toggle)",
+        "default": "true"
+      },
+      {
+        "name": "wrapClass",
+        "type": "string",
+        "required": false,
+        "description": "래퍼 추가 클래스 (my-drop, krds-resize 등)",
+        "default": null
+      }
+    ],
+    "emits": [
+      {
+        "name": "select",
+        "payload": "item: DropMenuItem, index: number",
+        "description": ""
+      }
+    ],
+    "slots": ["button", "top", "bottom"]
+  },
+  "file-upload": {
+    "component": "FileUpload",
+    "install": "file-upload",
+    "description": "FileUpload — KRDS `.krds-file-upload` 래퍼",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "FileUploadItem[]",
+        "required": false,
+        "description": "",
+        "default": "() => []"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "상단 제목 (.file-head .tit)",
+        "default": null
+      },
+      {
+        "name": "titleTag",
+        "type": "'h2' | 'h3' | 'h4' | 'h5' | 'h6'",
+        "required": false,
+        "description": "제목 태그 수준",
+        "default": "'h3'"
+      },
+      {
+        "name": "guideText",
+        "type": "string",
+        "required": false,
+        "description": "드롭 영역 안내 문구",
+        "default": null
+      },
+      {
+        "name": "buttonText",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": "'파일선택'"
+      },
+      {
+        "name": "accept",
+        "type": "string",
+        "required": false,
+        "description": "input accept (예: '.hwp,.pdf,image/*')",
+        "default": null
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "true"
+      },
+      {
+        "name": "maxFiles",
+        "type": "number",
+        "required": false,
+        "description": "최대 파일 수. 표시(3개 / 10개)와 초과 방지에 쓴다",
+        "default": null
+      },
+      {
+        "name": "maxSize",
+        "type": "number",
+        "required": false,
+        "description": "파일 하나의 최대 크기 (바이트)",
+        "default": null
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "line",
+        "type": "boolean",
+        "required": false,
+        "description": "`.line` 테두리형",
+        "default": "true"
+      }
+    ],
+    "emits": [
+      {
+        "name": "update:modelValue",
+        "payload": "items: FileUploadItem[]",
+        "description": ""
+      },
+      {
+        "name": "add",
+        "payload": "items: FileUploadItem[]",
+        "description": "새로 추가된 정상 파일 (업로드 시작 지점)"
+      },
+      {
+        "name": "remove",
+        "payload": "item: FileUploadItem",
+        "description": ""
+      },
+      {
+        "name": "reject",
+        "payload": "files: File[], reason: FileUploadRejectReason",
+        "description": "추가하지 못한 파일"
+      }
+    ],
+    "slots": ["default", "actions"]
+  },
+  "footer": {
+    "component": "Footer",
+    "install": "footer",
+    "description": "Footer — KRDS `footer#krds-footer`",
+    "props": [
+      {
+        "name": "logoText",
+        "type": "string",
+        "required": false,
+        "description": "로고 대체 텍스트 (기관명)",
+        "default": "'KRDS - Korea Design System'"
+      },
+      {
+        "name": "logoSrc",
+        "type": "string",
+        "required": false,
+        "description": "기관 로고 이미지. 없으면 KRDS CSS 기본 로고",
+        "default": null
+      },
+      {
+        "name": "address",
+        "type": "string",
+        "required": false,
+        "description": "주소 (.info-addr)",
+        "default": null
+      },
+      {
+        "name": "contacts",
+        "type": "FooterContact[]",
+        "required": false,
+        "description": "",
+        "default": "() => []"
+      },
+      {
+        "name": "links",
+        "type": "FooterLink[]",
+        "required": false,
+        "description": "바로가기 (.link-go)",
+        "default": "() => []"
+      },
+      {
+        "name": "sns",
+        "type": "FooterSns[]",
+        "required": false,
+        "description": "",
+        "default": "() => []"
+      },
+      {
+        "name": "policies",
+        "type": "FooterPolicy[]",
+        "required": false,
+        "description": "정책 링크 (.f-menu)",
+        "default": "() => []"
+      },
+      {
+        "name": "copyright",
+        "type": "string",
+        "required": false,
+        "description": "저작권 (.f-copy)",
+        "default": null
+      },
+      {
+        "name": "identifier",
+        "type": "string",
+        "required": false,
+        "description": "운영기관 식별자 문구. 없으면 식별자를 렌더하지 않는다",
+        "default": null
+      },
+      {
+        "name": "identifierLogoText",
+        "type": "string",
+        "required": false,
+        "description": "식별자 로고 대체 텍스트",
+        "default": "'KRDS - Korea Design System'"
+      },
+      {
+        "name": "identifierLogoSrc",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      }
+    ],
+    "emits": [],
+    "slots": ["quick"]
+  },
+  "form-field": {
+    "component": "FormField",
+    "install": "form-field",
+    "description": "FormField — KRDS `.form-group` 래퍼",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "레이블. `.form-tit > label`로 렌더된다",
+        "default": null
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "컨트롤 id. 생략하면 자동 생성",
+        "default": null
+      },
+      {
+        "name": "hint",
+        "type": "string",
+        "required": false,
+        "description": "도움말 (`.form-hint`)",
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "FormFieldStatus",
+        "required": false,
+        "description": "상태. 컨트롤 래퍼에 `.is-*`가 붙고 `message`가 상태 메시지로 렌더된다",
+        "default": null
+      },
+      {
+        "name": "message",
+        "type": "string",
+        "required": false,
+        "description": "상태 메시지 (`.form-hint-invalid` 등). status가 있을 때만 표시",
+        "default": null
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      }
+    ],
+    "emits": [],
+    "slots": ["default"]
+  },
+  "header": {
+    "component": "Header",
+    "install": "header",
+    "description": "Header — KRDS `header#krds-header` 뼈대",
+    "props": [
+      {
+        "name": "logoHref",
+        "type": "string",
+        "required": false,
+        "description": "로고 링크",
+        "default": "'/'"
+      },
+      {
+        "name": "logoText",
+        "type": "string",
+        "required": false,
+        "description": "로고 대체 텍스트 (기관명). sr-only로 읽힌다",
+        "default": "'KRDS - Korea Design System'"
+      },
+      {
+        "name": "logoSrc",
+        "type": "string",
+        "required": false,
+        "description": "기관 로고 이미지. 없으면 KRDS CSS 기본 로고(배경 이미지)",
+        "default": null
+      },
+      {
+        "name": "logoTag",
+        "type": "'h1' | 'h2' | 'div'",
+        "required": false,
+        "description": "로고 제목 태그 (KRDS 원본은 h2)",
+        "default": "'h2'"
+      },
+      {
+        "name": "scrollBehavior",
+        "type": "boolean",
+        "required": false,
+        "description": "스크롤 방향에 따라 헤더 숨김/표시 (#wrap 필요)",
+        "default": "true"
+      }
+    ],
+    "emits": [],
+    "slots": ["utility", "actions", "menu", "mobile"]
+  },
+  "identifier": {
+    "component": "Identifier",
+    "install": "identifier",
+    "description": "Identifier — KRDS `.krds-identifier` 운영기관 식별자 (\"이 누리집은 ○○부 누리집입니다.\")",
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": true,
+        "description": "식별 문구",
+        "default": null
+      },
+      {
+        "name": "logoText",
+        "type": "string",
+        "required": false,
+        "description": "로고 대체 텍스트 (기관명)",
+        "default": "'KRDS - Korea Design System'"
+      },
+      {
+        "name": "logoSrc",
+        "type": "string",
+        "required": false,
+        "description": "기관 로고 이미지. 없으면 KRDS CSS 기본 로고",
+        "default": null
+      }
+    ],
+    "emits": [],
+    "slots": []
+  },
+  "in-page-navigation": {
+    "component": "InPageNavigation",
+    "install": "in-page-navigation",
+    "description": "InPageNavigation — KRDS `.krds-in-page-navigation-area` 본문 내 탐색(이 페이지의 구성)",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": "제목 (`.quick-title`, 보통 페이지 제목)",
+        "default": null
+      },
+      {
+        "name": "items",
+        "type": "InPageNavItem[]",
+        "required": true,
+        "description": "구역 목록",
+        "default": null
+      },
+      {
+        "name": "caption",
+        "type": "string",
+        "required": false,
+        "description": "머리말 (`.quick-caption`, nav 이름)",
+        "default": "'이 페이지의 구성'"
+      }
+    ],
+    "emits": [],
+    "slots": ["action"]
+  },
+  "input": {
+    "component": "Input",
+    "install": "input",
+    "description": "Input — KRDS `input.krds-input` 래퍼",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": "''"
+      },
+      {
+        "name": "type",
+        "type": "'text' | 'password' | 'email' | 'tel' | 'url' | 'search' | 'number'",
+        "required": false,
+        "description": "",
+        "default": "'text'"
+      },
+      {
+        "name": "size",
+        "type": "'small' | 'medium' | 'large' | 'xlarge'",
+        "required": false,
+        "description": "KRDS 크기. 기본 large (KRDS 기본값)",
+        "default": "'large'"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "readonly",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "description": "값이 있을 때 내용 삭제 버튼 표시 (FormField 안에서만 KRDS 위치 스타일이 적용된다)",
+        "default": "false"
+      },
+      {
+        "name": "passwordToggle",
+        "type": "boolean",
+        "required": false,
+        "description": "type=password일 때 비밀번호 보기/가리기 버튼 표시",
+        "default": "false"
+      }
+    ],
+    "emits": [
+      {
+        "name": "update:modelValue",
+        "payload": "value: string",
+        "description": ""
+      },
+      {
+        "name": "clear",
+        "payload": "",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
+  "main-menu": {
+    "component": "MainMenu",
+    "install": "main-menu",
+    "description": "MainMenu — KRDS `nav.krds-main-menu` PC 주메뉴 (메가메뉴)",
+    "props": [
+      {
+        "name": "items",
+        "type": "MainMenuItem[]",
+        "required": true,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "nav 랜드마크 이름",
+        "default": "'메인 메뉴'"
+      }
+    ],
+    "emits": [],
+    "slots": ["banner"]
+  },
+  "masthead": {
+    "component": "Masthead",
+    "install": "masthead",
+    "description": "Masthead — KRDS `#krds-masthead` 공식 누리집 표시 배너",
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "description": "표시 문구",
+        "default": "'이 누리집은 대한민국 공식 전자정부 누리집입니다.'"
+      }
+    ],
+    "emits": [],
+    "slots": []
+  },
+  "mobile-menu": {
+    "component": "MobileMenu",
+    "install": "mobile-menu",
+    "description": "MobileMenu — KRDS `.krds-main-menu-mobile` 모바일 전체메뉴 (기본형: 왼쪽 1depth 탭 + 오른쪽 목록)",
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "열림 (v-model:open)",
+        "default": "false"
+      },
+      {
+        "name": "items",
+        "type": "MobileMenuNode[]",
+        "required": true,
+        "description": "1depth 목록",
+        "default": null
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "루트 id — 여는 버튼의 aria-controls와 맞춘다",
+        "default": "'mobile-nav'"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "대화상자 이름",
+        "default": "'전체메뉴'"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": "'전체메뉴 닫기'"
+      }
+    ],
+    "emits": [
+      {
+        "name": "update:open",
+        "payload": "open: boolean",
+        "description": ""
+      }
+    ],
+    "slots": ["utils", "login", "service", "search", "bottom"]
+  },
+  "modal": {
+    "component": "Modal",
+    "install": "modal",
+    "description": "Modal — KRDS `section.krds-modal` 래퍼",
+    "props": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "description": "열림 상태 (v-model:open)",
+        "default": "false"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "제목 (.modal-title, 대화상자 이름). title 슬롯으로 대신할 수 있다",
+        "default": null
+      },
+      {
+        "name": "size",
+        "type": "'sm' | 'md' | 'lg'",
+        "required": false,
+        "description": "`.modal-dialog.modal-{size}` 최대 너비. 없으면 KRDS 기본 large 너비",
+        "default": null
+      },
+      {
+        "name": "type",
+        "type": "'default' | 'full' | 'bottom-sheet'",
+        "required": false,
+        "description": "full: 전체 화면 팝업 / bottom-sheet: 모바일 바텀시트 (`data-type`)",
+        "default": "'default'"
+      },
+      {
+        "name": "closeLabel",
+        "type": "string",
+        "required": false,
+        "description": "닫기(X) 버튼의 스크린리더 이름",
+        "default": "'닫기'"
+      },
+      {
+        "name": "hideClose",
+        "type": "boolean",
+        "required": false,
+        "description": "닫기(X) 버튼 숨김. 이 경우 footer에 닫는 버튼을 반드시 둔다",
+        "default": "false"
+      },
+      {
+        "name": "closeOnBackdrop",
+        "type": "boolean",
+        "required": false,
+        "description": "배경 클릭으로 닫기. KRDS 기본은 닫지 않고 첫 요소로 초점을 옮긴다",
+        "default": "false"
+      },
+      {
+        "name": "closeOnEsc",
+        "type": "boolean",
+        "required": false,
+        "description": "Esc로 닫기",
+        "default": "true"
+      },
+      {
+        "name": "teleport",
+        "type": "string | false",
+        "required": false,
+        "description": "Teleport 대상. false면 제자리에 렌더한다",
+        "default": "'body'"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      }
+    ],
+    "emits": [
+      {
+        "name": "update:open",
+        "payload": "open: boolean",
+        "description": ""
+      },
+      {
+        "name": "opened",
+        "payload": "",
+        "description": "열림 전환이 끝나고 초점이 들어간 뒤"
+      },
+      {
+        "name": "closed",
+        "payload": "",
+        "description": "닫힘 전환(350ms)이 끝난 뒤"
+      }
+    ],
+    "slots": ["default", "title", "footer"]
+  },
+  "pagination": {
+    "component": "Pagination",
+    "install": "pagination",
+    "description": "Pagination — KRDS `.krds-pagination` 래퍼",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "number",
+        "required": false,
+        "description": "현재 페이지 (1부터)",
+        "default": "1"
+      },
+      {
+        "name": "totalPages",
+        "type": "number",
+        "required": true,
+        "description": "전체 페이지 수. 1 미만이면 아무것도 렌더하지 않는다",
+        "default": null
+      },
+      {
+        "name": "siblingCount",
+        "type": "number",
+        "required": false,
+        "description": "현재 페이지 양옆에 보여줄 페이지 수. 첫·마지막 페이지는 항상 보인다",
+        "default": "2"
+      },
+      {
+        "name": "getHref",
+        "type": "(page: number) => string",
+        "required": false,
+        "description": "주면 각 페이지를 `<a href>` 링크로 렌더한다 (서버 라우팅·SEO). 없으면 `<button>` + v-model",
+        "default": null
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "nav 랜드마크 이름",
+        "default": "'페이지 네비게이션'"
+      },
+      {
+        "name": "prevText",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": "'이전'"
+      },
+      {
+        "name": "nextText",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": "'다음'"
+      }
+    ],
+    "emits": [
+      {
+        "name": "update:modelValue",
+        "payload": "page: number",
+        "description": ""
+      }
+    ],
+    "slots": []
+  },
+  "select": {
+    "component": "Select",
+    "install": "select",
+    "description": "Select — KRDS `select.krds-form-select` / `select.krds-form-select-sort` 래퍼",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": "''"
+      },
+      {
+        "name": "options",
+        "type": "SelectOption[]",
+        "required": false,
+        "description": "옵션 목록. 대신 default 슬롯에 `<option>`을 직접 넣어도 된다",
+        "default": null
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "description": "첫 번째에 `<option value=\"\">`로 렌더되는 안내 문구 (예: \"선택\"). required면 선택 불가",
+        "default": null
+      },
+      {
+        "name": "variant",
+        "type": "'default' | 'sort'",
+        "required": false,
+        "description": "default: 폼용 `.krds-form-select` (기본 large) / sort: 목록 정렬용 `.krds-form-select-sort` (기본 medium, 테두리 없음)",
+        "default": "'default'"
+      },
+      {
+        "name": "size",
+        "type": "'small' | 'medium' | 'large'",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      }
+    ],
+    "emits": [
+      {
+        "name": "update:modelValue",
+        "payload": "value: string",
+        "description": ""
+      }
+    ],
+    "slots": ["default"]
+  },
+  "side-navigation": {
+    "component": "SideNavigation",
+    "install": "side-navigation",
+    "description": "SideNavigation — KRDS `nav.krds-side-navigation` 사이드 메뉴(LNB)",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": "제목 (h2.lnb-tit, 보통 1depth 메뉴명)",
+        "default": null
+      },
+      {
+        "name": "items",
+        "type": "SideNavNode[]",
+        "required": true,
+        "description": "2depth 목록",
+        "default": null
+      }
+    ],
+    "emits": [],
+    "slots": []
+  },
+  "skiplink": {
+    "component": "SkipLink",
+    "install": "skip-link",
+    "description": "SkipLink — KRDS `#krds-skip-link` 건너뛰기 링크",
+    "props": [
+      {
+        "name": "links",
+        "type": "SkipLinkItem[]",
+        "required": false,
+        "description": "",
+        "default": "() => [{ target: 'main-content', label: '본문 바로가기' }]"
+      }
+    ],
+    "emits": [],
+    "slots": []
+  },
+  "spinner": {
+    "component": "Spinner",
+    "install": "spinner",
+    "description": "Spinner — KRDS `.krds-spinner[role=\"status\"]` 로딩 표시",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "스크린리더 문구 (화면 문구가 없을 때)",
+        "default": "'로딩 중'"
+      }
+    ],
+    "emits": [],
+    "slots": ["default"]
+  },
+  "table": {
+    "component": "Table",
+    "install": "table",
+    "description": "Table — KRDS `.krds-table-wrap > table.tbl.col.data` 래퍼",
+    "props": [
+      {
+        "name": "caption",
+        "type": "string",
+        "required": false,
+        "description": "표 요약 (caption). 화면에는 숨겨지고 스크린리더가 읽는다. caption 슬롯으로 대신할 수 있다",
+        "default": null
+      },
+      {
+        "name": "columns",
+        "type": "TableColumn[]",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "rows",
+        "type": "TableRow[]",
+        "required": false,
+        "description": "",
+        "default": "() => []"
+      },
+      {
+        "name": "rowKey",
+        "type": "string | ((row: TableRow, index: number) => string | number)",
+        "required": false,
+        "description": "행 key로 쓸 필드 이름 또는 함수. 없으면 index",
+        "default": null
+      },
+      {
+        "name": "emptyText",
+        "type": "string",
+        "required": false,
+        "description": "rows가 비었을 때 표시할 문구",
+        "default": "'데이터가 없습니다.'"
+      },
+      {
+        "name": "scroll",
+        "type": "boolean",
+        "required": false,
+        "description": "`.scroll` — PC에서도 가로 스크롤",
+        "default": "false"
+      },
+      {
+        "name": "mobScroll",
+        "type": "boolean",
+        "required": false,
+        "description": "`.mob-scroll` — 모바일에서 셀 줄바꿈 없이 가로 스크롤",
+        "default": "false"
+      }
+    ],
+    "emits": [],
+    "slots": ["default", "caption", "empty"]
+  },
+  "textarea": {
+    "component": "Textarea",
+    "install": "textarea",
+    "description": "Textarea — KRDS `textarea.krds-input` 래퍼",
+    "props": [
+      {
+        "name": "modelValue",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": "''"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "description": "",
+        "default": null
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "readonly",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "description": "",
+        "default": "false"
+      },
+      {
+        "name": "maxlength",
+        "type": "number",
+        "required": false,
+        "description": "최대 글자수. 지정하면 KRDS `.textarea-count`(현재/최대)를 표시한다",
+        "default": null
+      }
+    ],
+    "emits": [
+      {
+        "name": "update:modelValue",
+        "payload": "value: string",
+        "description": ""
+      }
+    ],
+    "slots": []
+  }
+}
