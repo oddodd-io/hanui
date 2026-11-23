@@ -62,7 +62,6 @@ export default function ServiceCardGridPage() {
     console.log('서비스: ' + id);
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -98,7 +97,6 @@ export default function ServicePage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -112,7 +110,6 @@ export default function ServicePage() {
               </ComponentPreview>
               <FrameworkCodeBlock
                 reactCode={`<ServiceCardGrid columns={2} />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -123,7 +120,6 @@ export default function ServicePage() {
               </ComponentPreview>
               <FrameworkCodeBlock
                 reactCode={`<ServiceCardGrid columns={4} />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

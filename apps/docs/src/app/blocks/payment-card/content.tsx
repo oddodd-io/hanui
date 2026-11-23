@@ -63,7 +63,6 @@ export default function PaymentCardPage() {
     // { cardNumber, expiryDate, cvv, cardholderName }
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -93,7 +92,6 @@ export default function CheckoutPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -107,7 +105,6 @@ export default function CheckoutPage() {
               </ComponentPreview>
               <FrameworkCodeBlock
                 reactCode={`<PaymentCard amount="₩29,000" />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -124,7 +121,6 @@ export default function CheckoutPage() {
   title="정기 결제 등록"
   description="매월 자동 결제할 카드를 등록하세요."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

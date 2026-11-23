@@ -54,7 +54,6 @@ export default function NotificationSettingsPage() {
               reactCode={`import { NotificationSettings } from '@/components/hanui/blocks/notification-settings'
 
 <NotificationSettings />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -74,7 +73,6 @@ export default function NotificationsPage() {
 
   return <NotificationSettings onChange={handleChange} />;
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -94,7 +92,6 @@ export default function NotificationsPage() {
   title="마케팅 알림"
   description="프로모션 및 이벤트 알림 수신을 설정합니다."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -149,7 +146,6 @@ export default function NotificationsPage() {
     },
   ]}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

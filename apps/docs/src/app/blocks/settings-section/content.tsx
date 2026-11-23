@@ -54,7 +54,6 @@ export default function SettingsSectionPage() {
               reactCode={`import { SettingsSection } from '@/components/hanui/blocks/settings-section'
 
 <SettingsSection />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -74,7 +73,6 @@ export default function SettingsPage() {
 
   return <SettingsSection onChange={handleChange} />;
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -94,7 +92,6 @@ export default function SettingsPage() {
   title="보안 설정"
   description="계정 보안과 관련된 설정을 관리합니다."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -149,7 +146,6 @@ export default function SettingsPage() {
     },
   ]}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

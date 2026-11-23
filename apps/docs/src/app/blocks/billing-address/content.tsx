@@ -63,7 +63,6 @@ export default function BillingAddressPage() {
     // { name, address, city, state, zipCode, country }
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -95,7 +94,6 @@ export default function CheckoutPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -115,7 +113,6 @@ export default function CheckoutPage() {
   title="배송지 입력"
   description="상품을 받으실 주소를 입력하세요."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -130,7 +127,6 @@ export default function CheckoutPage() {
               </ComponentPreview>
               <FrameworkCodeBlock
                 reactCode={`<BillingAddress showSaveDefault />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

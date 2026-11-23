@@ -142,7 +142,6 @@ export default function BoardManagementPage() {
   onDeletePost={(ids) => deletePosts(ids)}
   onTogglePin={(id, pinned) => togglePin(id, pinned)}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -185,7 +184,6 @@ export default function PostsPage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
         </TabsContent>

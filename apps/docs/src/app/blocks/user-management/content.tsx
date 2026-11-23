@@ -103,7 +103,6 @@ export default function UserManagementPage() {
   onEdit={(id, data) => updateUser(id, data)}
   onDelete={(id) => deleteUser(id)}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -147,7 +146,6 @@ export default function UsersPage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
         </TabsContent>

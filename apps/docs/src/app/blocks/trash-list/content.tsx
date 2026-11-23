@@ -108,7 +108,6 @@ export default function TrashListPage() {
   onRestore={(ids) => restoreItems(ids)}
   onPermanentDelete={(ids) => permanentDelete(ids)}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -146,7 +145,6 @@ export default function TrashPage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
         </TabsContent>

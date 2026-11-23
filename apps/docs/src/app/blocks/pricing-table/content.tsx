@@ -54,7 +54,6 @@ export default function PricingTablePage() {
               reactCode={`import { PricingTable } from '@/components/hanui/blocks/pricing-table'
 
 <PricingTable onSelect={(plan) => alert('선택: ' + plan)} />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -100,7 +99,6 @@ export default function PricingPage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -157,7 +155,6 @@ export default function PricingPage() {
   ]}
   onSelect={(plan) => console.log('선택:', plan)}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

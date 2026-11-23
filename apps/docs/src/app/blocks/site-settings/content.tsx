@@ -74,7 +74,6 @@ export default function SiteSettingsPage() {
     phone: '02-1234-5678',
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -107,7 +106,6 @@ export default function SettingsPage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -123,7 +121,6 @@ export default function SettingsPage() {
               </ComponentPreview>
               <FrameworkCodeBlock
                 reactCode={`<SiteSettings onSubmit={handleSave} />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

@@ -54,7 +54,6 @@ export default function StatsCardPage() {
               reactCode={`import { StatsCard } from '@/components/hanui/blocks/stats-card'
 
 <StatsCard />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -77,7 +76,6 @@ export default function DashboardPage() {
 
   return <StatsCard items={stats} columns={4} />;
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -89,10 +87,7 @@ export default function DashboardPage() {
               <ComponentPreview>
                 <StatsCard columns={2} />
               </ComponentPreview>
-              <FrameworkCodeBlock
-                reactCode={`<StatsCard columns={2} />`}
-                vueCode={`<!-- Coming Soon -->`}
-              />
+              <FrameworkCodeBlock reactCode={`<StatsCard columns={2} />`} />
             </Subsection>
 
             <Subsection>
@@ -131,7 +126,6 @@ export default function DashboardPage() {
   ]}
   columns={3}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

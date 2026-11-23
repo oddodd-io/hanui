@@ -123,7 +123,6 @@ export default function MediaGalleryPage() {
   onUpload={(files) => uploadFiles(files)}
   onDelete={(id) => deleteFile(id)}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -160,7 +159,6 @@ export default function MediaPage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -183,7 +181,6 @@ export default function MediaPage() {
     closeModal();
   }}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

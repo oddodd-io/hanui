@@ -75,7 +75,6 @@ export default function GovLoginPage() {
     console.log('공동인증서');
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -117,7 +116,6 @@ export default function LoginPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -137,7 +135,6 @@ export default function LoginPage() {
   title="시스템 로그인"
   description="공공기관 통합 시스템에 로그인하세요."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -154,7 +151,6 @@ export default function LoginPage() {
                 reactCode={`<GovLogin
   simpleAuthMethods={['카카오', '네이버', 'PASS']}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

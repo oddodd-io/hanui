@@ -214,3 +214,36 @@ describe('hideVueOnly', () => {
     assert.deepEqual(hideVueOnly(LIST, 'react', []), LIST);
   });
 });
+
+describe('vueDocMode — blocks 구역', () => {
+  it('Vue 블록이 없으면 상세에서 "없음"을 띄운다', () => {
+    assert.deepEqual(vueDocMode('vue', '/blocks/login-form', {}, 'blocks'), {
+      mode: 'unsupported',
+    });
+  });
+
+  it('블록 목록 페이지에는 안 띄운다', () => {
+    assert.deepEqual(vueDocMode('vue', '/blocks', {}, 'blocks'), {
+      mode: 'none',
+    });
+  });
+
+  it('Vue 블록이 생기면 API를 붙인다', () => {
+    assert.deepEqual(
+      vueDocMode('vue', '/blocks/login-form', { 'login-form': {} }, 'blocks'),
+      { mode: 'api', slug: 'login-form' }
+    );
+  });
+
+  it('구역이 다르면 안 건드린다 — blocks 기준으로 컴포넌트 경로를 보지 않는다', () => {
+    assert.deepEqual(vueDocMode('vue', '/components/badge', {}, 'blocks'), {
+      mode: 'none',
+    });
+  });
+
+  it('React면 블록도 그대로', () => {
+    assert.deepEqual(vueDocMode('react', '/blocks/login-form', {}, 'blocks'), {
+      mode: 'none',
+    });
+  });
+});

@@ -62,7 +62,6 @@ export default function ErrorPagePage() {
   onGoHome={() => router.push('/')}
   onGoBack={() => router.back()}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -96,7 +95,6 @@ export default function Error() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -108,10 +106,7 @@ export default function Error() {
               <ComponentPreview>
                 <ErrorPage code="500" />
               </ComponentPreview>
-              <FrameworkCodeBlock
-                reactCode={`<ErrorPage code="500" />`}
-                vueCode={`<!-- Coming Soon -->`}
-              />
+              <FrameworkCodeBlock reactCode={`<ErrorPage code="500" />`} />
             </Subsection>
 
             <Subsection>
@@ -133,7 +128,6 @@ export default function Error() {
   homeLabel="메인으로"
   backLabel="이전 페이지"
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

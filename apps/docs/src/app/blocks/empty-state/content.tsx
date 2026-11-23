@@ -64,7 +64,6 @@ export default function EmptyStatePage() {
   secondaryActionLabel="도움말"
   onSecondaryAction={() => console.log('도움말')}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -93,7 +92,6 @@ export default function DataListPage() {
 
   return <DataList items={items} />;
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -117,7 +115,6 @@ export default function DataListPage() {
   actionLabel="검색 초기화"
   onAction={() => console.log('검색 초기화')}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -134,7 +131,6 @@ export default function DataListPage() {
   title="알림이 없습니다"
   description="새로운 알림이 도착하면 여기에 표시됩니다."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

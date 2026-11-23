@@ -71,7 +71,6 @@ export default function ProfileCardPage() {
   badgeText="관리자"
   onEdit={() => alert('프로필 편집')}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -97,7 +96,6 @@ export default function ProfilePage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -119,7 +117,6 @@ export default function ProfilePage() {
   role="프론트엔드 개발자"
   avatarUrl="https://github.com/shadcn.png"
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -140,7 +137,6 @@ export default function ProfilePage() {
   avatarInitials="김"
   department="디자인팀"
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

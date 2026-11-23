@@ -60,7 +60,6 @@ export default function TeamMembersPage() {
   onInvite={() => alert('멤버 초대')}
   onRemove={(id) => alert('제거: ' + id)}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -88,7 +87,6 @@ export default function SettingsPage() {
     />
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -112,7 +110,6 @@ export default function SettingsPage() {
   onInvite={() => console.log('초대')}
   onRemove={(id) => console.log('제거:', id)}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -151,7 +148,6 @@ export default function SettingsPage() {
   onInvite={() => console.log('초대')}
   onRemove={(id) => console.log('제거:', id)}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

@@ -63,7 +63,6 @@ export default function ApplicationFormPage() {
     // { name, phone, email, applicationType, content, files }
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -95,7 +94,6 @@ export default function ApplicationPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -115,7 +113,6 @@ export default function ApplicationPage() {
   title="복지 서비스 신청"
   description="복지 서비스를 신청합니다. 필수 항목을 모두 입력해주세요."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -135,7 +132,6 @@ export default function ApplicationPage() {
                 reactCode={`<ApplicationForm
   applicationTypes={['주민등록', '인감증명', '가족관계', '기타']}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

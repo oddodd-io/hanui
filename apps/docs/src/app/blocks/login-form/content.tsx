@@ -63,7 +63,6 @@ export default function LoginFormPage() {
     // { username, password, rememberMe, autoLogin }
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -93,7 +92,6 @@ export default function LoginPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -113,7 +111,6 @@ export default function LoginPage() {
   title="관리자 로그인"
   description="관리자 계정으로 로그인하세요."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -127,7 +124,6 @@ export default function LoginPage() {
   showForgotPassword={false}
   showSignupLink={false}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

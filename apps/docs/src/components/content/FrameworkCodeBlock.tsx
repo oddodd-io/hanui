@@ -6,7 +6,14 @@ import { CodeBlock } from './CodeBlock';
 
 interface FrameworkCodeBlockProps {
   reactCode: string;
-  vueCode: string;
+  /**
+   * Vue 코드. **없으면 Vue 주소에서 코드 대신 한 줄 안내를 띄운다.**
+   *
+   * 예전에는 모든 블록 문서가 `vueCode={`<!-- Coming Soon -->`}`를 넘겼다(90곳).
+   * 코드 블록 안에 "Coming Soon"이 뜨는 것도 이상하고, 무엇보다 **없는 것을
+   * "곧 나온다"고 약속하는 문구**였다. prop을 빼는 쪽으로 바꿨다.
+   */
+  vueCode?: string;
   reactLanguage?: string;
   vueLanguage?: string;
   showLineNumbers?: boolean;
@@ -27,9 +34,21 @@ export function FrameworkCodeBlock({
 }: FrameworkCodeBlockProps) {
   const { framework } = useFramework();
 
-  const code = framework === 'react' ? reactCode : vueCode;
-  const language = framework === 'react' ? reactLanguage : vueLanguage;
-  const fileName = framework === 'react' ? reactFileName : vueFileName;
+  const isVue = framework === 'vue';
+
+  // Vue 코드가 없으면 React 코드를 Vue 딱지만 붙여 보여주지 않는다.
+  // 문서 맨 위 안내(VueDocSupplement)가 이유를 적고, 여기서는 자리만 짚는다.
+  if (isVue && !vueCode) {
+    return (
+      <p className="text-sm text-krds-gray-60 border border-krds-gray-20 rounded-lg px-4 py-3">
+        이 예제는 Vue 버전이 없습니다. 위 안내를 참고하세요.
+      </p>
+    );
+  }
+
+  const code = isVue ? (vueCode as string) : reactCode;
+  const language = isVue ? vueLanguage : reactLanguage;
+  const fileName = isVue ? vueFileName : reactFileName;
 
   return (
     <div className="space-y-3">

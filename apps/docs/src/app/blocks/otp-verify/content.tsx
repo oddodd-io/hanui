@@ -63,7 +63,6 @@ export default function OtpVerifyPage() {
     // { code }
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -98,7 +97,6 @@ export default function OtpVerifyPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -118,7 +116,6 @@ export default function OtpVerifyPage() {
   title="이메일 인증"
   description="이메일로 전송된 6자리 코드를 입력하세요."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -135,7 +132,6 @@ export default function OtpVerifyPage() {
                 reactCode={`<OtpVerify
   codeLength={4}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -148,7 +144,6 @@ export default function OtpVerifyPage() {
                 reactCode={`<OtpVerify
   showResend={false}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

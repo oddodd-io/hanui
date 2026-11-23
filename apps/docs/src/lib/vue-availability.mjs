@@ -12,18 +12,23 @@
  * @param {string} framework 'react' | 'vue'
  * @param {string|null|undefined} pathname 예: '/components/badge'
  * @param {Record<string, unknown>} vueApi 문서 슬러그 → Vue API (소스에서 생성)
+ * @param {string} [section] 'components'(기본) 또는 'blocks'
  * @returns {{mode: 'none'} | {mode: 'unsupported'} | {mode: 'api', slug: string}}
  */
-export function vueDocMode(framework, pathname, vueApi) {
+export function vueDocMode(
+  framework,
+  pathname,
+  vueApi,
+  section = 'components'
+) {
   if (framework !== 'vue') return { mode: 'none' };
 
   const segments = String(pathname ?? '')
     .split('/')
     .filter(Boolean);
 
-  // '/components' 목록 페이지는 특정 컴포넌트 얘기가 아니다
-  if (segments[0] !== 'components' || segments.length < 2)
-    return { mode: 'none' };
+  // 목록 페이지('/components', '/blocks')는 특정 항목 얘기가 아니다
+  if (segments[0] !== section || segments.length < 2) return { mode: 'none' };
 
   const slug = segments[1];
   return Object.prototype.hasOwnProperty.call(vueApi, slug)

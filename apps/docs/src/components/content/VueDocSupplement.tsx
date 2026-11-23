@@ -18,6 +18,7 @@ import { useFramework } from '../FrameworkTabs';
 import { CodeBlock } from './CodeBlock';
 import { vueDocMode } from '@/lib/vue-availability.mjs';
 import vueApi from '@/lib/vue-api.json';
+import vueBlocks from '@/lib/vue-blocks.json';
 
 type VueProp = {
   name: string;
@@ -47,39 +48,59 @@ type VueComponentApi = {
  * 표에 쓰는 API는 `scripts/build-vue-docs-meta.mjs`가 `.vue` 소스에서 **생성**한다.
  * 손으로 적으면 컴포넌트가 바뀔 때 조용히 어긋난다(이 저장소에서 이미 두 번 겪었다).
  */
-export function VueDocSupplement() {
+export function VueDocSupplement({
+  section = 'components',
+}: {
+  section?: 'components' | 'blocks';
+}) {
   const { framework } = useFramework();
   const pathname = usePathname();
-  const result = vueDocMode(
-    framework,
-    pathname,
-    vueApi as Record<string, VueComponentApi>
-  );
+  const source = (section === 'blocks' ? vueBlocks : vueApi) as Record<
+    string,
+    VueComponentApi
+  >;
+  const result = vueDocMode(framework, pathname, source, section);
 
   if (result.mode === 'none') return null;
 
   if (result.mode === 'unsupported') {
+    const isBlock = section === 'blocks';
     return (
       <Card variant="filled" className="mb-8">
         <CardBody>
           <Body>
-            <strong>이 컴포넌트는 Vue 버전이 없습니다.</strong> 아래 예제는
-            React 기준이라 그대로 옮겨 쓸 수 없습니다.
+            <strong>
+              이 {isBlock ? '블록은' : '컴포넌트는'} Vue 버전이 없습니다.
+            </strong>{' '}
+            아래 예제는 React 기준이라 그대로 옮겨 쓸 수 없습니다.
           </Body>
           <Body className="mt-3">
-            Vue 패키지는 KRDS 표준 부품을 기준으로 다시 만들어 React 쪽과 구성이
-            다릅니다. 쓸 수 있는 Vue 컴포넌트는{' '}
-            <Link href="/components" className="underline">
-              컴포넌트 목록
-            </Link>
-            에서 확인하세요.
+            {isBlock ? (
+              <>
+                블록은 현재 React로만 제공됩니다. Vue에서는{' '}
+                <Link href="/components" className="underline">
+                  Vue 컴포넌트
+                </Link>
+                를 직접 엮어 같은 화면을 만드셔야 합니다 — 아래 React 예제가
+                어떤 부품으로 짰는지는 참고가 됩니다.
+              </>
+            ) : (
+              <>
+                Vue 패키지는 KRDS 표준 부품을 기준으로 다시 만들어 React 쪽과
+                구성이 다릅니다. 쓸 수 있는 Vue 컴포넌트는{' '}
+                <Link href="/components" className="underline">
+                  컴포넌트 목록
+                </Link>
+                에서 확인하세요.
+              </>
+            )}
           </Body>
         </CardBody>
       </Card>
     );
   }
 
-  const api = (vueApi as Record<string, VueComponentApi>)[result.slug];
+  const api = source[result.slug];
 
   return (
     <Card variant="filled" className="mb-8">

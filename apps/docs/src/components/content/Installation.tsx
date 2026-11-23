@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Copy, Check, Sparkles } from 'lucide-react';
 import { Heading, Code } from '@hanui/react';
 import { useFramework } from '@/components/FrameworkTabs';
+import vueApi from '@/lib/vue-api.json';
+import vueBlocks from '@/lib/vue-blocks.json';
 
 type PackageManager = 'pnpm' | 'npm' | 'yarn' | 'bun';
 
@@ -71,6 +73,23 @@ ${importExample}
     setAiCopied(true);
     setTimeout(() => setAiCopied(false), 2000);
   };
+
+  // Vue 주소인데 Vue 쪽에 그 이름이 없으면 설치 명령을 띄우면 안 된다 —
+  // 받아지지 않는 명령을 안내하게 된다. 블록이 특히 그렇다(Vue 블록은 0개).
+  const availableInVue = componentName in vueApi || componentName in vueBlocks;
+
+  if (framework === 'vue' && !availableInVue) {
+    return (
+      <div className="space-y-4">
+        <Heading level="h2" id="installation" className="text-2xl font-bold">
+          설치
+        </Heading>
+        <p className="text-sm text-krds-gray-60 border border-krds-gray-20 rounded-lg px-4 py-3">
+          Vue 버전이 없어 설치할 수 없습니다. 위 안내를 참고하세요.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

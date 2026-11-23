@@ -70,7 +70,6 @@ export default function ForgotPasswordPage() {
     // { email }
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -108,7 +107,6 @@ export default function AccountRecoveryPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -128,7 +126,6 @@ export default function AccountRecoveryPage() {
   defaultTab="reset-password"
   title="비밀번호 찾기"
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -145,7 +142,6 @@ export default function AccountRecoveryPage() {
   showBackToLogin={false}
   showSignupLink={false}
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

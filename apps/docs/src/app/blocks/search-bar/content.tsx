@@ -63,7 +63,6 @@ export default function SearchBarPage() {
     // { keyword, category }
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -91,7 +90,6 @@ export default function SearchPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -115,7 +113,6 @@ export default function SearchPage() {
   categories={['전체', '민원', '복지', '교육', '세금']}
   placeholder="검색어를 입력하세요"
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
 
@@ -126,7 +123,6 @@ export default function SearchPage() {
               </ComponentPreview>
               <FrameworkCodeBlock
                 reactCode={`<SearchBar showCategory={false} />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>

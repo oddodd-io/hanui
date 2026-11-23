@@ -63,7 +63,6 @@ export default function ContactFormPage() {
     // { name, email, subject, message }
   }}
 />`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -93,7 +92,6 @@ export default function ContactPage() {
     </div>
   );
 }`}
-              vueCode={`<!-- Coming Soon -->`}
             />
           </Section>
 
@@ -113,7 +111,6 @@ export default function ContactPage() {
   title="기술 지원 요청"
   description="기술적인 문의사항을 남겨주세요."
 />`}
-                vueCode={`<!-- Coming Soon -->`}
               />
             </Subsection>
           </Section>
