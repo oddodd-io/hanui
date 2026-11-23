@@ -118,22 +118,27 @@ export default function IntroductionPage() {
             타입 안정성과 자동완성으로 개발 생산성을 높입니다. 모든 컴포넌트에
             완벽한 타입 정의가 제공됩니다.
           </Body>
-          {!isVue && (
-            <Card variant="filled" className="mt-4">
-              <Body>
-                <strong>Vue 3도 지원합니다!</strong> vue.hanui.io에서 Vue 버전
-                문서를 확인하세요.
-              </Body>
-            </Card>
-          )}
-          {isVue && (
-            <Card variant="filled" className="mt-4">
-              <Body>
-                <strong>React도 지원합니다!</strong> hanui.io에서 React 버전
-                문서를 확인하세요.
-              </Body>
-            </Card>
-          )}
+          {/* 주소별 분기 없이 두 프레임워크를 함께 안내한다.
+              hanui.io는 인트로·블로그 전용이라 문서 주소로 쓰지 않는다. */}
+          <Card variant="filled" className="mt-4">
+            <Body>
+              <strong>React와 Vue 3를 모두 지원합니다.</strong> React 문서는{' '}
+              <a
+                href="https://react.hanui.io/docs/introduction"
+                className="underline"
+              >
+                react.hanui.io
+              </a>
+              , Vue 문서는{' '}
+              <a
+                href="https://vue.hanui.io/docs/introduction"
+                className="underline"
+              >
+                vue.hanui.io
+              </a>
+              에서 확인하세요.
+            </Body>
+          </Card>
         </Subsection>
 
         <Subsection level="h3">

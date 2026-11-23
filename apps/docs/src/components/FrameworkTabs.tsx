@@ -89,8 +89,9 @@ export function FrameworkProvider({
     // 알려진 서브도메인을 떼고 기본 도메인을 구한다
     // (react.hanui.io에서 vue로 갈 때 vue.react.hanui.io가 되지 않게)
     const base = baseHostname(hostname);
-    const target =
-      newFramework === DEFAULT_FRAMEWORK ? base : `${newFramework}.${base}`;
+    // 프레임워크는 항상 자기 서브도메인으로 보낸다. 기본 도메인(hanui.io)은
+    // 인트로·블로그 전용이라 문서를 두지 않으므로 여기로 보내지 않는다.
+    const target = `${newFramework}.${base}`;
 
     if (target === hostname) {
       setFramework(newFramework);

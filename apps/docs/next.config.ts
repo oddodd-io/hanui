@@ -10,6 +10,20 @@ const nextConfig: NextConfig = {
       // www → non-www 리다이렉트는 Vercel 도메인 설정에서 처리
       // (next.config에서 하면 Vercel 자체 리다이렉트와 충돌하여 무한 루프 발생)
 
+      // hanui.io는 인트로 + 블로그만 남긴다. 문서 경로는 최신인 Vue로 보낸다.
+      // `/`(인트로)·`/blog/*`·`/sitemap.xml`·`/blog/rss.xml`은 아래 목록에 넣지 말 것.
+      // permanent: false(307)로 둔다 — 308은 브라우저가 영구 캐시해서 되돌리기 어렵다.
+      // `api`는 넣지 말 것 — /api/*는 문서가 아니라 라우트 핸들러다.
+      // /api/search는 헤더 검색창이 POST로 부르고(교차 출처가 되면 CORS로 막힌다),
+      // /api/cron/blog-watch는 Vercel cron이 hanui.io로 때린다(리다이렉트되면 발행이 멈춘다).
+      {
+        source:
+          '/:path(components|blocks|kits|templates|a11y|docs|playground|showcase|typography)/:rest*',
+        has: [{ type: 'host', value: 'hanui.io' }],
+        destination: 'https://vue.hanui.io/:path/:rest*',
+        permanent: false,
+      },
+
       // 이전 경로 → 현재 경로
       {
         source: '/design-system/typography',
