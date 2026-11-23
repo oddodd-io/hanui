@@ -142,13 +142,37 @@ for (const name of dirs) {
 // CLI는 레지스트리를 **이름을 키로 하는 객체**로 읽는다 (`Registry = Record<string, RegistryComponent>`).
 // 배열로 내보내면 `registry[name]`이 undefined가 되어 전부 "Invalid component"로 떨어진다 —
 // 받아지지 않는 것(404)이 찾아지지 않는 것으로 바뀔 뿐이다. React 레지스트리도 같은 모양이다.
-const output =
-  JSON.stringify(Object.fromEntries(items.map((i) => [i.name, i])), null, 2) +
-  '\n';
+const registry = Object.fromEntries(items.map((i) => [i.name, i]));
+
+/**
+ * 커밋 훅(lint-staged)이 이 파일에 prettier를 돌린다. prettier는 짧은 배열을 한 줄로
+ * 접는데 `JSON.stringify(…, 2)`는 펼쳐 쓴다. 같은 내용인데 바이트가 달라지므로
+ * 생성 결과도 prettier에 통과시켜 커밋된 모양과 같게 맞춘다.
+ */
+async function format(value) {
+  const text = JSON.stringify(value, null, 2) + '\n';
+  try {
+    const prettier = await import('prettier');
+    const options = (await prettier.resolveConfig(OUT)) ?? {};
+    return await prettier.format(text, { ...options, filepath: OUT });
+  } catch {
+    return text; // prettier가 없어도 생성은 된다
+  }
+}
+
+const output = await format(registry);
 
 if (process.argv.includes('--check')) {
   const current = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf-8') : '';
-  if (current === output) {
+  // **내용**으로 비교한다. 서식 차이(prettier가 짧은 배열을 한 줄로 접는다)로 CI가 깨지면
+  // 사람이 검사를 꺼버리고, 꺼진 검사는 검사가 아니다.
+  let same = false;
+  try {
+    same = JSON.stringify(JSON.parse(current)) === JSON.stringify(registry);
+  } catch {
+    same = false;
+  }
+  if (same) {
     console.log(`✅ ${OUT} 이(가) 소스와 일치합니다 (${items.length}개).`);
     process.exit(0);
   }
