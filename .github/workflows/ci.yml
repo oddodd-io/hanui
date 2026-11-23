@@ -33,6 +33,24 @@ jobs:
       - name: Run linter
         run: pnpm lint
 
+  registry:
+    name: Registry 일치 검사
+    runs-on: ubuntu-latest
+    # 레지스트리는 손으로 쓰지 않는다. 소스에서 생성한 결과와 다르면 여기서 깨진다.
+    # 2026-09-22에 packages/vue를 재구축하면서 구조가 바뀌었는데 레지스트리가 안 따라왔고,
+    # 둘을 대조하는 게 없어서 67개 항목이 전부 404인 채로 2개월을 갔다.
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: registry-vue.json이 소스와 일치하는지
+        run: node scripts/build-registry-vue.mjs --check
+
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
