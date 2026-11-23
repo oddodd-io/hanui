@@ -33,6 +33,7 @@ author: 'odada'
 ```
 
 - 선택 필드: `series`, `seriesOrder` (시리즈 글일 때), `image`, `canonicalUrl`. blog.ts가 읽는 필드만 사용.
+- **`tags`는 [docs/blog/tag-guide.md](../../docs/blog/tag-guide.md)의 고정 어휘에서만 고른다.** 글당 3~5개, 독자 축(`개발자`|`사무직`) 1개 필수. 어휘 밖 태그를 쓰고 싶으면 먼저 그 문서에 추가하고, 추가 기준은 "앞으로 3편 이상에 붙을까"다.
 - `date`는 오늘 날짜를 실제로 확인해서 넣는다.
 
 ### 발행 계획 확인
