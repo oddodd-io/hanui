@@ -32,15 +32,33 @@ import {
   daysLate,
   findOverdue,
   findUndated,
+  findUpcoming,
   kstToday,
   readField,
+  runsOutOn,
 } from '@/lib/blog-queue.mjs';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 const QUEUE_PATH = 'apps/docs/blog-queue';
-const LABEL = 'blog-publish-missed';
+
+/**
+ * 알람 둘은 **라벨도 이슈도 따로 쓴다.**
+ *
+ * 섞으면 알람이 무슨 뜻인지 알 수 없게 된다(같은 이유로 `findOverdue`가 날짜 없는 글을
+ * 따로 뺀다). 둘은 원인도 할 일도 다르다 —
+ *   MISSED: 글은 있는데 발행이 안 돌았다 → 워크플로우를 수동 실행한다
+ *   LOW   : 발행은 도는데 쓸 글이 없다  → 글을 쓴다
+ */
+const LABEL_MISSED = 'blog-publish-missed';
+const LABEL_LOW = 'blog-queue-low';
+
+/**
+ * 재고가 이 편수 **미만**이면 알린다. 0편이 되고 나서 알리면 이미 끊긴 뒤다.
+ * 기본 3편 — 글 한 편 쓰는 데 하루는 걸린다고 보고 사흘 여유를 둔다.
+ */
+const DEFAULT_MIN_STOCK = 3;
 const GITHUB_API = 'https://api.github.com';
 const UA = 'hanui-blog-watch';
 
@@ -121,24 +139,27 @@ async function readQueue(
 }
 
 /** 라벨이 없으면 만든다. 이미 있으면(422) 그냥 넘어간다 */
-async function ensureLabel(repo: string, token: string): Promise<void> {
+async function ensureLabel(
+  repo: string,
+  token: string,
+  name: string,
+  color: string,
+  description: string
+): Promise<void> {
   await fetch(`${GITHUB_API}/repos/${repo}/labels`, {
     method: 'POST',
     headers: { ...gh(token), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: LABEL,
-      color: 'D73A4A',
-      description: '예약 발행이 빠진 날 (부재 감지)',
-    }),
+    body: JSON.stringify({ name, color, description }),
   });
 }
 
 async function openIssueNumber(
   repo: string,
-  token: string
+  token: string,
+  label: string
 ): Promise<number | null> {
   const res = await fetch(
-    `${GITHUB_API}/repos/${repo}/issues?state=open&labels=${LABEL}&per_page=1`,
+    `${GITHUB_API}/repos/${repo}/issues?state=open&labels=${encodeURIComponent(label)}&per_page=1`,
     { headers: gh(token), cache: 'no-store' }
   );
   if (!res.ok) throw new Error(`이슈 목록 조회 실패 (HTTP ${res.status})`);
@@ -206,11 +227,141 @@ function issueBody(
   return lines.join('\n');
 }
 
+/** 재고 부족 알람 본문 */
+function lowStockBody(
+  upcoming: QueueEntry[],
+  today: string,
+  minStock: number
+): string {
+  const last = runsOutOn(upcoming);
+  const lines = [
+    upcoming.length === 0
+      ? `예약 큐(\`${QUEUE_PATH}\`)가 **비었습니다.** 앞으로 올라갈 글이 없습니다. (기준일 ${today} KST)`
+      : `예약 큐(\`${QUEUE_PATH}\`)에 앞으로 올라갈 글이 **${upcoming.length}편** 남았습니다. (기준 ${minStock}편, 기준일 ${today} KST)`,
+  ];
+  if (upcoming.length > 0) {
+    lines.push(
+      '',
+      '| 발행일 | 글 |',
+      '| --- | --- |',
+      ...upcoming.map((p) => `| ${p.date} | ${p.title || p.file} |`),
+      '',
+      `마지막 글은 **${last}**에 나갑니다. 그 다음날부터 올라갈 글이 없습니다.`
+    );
+  }
+  lines.push(
+    '',
+    '### 무슨 뜻인가',
+    '',
+    '발행이 밀린 게 아니라 **쓸 글이 없는** 것입니다. 둘은 다른 문제입니다.',
+    '',
+    `큐가 비면 발행 부재 감시(\`${LABEL_MISSED}\`)는 **아무것도 알리지 않습니다.**`,
+    '그 감시는 "발행일이 지났는데 큐에 남아 있는 글"을 찾는데, 큐가 비면 찾을 게 없기 때문입니다.',
+    '그래서 밀린 편수와 **별개로 재고를 셉니다.** 조용히 멈추는 걸 막으려는 것이 이 알람의 전부입니다.',
+    '',
+    '### 지금 할 일',
+    '',
+    '1. `docs/worklog/`에서 `글감: 미정` 또는 `글감(트랙 …)` 항목을 꺼냅니다.',
+    '2. `/blog`로 글을 쓰고 `apps/docs/blog-queue/`에 발행일을 붙여 넣습니다.',
+    '',
+    `재고가 **${minStock}편 이상**으로 돌아오면 이 이슈는 자동으로 닫힙니다.`
+  );
+  return lines.join('\n');
+}
+
+/**
+ * 알람 하나를 현재 상태에 맞춘다 — 열고·갱신하고·조건이 풀리면 닫는다.
+ *
+ * 두 알람이 같은 수명주기를 쓰도록 한곳에 둔다. 한쪽만 "닫기"를 빠뜨리면
+ * 이슈가 영영 열린 채 남아 알람이 소음이 되고, 소음이 된 알람은 무시된다
+ * (재고 알림이 138일 죽어 있던 게 그 모양이었다).
+ */
+async function syncAlarm(opts: {
+  repo: string;
+  token: string;
+  label: string;
+  labelColor: string;
+  labelDescription: string;
+  firing: boolean;
+  title: string;
+  body: string;
+  recurComment: string;
+  resolvedComment: string;
+}): Promise<string> {
+  const { repo, token, label } = opts;
+  const existing = await openIssueNumber(repo, token, label);
+
+  if (!opts.firing) {
+    if (existing === null) return 'none';
+    await ghJson(
+      `${GITHUB_API}/repos/${repo}/issues/${existing}/comments`,
+      token,
+      'POST',
+      { body: opts.resolvedComment }
+    );
+    await ghJson(
+      `${GITHUB_API}/repos/${repo}/issues/${existing}`,
+      token,
+      'PATCH',
+      {
+        state: 'closed',
+      }
+    );
+    return `closed #${existing}`;
+  }
+
+  if (existing === null) {
+    await ensureLabel(
+      repo,
+      token,
+      label,
+      opts.labelColor,
+      opts.labelDescription
+    );
+    await ghJson(`${GITHUB_API}/repos/${repo}/issues`, token, 'POST', {
+      title: opts.title,
+      body: opts.body,
+      labels: [label],
+    });
+    return 'created';
+  }
+
+  // 제목·본문을 현재 상태로 갱신하고, 날이 갈수록 댓글로 쌓는다.
+  // (이슈가 한 번 열린 뒤 갱신이 없으면 내용이 썩어 언제 얘긴지 알 수 없게 된다.)
+  await ghJson(
+    `${GITHUB_API}/repos/${repo}/issues/${existing}`,
+    token,
+    'PATCH',
+    {
+      title: opts.title,
+      body: opts.body,
+    }
+  );
+  await ghJson(
+    `${GITHUB_API}/repos/${repo}/issues/${existing}/comments`,
+    token,
+    'POST',
+    { body: opts.recurComment }
+  );
+  return `updated #${existing}`;
+}
+
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
   const token = process.env.BLOG_WATCH_GITHUB_TOKEN;
   const repo = process.env.BLOG_WATCH_REPO ?? 'oddodd-io/hanui';
   const ref = process.env.BLOG_WATCH_REF;
+
+  // 숫자가 아니거나 음수면 기본값으로 떨어진다. 오타 하나로 감시가 꺼지면 안 된다
+  // (0으로 읽히면 "재고 0편"조차 알람이 아니게 된다).
+  const parsedMinStock = Number.parseInt(
+    process.env.BLOG_WATCH_MIN_STOCK ?? '',
+    10
+  );
+  const minStock =
+    Number.isInteger(parsedMinStock) && parsedMinStock > 0
+      ? parsedMinStock
+      : DEFAULT_MIN_STOCK;
 
   // 설정이 빠졌으면 통과시키지 않고 실패한다. 조용히 넘어가는 감시는 감시가 아니다 —
   // 이 라우트가 고치려는 결함이 바로 그것이다.
@@ -237,66 +388,43 @@ export async function GET(request: NextRequest) {
     const today = kstToday();
     const queue = await readQueue(repo, token, ref);
     const overdue = findOverdue(queue, today) as QueueEntry[];
+    const upcoming = findUpcoming(queue, today) as QueueEntry[];
     const undated = findUndated(queue);
-    const existing = await openIssueNumber(repo, token);
 
-    if (overdue.length === 0) {
-      if (existing !== null) {
-        await ghJson(
-          `${GITHUB_API}/repos/${repo}/issues/${existing}/comments`,
-          token,
-          'POST',
-          {
-            body: `큐에 밀린 글이 없어졌습니다(기준일 ${today} KST). 자동으로 닫습니다.`,
-          }
-        );
-        await ghJson(
-          `${GITHUB_API}/repos/${repo}/issues/${existing}`,
-          token,
-          'PATCH',
-          { state: 'closed' }
-        );
-      }
-      return NextResponse.json({
-        today,
-        ref: ref ?? 'default',
-        queued: queue.length,
-        overdue: 0,
-        undated,
-        issue: existing === null ? 'none' : `closed #${existing}`,
-      });
-    }
+    // 두 알람은 서로를 막지 않는다. 발행이 멈춘 채 재고까지 바닥나면 둘 다 울려야 한다 —
+    // 할 일이 둘(워크플로우 실행, 글쓰기)이기 때문이다.
+    const worst = overdue.length > 0 ? daysLate(overdue[0].date, today) : 0;
+    const missed = await syncAlarm({
+      repo,
+      token,
+      label: LABEL_MISSED,
+      labelColor: 'D73A4A',
+      labelDescription: '예약 발행이 빠진 날 (부재 감지)',
+      firing: overdue.length > 0,
+      title: `🚨 블로그 예약 발행이 빠졌습니다 (${overdue.length}편 밀림, 최대 ${worst}일)`,
+      body: overdue.length > 0 ? issueBody(overdue, today, undated) : '',
+      recurComment: `${today} 기준 여전히 **${overdue.length}편** 밀려 있습니다(최대 ${worst}일).`,
+      resolvedComment: `큐에 밀린 글이 없어졌습니다(기준일 ${today} KST). 자동으로 닫습니다.`,
+    });
 
-    const worst = daysLate(overdue[0].date, today);
-    const title = `🚨 블로그 예약 발행이 빠졌습니다 (${overdue.length}편 밀림, 최대 ${worst}일)`;
-    const body = issueBody(overdue, today, undated);
-
-    if (existing === null) {
-      await ensureLabel(repo, token);
-      await ghJson(`${GITHUB_API}/repos/${repo}/issues`, token, 'POST', {
-        title,
-        body,
-        labels: [LABEL],
-      });
-    } else {
-      // 제목·본문을 현재 상태로 갱신하고, 날짜가 지날수록 댓글로 쌓는다.
-      // (재고 알림에서 겪은 것 — 이슈가 한 번 열린 뒤로 갱신이 없으면
-      //  내용이 썩어서 언제 얘긴지 알 수 없게 된다.)
-      await ghJson(
-        `${GITHUB_API}/repos/${repo}/issues/${existing}`,
-        token,
-        'PATCH',
-        { title, body }
-      );
-      await ghJson(
-        `${GITHUB_API}/repos/${repo}/issues/${existing}/comments`,
-        token,
-        'POST',
-        {
-          body: `${today} 기준 여전히 **${overdue.length}편** 밀려 있습니다(최대 ${worst}일).`,
-        }
-      );
-    }
+    const lowStock = await syncAlarm({
+      repo,
+      token,
+      label: LABEL_LOW,
+      labelColor: 'FBCA04',
+      labelDescription: '예약 글 재고 부족 (고갈 감지)',
+      firing: upcoming.length < minStock,
+      title:
+        upcoming.length === 0
+          ? '🟡 블로그 예약 큐가 비었습니다 — 올라갈 글이 없습니다'
+          : `🟡 블로그 예약 글이 ${upcoming.length}편 남았습니다 (기준 ${minStock}편)`,
+      body: lowStockBody(upcoming, today, minStock),
+      recurComment:
+        upcoming.length === 0
+          ? `${today} 기준 큐가 여전히 **비어 있습니다.**`
+          : `${today} 기준 **${upcoming.length}편** 남았습니다. 마지막 글은 ${runsOutOn(upcoming)}에 나갑니다.`,
+      resolvedComment: `재고가 **${upcoming.length}편**으로 돌아왔습니다(기준 ${minStock}편, ${today} KST). 자동으로 닫습니다.`,
+    });
 
     return NextResponse.json({
       today,
@@ -304,8 +432,11 @@ export async function GET(request: NextRequest) {
       queued: queue.length,
       overdue: overdue.length,
       worstDaysLate: worst,
+      upcoming: upcoming.length,
+      runsOutOn: runsOutOn(upcoming),
+      minStock,
       undated,
-      issue: existing === null ? 'created' : `updated #${existing}`,
+      issues: { missed, lowStock },
     });
   } catch (error) {
     console.error('[blog-watch]', error);

@@ -11,8 +11,10 @@ import {
   daysLate,
   findOverdue,
   findUndated,
+  findUpcoming,
   kstToday,
   readField,
+  runsOutOn,
 } from './blog-queue.mjs';
 
 describe('kstToday', () => {
@@ -121,5 +123,82 @@ describe('daysLate', () => {
 
   it('오늘 치는 0', () => {
     assert.equal(daysLate('2026-11-17', '2026-11-17'), 0);
+  });
+});
+
+/**
+ * 재고(앞으로 나갈 글)는 밀린 편수와 **다른 축**이다.
+ * 큐가 비면 findOverdue는 0을 돌려주므로 부재 감시는 침묵한다 — 재고를 따로 세는 이유.
+ */
+describe('findUpcoming', () => {
+  const today = '2026-11-23';
+  const queue = [
+    { file: 'late.mdx', date: '2026-11-20' },
+    { file: 'today.mdx', date: '2026-11-23' },
+    { file: 'soon.mdx', date: '2026-11-24' },
+    { file: 'broken.mdx', date: '' },
+  ];
+
+  it('오늘 치도 재고다 — 아직 안 나갔으면 재고다', () => {
+    assert.deepEqual(
+      findUpcoming(queue, today).map((e) => e.file),
+      ['today.mdx', 'soon.mdx']
+    );
+  });
+
+  it('date가 빈 글은 재고가 아니다 — 발행 스크립트가 가져가지 않는다', () => {
+    assert.ok(!findUpcoming(queue, today).some((e) => e.file === 'broken.mdx'));
+  });
+
+  it('밀린 글은 재고가 아니다 — findOverdue와 겹치지 않는다', () => {
+    const up = findUpcoming(queue, today).map((e) => e.file);
+    const over = findOverdue(queue, today).map((e) => e.file);
+    assert.deepEqual(
+      up.filter((f) => over.includes(f)),
+      []
+    );
+  });
+
+  it('가까운 날짜부터 돌려준다', () => {
+    const shuffled = [
+      { file: 'c.mdx', date: '2026-11-26' },
+      { file: 'a.mdx', date: '2026-11-24' },
+      { file: 'b.mdx', date: '2026-11-25' },
+    ];
+    assert.deepEqual(
+      findUpcoming(shuffled, today).map((e) => e.file),
+      ['a.mdx', 'b.mdx', 'c.mdx']
+    );
+  });
+
+  it('빈 큐는 재고 0 — 이때 findOverdue도 0이라 부재 감시는 아무것도 못 본다', () => {
+    assert.deepEqual(findUpcoming([], today), []);
+    assert.deepEqual(findOverdue([], today), []);
+  });
+
+  it('밀린 글만 남은 큐는 재고가 0이다', () => {
+    const onlyLate = [{ file: 'late.mdx', date: '2026-11-20' }];
+    assert.deepEqual(findUpcoming(onlyLate, today), []);
+  });
+});
+
+describe('runsOutOn', () => {
+  const today = '2026-11-23';
+
+  it('마지막 예약일을 돌려준다', () => {
+    const q = [
+      { file: 'a.mdx', date: '2026-11-24' },
+      { file: 'b.mdx', date: '2026-11-26' },
+    ];
+    assert.equal(runsOutOn(findUpcoming(q, today)), '2026-11-26');
+  });
+
+  it('재고가 없으면 빈 문자열 — 날짜 자리에 undefined가 새지 않는다', () => {
+    assert.equal(runsOutOn([]), '');
+  });
+
+  it('재고가 한 편이면 그 날짜가 곧 바닥나는 날이다', () => {
+    const q = [{ file: 'last.mdx', date: '2026-11-24' }];
+    assert.equal(runsOutOn(findUpcoming(q, today)), '2026-11-24');
   });
 });

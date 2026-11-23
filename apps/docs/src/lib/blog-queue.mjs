@@ -91,3 +91,30 @@ export function daysLate(date, today) {
 export function findUndated(entries) {
   return entries.filter((e) => !e.date).map((e) => e.file);
 }
+
+/**
+ * 아직 발행되지 않은 '재고' — 가까운 날짜부터.
+ *
+ * 오늘 치도 재고로 센다. 아직 안 나갔으면 재고다.
+ * date가 빈 글은 빼는데, 발행 스크립트가 가져가지 않으므로 **셀 수 있는 재고가 아니다**.
+ * 이걸 세면 프론트매터가 깨진 글 때문에 재고가 넉넉해 보인다.
+ *
+ * @param {{file: string, date: string}[]} entries 큐에 있는 글
+ * @param {string} today kstToday()
+ * @returns {{file: string, date: string}[]} 가까운 날짜부터
+ */
+export function findUpcoming(entries, today) {
+  return entries
+    .filter((e) => e.date && e.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/**
+ * 재고가 바닥나는 날 = 마지막 예약일. 그 다음날부터 올라갈 글이 없다.
+ *
+ * @param {{date: string}[]} upcoming findUpcoming() 결과
+ * @returns {string} 'YYYY-MM-DD', 재고가 없으면 빈 문자열
+ */
+export function runsOutOn(upcoming) {
+  return upcoming.length > 0 ? upcoming[upcoming.length - 1].date : '';
+}
