@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 // Docs layout components
 import { PageSection as Section, Heading } from '@/components/content';
@@ -6,7 +8,11 @@ import { PageSection as Section, Heading } from '@/components/content';
 import { Wrap } from '@/components/helpers';
 
 // UI components - from @hanui/react
-import { Body } from '@hanui/react';
+import { Body, Card, CardBody } from '@hanui/react';
+
+import { useFramework } from '@/components/FrameworkTabs';
+import { filterByFramework } from '@/lib/vue-availability.mjs';
+import vueBlocks from '@/lib/vue-blocks.json';
 
 // 인증 (Authentication)
 const authBlocks = [
@@ -73,6 +79,26 @@ const settingsBlocks = [
 // 데이터 / 정보 (Data Display)
 const dataBlocks = [
   {
+    name: 'Area Chart',
+    description: '영역 차트',
+    href: '/blocks/area-chart',
+  },
+  {
+    name: 'Bar Chart',
+    description: '막대 차트',
+    href: '/blocks/bar-chart',
+  },
+  {
+    name: 'Line Chart',
+    description: '선 차트',
+    href: '/blocks/line-chart',
+  },
+  {
+    name: 'Pie Chart',
+    description: '원형 차트',
+    href: '/blocks/pie-chart',
+  },
+  {
     name: 'Stats Card',
     description: '통계 카드 그리드',
     href: '/blocks/stats-card',
@@ -127,6 +153,35 @@ const govBlocks = [
   },
 ];
 
+// CMS 관리 — 사이드바에는 있었는데 이 목록에만 통째로 빠져 있었다
+const cmsBlocks = [
+  {
+    name: 'Site Settings',
+    description: '사이트 설정',
+    href: '/blocks/site-settings',
+  },
+  {
+    name: 'User Management',
+    description: '사용자 관리',
+    href: '/blocks/user-management',
+  },
+  {
+    name: 'Board Management',
+    description: '게시판 관리',
+    href: '/blocks/board-management',
+  },
+  {
+    name: 'Media Gallery',
+    description: '미디어 갤러리',
+    href: '/blocks/media-gallery',
+  },
+  {
+    name: 'Trash List',
+    description: '휴지통',
+    href: '/blocks/trash-list',
+  },
+];
+
 function BlockSection({
   title,
   description,
@@ -143,7 +198,9 @@ function BlockSection({
   }>;
   id: string;
 }) {
-  if (blocks.length === 0) return null;
+  const { framework } = useFramework();
+  const visible = filterByFramework(blocks, framework, vueBlocks, 'blocks');
+  if (visible.length === 0) return null;
 
   return (
     <Section>
@@ -154,7 +211,7 @@ function BlockSection({
       </Heading>
 
       <Wrap gap="lg">
-        {blocks.map((block) => (
+        {visible.map((block) => (
           <Link
             key={block.name}
             href={block.href}
@@ -183,6 +240,9 @@ function BlockSection({
 }
 
 export default function BlocksPage() {
+  const { framework } = useFramework();
+  const vueBlockCount = Object.keys(vueBlocks).length;
+
   return (
     <>
       <Heading
@@ -190,6 +250,32 @@ export default function BlocksPage() {
         title="Blocks"
         description="HANUI 컴포넌트를 조합한 복사-붙여넣기용 UI 섹션. 로그인 폼, 결제 폼, 설정 패널 등 자주 사용하는 UI를 바로 가져다 쓰세요."
       />
+
+      {/* Vue 블록이 하나도 없으면 아래 묶음이 전부 사라져 빈 화면이 된다.
+          빈 화면만 두지 않고 왜 비었는지 적는다. 블록이 생기면 이 카드는 사라진다. */}
+      {framework === 'vue' && vueBlockCount === 0 && (
+        <Card variant="filled" className="mb-8">
+          <CardBody>
+            <Body>
+              <strong>Vue 블록은 아직 없습니다.</strong> 블록은 현재 React로만
+              제공됩니다.
+            </Body>
+            <Body className="mt-3">
+              Vue 패키지는 KRDS 표준 부품을 다시 만드는 쪽을 먼저 했습니다. 지금
+              쓸 수 있는 것은{' '}
+              <Link href="/components" className="underline">
+                Vue 컴포넌트
+              </Link>
+              이고, 블록이 하던 화면 단위 조합은 그 컴포넌트를 직접 엮어
+              만드셔야 합니다.
+            </Body>
+            <Body className="mt-3 text-krds-gray-70">
+              React 블록의 구성이 참고가 되신다면 프레임워크를 React로 바꿔
+              보세요 — 같은 화면을 어떤 부품으로 짰는지 볼 수 있습니다.
+            </Body>
+          </CardBody>
+        </Card>
+      )}
 
       <BlockSection
         title="인증"
@@ -231,6 +317,13 @@ export default function BlocksPage() {
         description="정부24 스타일 로그인, 민원신청 폼 등 공공기관용 UI 블록"
         blocks={govBlocks}
         id="government"
+      />
+
+      <BlockSection
+        title="CMS 관리"
+        description="사이트 설정, 사용자·게시판 관리 등 운영 화면 UI 블록"
+        blocks={cmsBlocks}
+        id="cms"
       />
     </>
   );

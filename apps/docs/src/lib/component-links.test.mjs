@@ -12,39 +12,43 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '../..');
-const COMPONENTS_DIR = path.join(ROOT, 'src/app/components');
+const routesOf = (section) =>
+  new Set(
+    fs
+      .readdirSync(path.join(ROOT, 'src/app', section), { withFileTypes: true })
+      .filter((d) => d.isDirectory() && !d.name.startsWith('.'))
+      .map((d) => d.name)
+  );
 
-const routes = new Set(
-  fs
-    .readdirSync(COMPONENTS_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !d.name.startsWith('.'))
-    .map((d) => d.name)
-);
-
-const hrefsIn = (file) =>
+const hrefsIn = (file, section) =>
   [
     ...fs
       .readFileSync(path.join(ROOT, file), 'utf-8')
-      .matchAll(/href: '\/components\/([a-z0-9-]+)'/g),
+      .matchAll(new RegExp(`href: '/${section}/([a-z0-9-]+)'`, 'g')),
   ].map((m) => m[1]);
+
+const routes = routesOf('components');
 
 describe('컴포넌트 링크', () => {
   it('overview의 모든 링크가 실제 라우트를 가리킨다', () => {
-    const dead = hrefsIn('src/app/components/page.tsx').filter(
+    const dead = hrefsIn('src/app/components/page.tsx', 'components').filter(
       (h) => !routes.has(h)
     );
     assert.deepEqual(dead, [], `죽은 링크: ${dead.join(', ')}`);
   });
 
   it('사이드바의 모든 링크가 실제 라우트를 가리킨다', () => {
-    const dead = hrefsIn('src/components/layout/Sidebar.tsx').filter(
-      (h) => !routes.has(h)
-    );
+    const dead = hrefsIn(
+      'src/components/layout/Sidebar.tsx',
+      'components'
+    ).filter((h) => !routes.has(h));
     assert.deepEqual(dead, [], `죽은 링크: ${dead.join(', ')}`);
   });
 
   it('모든 라우트가 overview에 올라 있다 — 만들고 목록에 안 넣으면 아무도 못 찾는다', () => {
-    const listed = new Set(hrefsIn('src/app/components/page.tsx'));
+    const listed = new Set(
+      hrefsIn('src/app/components/page.tsx', 'components')
+    );
     const orphans = [...routes].filter((r) => !listed.has(r));
     assert.deepEqual(orphans, [], `목록에 없는 라우트: ${orphans.join(', ')}`);
   });
@@ -62,6 +66,46 @@ describe('컴포넌트 링크', () => {
       unknown,
       [],
       `라우트 없는 Vue 슬러그: ${unknown.join(', ')}`
+    );
+  });
+});
+
+/**
+ * 블록도 같은 병을 앓고 있었다 — 라우트 28개 중 **9개가 overview 목록에만 없었다**
+ * (차트 4종과 CMS 관리 5종). 사이드바엔 있어서 눈으로는 안 보였다.
+ */
+describe('블록 링크', () => {
+  const blockRoutes = routesOf('blocks');
+
+  it('overview의 모든 링크가 실제 라우트를 가리킨다', () => {
+    const dead = hrefsIn('src/app/blocks/page.tsx', 'blocks').filter(
+      (h) => !blockRoutes.has(h)
+    );
+    assert.deepEqual(dead, [], `죽은 링크: ${dead.join(', ')}`);
+  });
+
+  it('사이드바의 모든 링크가 실제 라우트를 가리킨다', () => {
+    const dead = hrefsIn('src/components/layout/Sidebar.tsx', 'blocks').filter(
+      (h) => !blockRoutes.has(h)
+    );
+    assert.deepEqual(dead, [], `죽은 링크: ${dead.join(', ')}`);
+  });
+
+  it('모든 라우트가 overview에 올라 있다', () => {
+    const listed = new Set(hrefsIn('src/app/blocks/page.tsx', 'blocks'));
+    const orphans = [...blockRoutes].filter((r) => !listed.has(r));
+    assert.deepEqual(orphans, [], `목록에 없는 라우트: ${orphans.join(', ')}`);
+  });
+
+  it('Vue 블록 슬러그가 전부 실제 라우트다 (오늘은 0개)', () => {
+    const vb = JSON.parse(
+      fs.readFileSync(path.join(ROOT, 'src/lib/vue-blocks.json'), 'utf-8')
+    );
+    const unknown = Object.keys(vb).filter((s) => !blockRoutes.has(s));
+    assert.deepEqual(
+      unknown,
+      [],
+      `라우트 없는 Vue 블록: ${unknown.join(', ')}`
     );
   });
 });

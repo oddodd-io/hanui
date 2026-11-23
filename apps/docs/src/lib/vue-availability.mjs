@@ -41,21 +41,27 @@ export function vueDocMode(framework, pathname, vueApi) {
  * 달라서 이름으로 맞추면 어긋난다.
  *
  * @template {{href: string}} T
- * @param {T[]} components
+ * @param {T[]} items
  * @param {string} framework 'react' | 'vue'
- * @param {Record<string, unknown>} vueApi
+ * @param {Record<string, unknown>} available 슬러그 → API (소스에서 생성)
+ * @param {string} [section] 걸러낼 구역. 'components'(기본) 또는 'blocks'
  * @returns {T[]}
  */
-export function filterByFramework(components, framework, vueApi) {
-  if (framework !== 'vue') return components;
-  return components.filter((c) => {
+export function filterByFramework(
+  items,
+  framework,
+  available,
+  section = 'components'
+) {
+  if (framework !== 'vue') return items;
+  return items.filter((c) => {
     const segments = String(c?.href ?? '')
       .split('/')
       .filter(Boolean);
-    // 컴포넌트 **상세** 링크(`/components/<슬러그>`)만 거른다.
+    // **상세** 링크(`/<구역>/<슬러그>`)만 거른다.
     // 사이드바의 'Overview'(`/components`)처럼 상세가 아닌 항목은 그대로 둔다 —
     // 걸러버리면 Vue에서 목록으로 돌아갈 길이 사라진다.
-    if (segments[0] !== 'components' || segments.length < 2) return true;
-    return Object.prototype.hasOwnProperty.call(vueApi, segments[1]);
+    if (segments[0] !== section || segments.length < 2) return true;
+    return Object.prototype.hasOwnProperty.call(available, segments[1]);
   });
 }

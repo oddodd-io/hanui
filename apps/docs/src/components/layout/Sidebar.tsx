@@ -3,6 +3,7 @@
 import { useFramework } from '@/components/FrameworkTabs';
 import { filterByFramework } from '@/lib/vue-availability.mjs';
 import vueApi from '@/lib/vue-api.json';
+import vueBlocks from '@/lib/vue-blocks.json';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useRef } from 'react';
@@ -310,14 +311,23 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const getNavigation = () => {
     if (pathname?.startsWith('/docs')) return getStartedNavigation;
     if (pathname?.startsWith('/design-system')) return designSystemNavigation;
-    // Vue 주소에서는 Vue에 있는 컴포넌트만 남긴다. 거르지 않으면 63개가 뜨는데
+    // Vue 주소에서는 Vue에 있는 것만 남긴다. 거르지 않으면 컴포넌트 63개가 뜨는데
     // 그중 42개는 Vue에 없어서, 눌러서 들어가야 없다는 걸 알게 된다.
+    //
+    // 항목이 다 빠진 묶음은 **제목까지 지운다.** 안 그러면 "인증 / 결제·폼 / …"
+    // 제목만 줄줄이 남아 뭔가 접혀 있는 것처럼 보인다.
+    const narrow = (sections, available, section) =>
+      sections
+        .map((s) => ({
+          ...s,
+          items: filterByFramework(s.items, framework, available, section),
+        }))
+        .filter((s) => s.items.length > 0);
+
     if (pathname?.startsWith('/components'))
-      return componentsNavigation.map((section) => ({
-        ...section,
-        items: filterByFramework(section.items, framework, vueApi),
-      }));
-    if (pathname?.startsWith('/blocks')) return blocksNavigation;
+      return narrow(componentsNavigation, vueApi, 'components');
+    if (pathname?.startsWith('/blocks'))
+      return narrow(blocksNavigation, vueBlocks, 'blocks');
     if (pathname?.startsWith('/templates')) return templatesNavigation;
     return componentsNavigation;
   };

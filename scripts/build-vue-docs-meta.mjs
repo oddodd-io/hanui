@@ -19,6 +19,16 @@ import path from 'node:path';
 const SRC = 'packages/vue/src/components';
 const OUT = 'apps/docs/src/lib/vue-api.json';
 
+/**
+ * Vue 블록. React는 `packages/react/src/components/blocks/`에 47개가 있는데
+ * Vue에는 폴더 자체가 없다 — 그래서 **오늘은 빈 목록**이 나온다.
+ *
+ * 빈 목록도 생성한다. 문서가 "Vue 블록 없음"을 손으로 적어 두면, 나중에 블록을
+ * 만들고 그 문장을 지우는 걸 잊는다. 폴더가 생기면 저절로 목록에 뜬다.
+ */
+const BLOCKS_SRC = 'packages/vue/src/components/blocks';
+const BLOCKS_OUT = 'apps/docs/src/lib/vue-blocks.json';
+
 /** 문서 슬러그가 Vue 이름과 다른 경우 (build-registry-vue.mjs와 같은 규칙) */
 const DOC_SLUG = { SkipLink: 'skiplink', CardList: 'structured-list' };
 
@@ -139,32 +149,43 @@ function describe(text) {
   return m ? m[1].trim() : '';
 }
 
-const comps = fs
-  .readdirSync(SRC, { withFileTypes: true })
-  .filter((d) => d.isDirectory())
-  .map((d) => d.name)
-  .filter((n) => fs.existsSync(path.join(SRC, n, `${n}.vue`)))
-  .sort();
+/** `<dir>/<Name>/<Name>.vue` 묶음을 읽어 슬러그→API 맵으로 */
+function collect(dir) {
+  if (!fs.existsSync(dir)) return {}; // 폴더가 없으면 빈 목록 (Vue 블록이 오늘 그렇다)
+  const names = fs
+    .readdirSync(dir, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .filter((n) => fs.existsSync(path.join(dir, n, `${n}.vue`)))
+    .sort();
 
-const api = {};
-for (const comp of comps) {
-  const text = fs.readFileSync(path.join(SRC, comp, `${comp}.vue`), 'utf-8');
-  const defaults = readDefaults(text);
-  const aliases = readTypeAliases(text);
-  const slug = DOC_SLUG[comp] ?? kebab(comp);
-  api[slug] = {
-    component: comp,
-    install: kebab(comp),
-    description: describe(text),
-    props: readProps(text, comp).map((p) => ({
-      ...p,
-      type: aliases[p.type] ?? p.type,
-      default: defaults[p.name] ?? null,
-    })),
-    emits: readEmits(text),
-    slots: readSlots(text),
-  };
+  const out = {};
+  for (const comp of names) {
+    const text = fs.readFileSync(path.join(dir, comp, `${comp}.vue`), 'utf-8');
+    const defaults = readDefaults(text);
+    const aliases = readTypeAliases(text);
+    const slug = DOC_SLUG[comp] ?? kebab(comp);
+    out[slug] = {
+      component: comp,
+      install: kebab(comp),
+      description: describe(text),
+      props: readProps(text, comp).map((p) => ({
+        ...p,
+        type: aliases[p.type] ?? p.type,
+        default: defaults[p.name] ?? null,
+      })),
+      emits: readEmits(text),
+      slots: readSlots(text),
+    };
+  }
+  return out;
 }
+
+// 블록 폴더는 components 아래에 있으므로 컴포넌트 수집에서 빼야 섞이지 않는다.
+const api = collect(SRC);
+delete api.blocks;
+const blocks = collect(BLOCKS_SRC);
+const comps = Object.keys(api);
 
 async function format(value) {
   const text = JSON.stringify(value, null, 2) + '\n';
@@ -177,27 +198,36 @@ async function format(value) {
   }
 }
 
-const output = await format(api);
+const outputs = [
+  [OUT, api, await format(api)],
+  [BLOCKS_OUT, blocks, await format(blocks)],
+];
 
 if (process.argv.includes('--check')) {
-  let same = false;
-  try {
-    same =
-      JSON.stringify(JSON.parse(fs.readFileSync(OUT, 'utf-8'))) ===
-      JSON.stringify(api);
-  } catch {
-    same = false;
-  }
-  if (same) {
-    console.log(`✅ ${OUT} 이(가) 소스와 일치합니다 (${comps.length}개).`);
+  const stale = outputs.filter(([file, expected]) => {
+    try {
+      return (
+        JSON.stringify(JSON.parse(fs.readFileSync(file, 'utf-8'))) !==
+        JSON.stringify(expected)
+      );
+    } catch {
+      return true;
+    }
+  });
+  if (stale.length === 0) {
+    console.log(
+      `✅ 소스와 일치합니다 — 컴포넌트 ${comps.length}개, 블록 ${Object.keys(blocks).length}개`
+    );
     process.exit(0);
   }
-  console.error(
-    `❌ ${OUT} 이(가) 소스와 다릅니다. \`node scripts/build-vue-docs-meta.mjs\`로 다시 생성하세요.`
-  );
+  for (const [file] of stale)
+    console.error(`❌ ${file} 이(가) 소스와 다릅니다.`);
+  console.error('`node scripts/build-vue-docs-meta.mjs`로 다시 생성하세요.');
   process.exit(1);
 }
 
-fs.mkdirSync(path.dirname(OUT), { recursive: true });
-fs.writeFileSync(OUT, output);
-console.log(`${OUT} — ${comps.length}개 생성`);
+for (const [file, , text] of outputs) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, text);
+  console.log(`${file} — ${Object.keys(JSON.parse(text)).length}개 생성`);
+}

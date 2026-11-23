@@ -140,3 +140,43 @@ describe('filterByFramework', () => {
     );
   });
 });
+
+describe('filterByFramework — blocks 구역', () => {
+  const BLOCKS = [
+    { title: 'Overview', href: '/blocks' },
+    { title: 'Login Form', href: '/blocks/login-form' },
+    { title: 'Search Bar', href: '/blocks/search-bar' },
+  ];
+
+  it('Vue 블록이 하나도 없으면 상세는 전부 빠지고 Overview만 남는다', () => {
+    assert.deepEqual(
+      filterByFramework(BLOCKS, 'vue', {}, 'blocks').map((b) => b.title),
+      ['Overview']
+    );
+  });
+
+  it('Vue 블록이 생기면 저절로 남는다', () => {
+    assert.deepEqual(
+      filterByFramework(BLOCKS, 'vue', { 'login-form': {} }, 'blocks').map(
+        (b) => b.title
+      ),
+      ['Overview', 'Login Form']
+    );
+  });
+
+  it('React면 그대로', () => {
+    assert.deepEqual(filterByFramework(BLOCKS, 'react', {}, 'blocks'), BLOCKS);
+  });
+
+  it('구역이 다르면 건드리지 않는다 — blocks 기준으로 components 링크를 거르지 않는다', () => {
+    const mixed = [{ href: '/components/accordion' }];
+    assert.deepEqual(filterByFramework(mixed, 'vue', {}, 'blocks'), mixed);
+  });
+
+  it('기본 구역은 components다', () => {
+    assert.deepEqual(
+      filterByFramework([{ href: '/components/accordion' }], 'vue', {}),
+      []
+    );
+  });
+});
