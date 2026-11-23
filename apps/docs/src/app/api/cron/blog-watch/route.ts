@@ -44,15 +44,24 @@ export const revalidate = 0;
 const QUEUE_PATH = 'apps/docs/blog-queue';
 
 /**
- * 알람 둘은 **라벨도 이슈도 따로 쓴다.**
+ * 알람 둘은 **뜻이 다르므로 라벨도 이슈도 따로 쓴다.**
  *
  * 섞으면 알람이 무슨 뜻인지 알 수 없게 된다(같은 이유로 `findOverdue`가 날짜 없는 글을
  * 따로 뺀다). 둘은 원인도 할 일도 다르다 —
- *   MISSED: 글은 있는데 발행이 안 돌았다 → 워크플로우를 수동 실행한다
- *   LOW   : 발행은 도는데 쓸 글이 없다  → 글을 쓴다
+ *   MISSED : 글은 있는데 발행이 안 돌았다 → 워크플로우를 수동 실행한다
+ *   RESTOCK: 발행은 도는데 쓸 글이 없다  → 글을 쓴다
+ *
+ * 반대로 **같은 뜻이면 스케줄러가 달라도 같은 라벨을 쓴다.** 두 라벨 모두 발행
+ * 워크플로우(.github/workflows/daily-publish.yml)도 같이 쓴다. 한 조건에 이슈가 둘로
+ * 갈라지면 한쪽을 닫아도 다른 쪽이 남아, 고쳤는데 알람이 계속 울리는 꼴이 된다.
+ *
+ * 왜 재고를 여기서도 보나 — 워크플로우에도 재고 알림이 있지만 **그 알림은 워크플로우가
+ * 돌 때만 돈다.** 2026-11-16에 예약 두 번이 모두 건너뛰어졌을 때 발행만 빠진 게 아니라
+ * 재고 감시도 같이 쉬었다. 감시를 감시 대상과 같은 스케줄러에 두지 않는다는 원칙을
+ * 부재 감시에만 적용하고 재고 감시에는 빠뜨렸던 것이다.
  */
 const LABEL_MISSED = 'blog-publish-missed';
-const LABEL_LOW = 'blog-queue-low';
+const LABEL_RESTOCK = 'blog-restock';
 
 /**
  * 재고가 이 편수 **미만**이면 알린다. 0편이 되고 나서 알리면 이미 끊긴 뒤다.
@@ -253,18 +262,22 @@ function lowStockBody(
     '',
     '### 무슨 뜻인가',
     '',
-    '발행이 밀린 게 아니라 **쓸 글이 없는** 것입니다. 둘은 다른 문제입니다.',
-    '',
-    `큐가 비면 발행 부재 감시(\`${LABEL_MISSED}\`)는 **아무것도 알리지 않습니다.**`,
-    '그 감시는 "발행일이 지났는데 큐에 남아 있는 글"을 찾는데, 큐가 비면 찾을 게 없기 때문입니다.',
-    '그래서 밀린 편수와 **별개로 재고를 셉니다.** 조용히 멈추는 걸 막으려는 것이 이 알람의 전부입니다.',
+    '발행이 밀린 게 아니라 **쓸 글이 없는** 것입니다. 둘은 다른 문제입니다',
+    `(발행이 밀린 건 \`${LABEL_MISSED}\` 이슈로 따로 옵니다).`,
     '',
     '### 지금 할 일',
     '',
     '1. `docs/worklog/`에서 `글감: 미정` 또는 `글감(트랙 …)` 항목을 꺼냅니다.',
     '2. `/blog`로 글을 쓰고 `apps/docs/blog-queue/`에 발행일을 붙여 넣습니다.',
     '',
-    `재고가 **${minStock}편 이상**으로 돌아오면 이 이슈는 자동으로 닫힙니다.`
+    `재고가 **${minStock}편 이상**으로 돌아오면 이 이슈는 자동으로 닫힙니다.`,
+    '',
+    '---',
+    '',
+    '이 이슈는 발행 워크플로우와 Vercel Cron이 **함께** 씁니다. 워크플로우 쪽 재고 알림은',
+    '워크플로우가 돌 때만 도는데, GitHub 스케줄러가 실행을 통째로 건너뛰면 그날은 재고도',
+    '아무도 보지 않습니다(2026-11-16에 예약 두 번이 모두 건너뛰어졌습니다). 그래서 다른',
+    '스케줄러에서 한 번 더 셉니다. 둘 다 같은 이슈를 열고 닫으므로 알림이 두 번 오지 않습니다.'
   );
   return lines.join('\n');
 }
@@ -410,14 +423,13 @@ export async function GET(request: NextRequest) {
     const lowStock = await syncAlarm({
       repo,
       token,
-      label: LABEL_LOW,
+      label: LABEL_RESTOCK,
       labelColor: 'FBCA04',
-      labelDescription: '예약 글 재고 부족 (고갈 감지)',
+      labelDescription: '블로그 예약글 재고 알림',
       firing: upcoming.length < minStock,
-      title:
-        upcoming.length === 0
-          ? '🟡 블로그 예약 큐가 비었습니다 — 올라갈 글이 없습니다'
-          : `🟡 블로그 예약 글이 ${upcoming.length}편 남았습니다 (기준 ${minStock}편)`,
+      // 제목은 워크플로우 쪽과 **글자까지 같게 맞춘다.** 둘이 같은 이슈를 쓰는데
+      // 형식이 다르면 돌 때마다 제목을 서로 되돌린다.
+      title: `📝 블로그 예약글 재고 부족 (남은 ${upcoming.length}편)`,
       body: lowStockBody(upcoming, today, minStock),
       recurComment:
         upcoming.length === 0

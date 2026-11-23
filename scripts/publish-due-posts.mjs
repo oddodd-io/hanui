@@ -12,6 +12,7 @@ import path from 'path';
 // 둘이 따로 세면 "발행은 했다는데 감시는 밀렸다고 한다"가 된다.
 import {
   daysLate,
+  findUpcoming,
   kstToday,
   readField,
 } from '../apps/docs/src/lib/blog-queue.mjs';
@@ -58,9 +59,27 @@ for (const post of due) {
   }
 }
 
-const remaining =
-  fs.readdirSync(QUEUE_DIR).filter((f) => f.endsWith('.mdx')).length -
-  (DRY_RUN ? due.length : 0);
+// 재고는 **파일 수가 아니라 앞으로 나갈 편수**다. date가 없는 글은 이 스크립트가
+// 건너뛰므로 큐에 영원히 남는데(위 경고), 파일 수로 세면 그 글들이 재고를 부풀려
+// "재고 3편"이라며 알람이 안 울린 채 발행이 끊긴다.
+//
+// 부재 감시(app/api/cron/blog-watch)도 같은 findUpcoming으로 센다. 둘이 따로 세면
+// 같은 이슈에 번갈아 다른 편수를 적어 "발행은 3편이라는데 감시는 1편이라 한다"가 된다.
+const remaining = findUpcoming(
+  fs
+    .readdirSync(QUEUE_DIR)
+    .filter((f) => f.endsWith('.mdx'))
+    .map((file) => ({
+      file,
+      date: readField(
+        fs.readFileSync(path.join(QUEUE_DIR, file), 'utf-8'),
+        'date'
+      ),
+    }))
+    // DRY_RUN이면 파일을 안 옮겼으므로, 이번에 나갈 글을 손으로 빼야 실제 실행과 같아진다.
+    .filter((e) => !(DRY_RUN && due.some((d) => d.file === e.file))),
+  today
+).length;
 
 // 발행일이 **어제 이하**인 글을 지금 올렸다면, 그 글을 가져가야 했던 실행이 없었던 것이다.
 // 스크립트가 date <= today로 집기 때문에 밀린 글은 조용히 따라잡히고 끝난다 —
