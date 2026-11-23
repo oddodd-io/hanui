@@ -43,10 +43,24 @@ export function kstToday(now = Date.now()) {
  * @returns {string} 없으면 빈 문자열
  */
 export function readField(text, field) {
-  const m = text.match(
-    new RegExp(`^${field}:\\s*['"]?([^'"\\n]+)['"]?\\s*$`, 'm')
-  );
-  return m ? m[1].trim() : '';
+  const m = text.match(new RegExp(`^${field}:[ \\t]*(.*)$`, 'm'));
+  if (!m) return '';
+  const raw = m[1].trim();
+
+  // 감싼 따옴표만 벗긴다. **값 안의 따옴표는 건드리지 않는다.**
+  // 예전 정규식은 값을 `[^'"\\n]+`로 잡아서, 제목에 따옴표가 들어가면 통째로 매칭에
+  // 실패하고 빈 문자열을 돌려줬다. 실제로
+  //   title: 'axe가 "판단 불가"로 남긴 661곳을 …'
+  // 이 그 경우였고, 발행 커밋 제목이 `publish: … (남은 4편) —` 로 비어 나갔다(ba19da5).
+  const q = raw[0];
+  if (
+    (q === "'" || q === '"') &&
+    raw.length >= 2 &&
+    raw[raw.length - 1] === q
+  ) {
+    return raw.slice(1, -1).trim();
+  }
+  return raw;
 }
 
 /**

@@ -202,3 +202,42 @@ describe('runsOutOn', () => {
     assert.equal(runsOutOn(findUpcoming(q, today)), '2026-11-24');
   });
 });
+
+/**
+ * 제목에 따옴표가 들어가면 예전 정규식이 통째로 실패해 빈 문자열을 돌려줬다.
+ * 발행 커밋 제목이 비어 나간 실제 사고(ba19da5)의 원인이다.
+ */
+describe('readField — 값 안의 따옴표', () => {
+  it('큰따옴표가 든 제목을 그대로 읽는다', () => {
+    const mdx = [
+      '---',
+      'title: \'axe가 "판단 불가"로 남긴 661곳을 직접 계산했어요\'',
+      "date: '2026-11-19'",
+      '---',
+    ].join('\n');
+    assert.equal(
+      readField(mdx, 'title'),
+      'axe가 "판단 불가"로 남긴 661곳을 직접 계산했어요'
+    );
+    assert.equal(readField(mdx, 'date'), '2026-11-19');
+  });
+
+  it('감싼 따옴표만 벗기고 안쪽은 남긴다', () => {
+    assert.equal(readField('title: "큰따옴표"', 'title'), '큰따옴표');
+    assert.equal(readField("title: '작은따옴표'", 'title'), '작은따옴표');
+    assert.equal(readField('title: 따옴표 없음', 'title'), '따옴표 없음');
+  });
+
+  it('한쪽만 따옴표면 벗기지 않는다 — 값을 깎아내지 않는다', () => {
+    assert.equal(readField("title: '안 닫힘", 'title'), "'안 닫힘");
+  });
+
+  it('값이 비면 빈 문자열', () => {
+    assert.equal(readField('title:', 'title'), '');
+    assert.equal(readField('date: ', 'date'), '');
+  });
+
+  it('없는 칸은 빈 문자열', () => {
+    assert.equal(readField('title: 있음', 'series'), '');
+  });
+});
