@@ -4,10 +4,10 @@
   "private": true,
   "description": "Documentation site for HANUI",
   "scripts": {
-    "dev": "next dev",
-    "dev:clean": "rm -rf .next && next dev",
+    "dev": "next dev -p ${PORT:-4000}",
+    "dev:clean": "rm -rf .next && next dev -p ${PORT:-4000}",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p ${PORT:-4000}",
     "lint": "next lint --max-warnings 100",
     "clean": "rm -rf .next"
   },

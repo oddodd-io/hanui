@@ -29,7 +29,8 @@ pnpm dev
 
 # 문서 사이트만 실행 (추천)
 pnpm dev:docs
-# → http://localhost:3000
+# → http://localhost:4000  (3000은 다른 작업에 쓰므로 비켜 둔다)
+#    다른 포트가 필요하면: PORT=4500 pnpm dev:docs
 
 # 특정 패키지만 실행
 pnpm --filter @hanui/react dev
@@ -226,7 +227,8 @@ const classes = computed(() =>
   cn(
     'z-50 overflow-hidden rounded-md px-3 py-1.5 text-sm shadow-md',
     props.variant === 'default' && 'bg-krds-gray-90 text-white',
-    props.variant === 'light' && 'bg-white text-krds-gray-90 border border-krds-gray-20',
+    props.variant === 'light' &&
+      'bg-white text-krds-gray-90 border border-krds-gray-20',
     props.class
   )
 );
@@ -285,7 +287,9 @@ export interface ButtonProps {
 
 // 3. Variants (CVA)
 const buttonVariants = cva('base-classes', {
-  variants: { /* ... */ }
+  variants: {
+    /* ... */
+  },
 });
 
 // 4. Component
@@ -306,16 +310,16 @@ export { Button, buttonVariants };
 
 ```tsx
 // ✅ Good - KRDS 토큰 사용
-'bg-krds-primary-60'
-'text-krds-gray-90'
-'border-krds-gray-30'
-'p-krds-4'
+'bg-krds-primary-60';
+'text-krds-gray-90';
+'border-krds-gray-30';
+'p-krds-4';
 
 // ❌ Bad - 하드코딩
-'bg-blue-600'
-'text-gray-900'
-'border-gray-300'
-'p-4'
+'bg-blue-600';
+'text-gray-900';
+'border-gray-300';
+'p-4';
 ```
 
 ### 접근성 필수 요소
