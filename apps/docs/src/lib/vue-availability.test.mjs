@@ -1,7 +1,11 @@
 /** 실행: node --test apps/docs/src/lib/vue-availability.test.mjs */
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { vueDocMode, filterByFramework } from './vue-availability.mjs';
+import {
+  vueDocMode,
+  filterByFramework,
+  hideVueOnly,
+} from './vue-availability.mjs';
 
 const API = { badge: {}, button: {}, skiplink: {}, 'structured-list': {} };
 
@@ -178,5 +182,35 @@ describe('filterByFramework — blocks 구역', () => {
       filterByFramework([{ href: '/components/accordion' }], 'vue', {}),
       []
     );
+  });
+});
+
+describe('hideVueOnly', () => {
+  const LIST = [
+    { title: 'Overview', href: '/components' },
+    { title: 'Badge', href: '/components/badge' },
+    { title: 'DropMenu', href: '/components/drop-menu' },
+  ];
+  const ONLY = ['drop-menu', 'mobile-menu'];
+
+  it('React에서는 Vue 전용을 뺀다', () => {
+    assert.deepEqual(
+      hideVueOnly(LIST, 'react', ONLY).map((c) => c.title),
+      ['Overview', 'Badge']
+    );
+  });
+
+  it('Vue에서는 그대로 둔다 — 거기선 쓸 수 있다', () => {
+    assert.deepEqual(hideVueOnly(LIST, 'vue', ONLY), LIST);
+  });
+
+  it('Overview는 남긴다', () => {
+    assert.ok(
+      hideVueOnly(LIST, 'react', ONLY).some((c) => c.title === 'Overview')
+    );
+  });
+
+  it('목록이 비면 아무것도 안 뺀다', () => {
+    assert.deepEqual(hideVueOnly(LIST, 'react', []), LIST);
   });
 });

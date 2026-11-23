@@ -53,15 +53,39 @@ describe('컴포넌트 링크', () => {
     assert.deepEqual(orphans, [], `목록에 없는 라우트: ${orphans.join(', ')}`);
   });
 
+  it('모든 라우트가 사이드바에도 올라 있다', () => {
+    // 목록과 사이드바는 따로 관리돼 한쪽에만 빠지는 일이 실제로 있었다
+    // (link·structured-list·visually-hidden이 사이드바에만 없었다).
+    const listed = new Set(
+      hrefsIn('src/components/layout/Sidebar.tsx', 'components')
+    );
+    const orphans = [...routes].filter((r) => !listed.has(r));
+    assert.deepEqual(
+      orphans,
+      [],
+      `사이드바에 없는 라우트: ${orphans.join(', ')}`
+    );
+  });
+
+  it('Vue 전용 목록이 실제와 맞는다 — Vue에 있고 문서 페이지도 있다', () => {
+    const api = JSON.parse(
+      fs.readFileSync(path.join(ROOT, 'src/lib/vue-api.json'), 'utf-8')
+    );
+    const only = JSON.parse(
+      fs.readFileSync(path.join(ROOT, 'src/lib/vue-only.json'), 'utf-8')
+    );
+    const notInVue = only.filter((s) => !api[s]);
+    assert.deepEqual(notInVue, [], `Vue에 없음: ${notInVue.join(', ')}`);
+    const noDoc = only.filter((s) => !routes.has(s));
+    assert.deepEqual(noDoc, [], `문서 없음: ${noDoc.join(', ')}`);
+  });
+
   it('Vue API의 슬러그가 전부 실제 라우트다', () => {
     const api = JSON.parse(
       fs.readFileSync(path.join(ROOT, 'src/lib/vue-api.json'), 'utf-8')
     );
-    // 문서 페이지가 아직 없는 Vue 컴포넌트는 알고 있는 예외로 둔다.
-    const known = new Set(['drop-menu', 'mobile-menu']);
-    const unknown = Object.keys(api).filter(
-      (s) => !routes.has(s) && !known.has(s)
-    );
+    // 예외 없음 — Vue 컴포넌트 23개 전부 문서 페이지가 있다.
+    const unknown = Object.keys(api).filter((s) => !routes.has(s));
     assert.deepEqual(
       unknown,
       [],
@@ -95,6 +119,18 @@ describe('블록 링크', () => {
     const listed = new Set(hrefsIn('src/app/blocks/page.tsx', 'blocks'));
     const orphans = [...blockRoutes].filter((r) => !listed.has(r));
     assert.deepEqual(orphans, [], `목록에 없는 라우트: ${orphans.join(', ')}`);
+  });
+
+  it('모든 라우트가 사이드바에도 올라 있다', () => {
+    const listed = new Set(
+      hrefsIn('src/components/layout/Sidebar.tsx', 'blocks')
+    );
+    const orphans = [...blockRoutes].filter((r) => !listed.has(r));
+    assert.deepEqual(
+      orphans,
+      [],
+      `사이드바에 없는 라우트: ${orphans.join(', ')}`
+    );
   });
 
   it('Vue 블록 슬러그가 전부 실제 라우트다 (오늘은 0개)', () => {

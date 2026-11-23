@@ -29,6 +29,19 @@ const OUT = 'apps/docs/src/lib/vue-api.json';
 const BLOCKS_SRC = 'packages/vue/src/components/blocks';
 const BLOCKS_OUT = 'apps/docs/src/lib/vue-blocks.json';
 
+/**
+ * React 대응이 없는 컴포넌트. 목록·사이드바에서 **React 쪽에 숨긴다.**
+ *
+ * 왜 손으로 적나 — React는 레지스트리 이름과 문서 슬러그가 많이 어긋나 있어
+ * (레지스트리에만 있고 문서가 없는 항목이 15개) 이름 매칭으로 "React에 있나"를
+ * 판정하면 틀린다. 틀린 자동 판정보다 **맞는 작은 목록**이 낫다.
+ *
+ * 늘어나면 그때 생성으로 바꾼다. 지금은 테스트가 이 목록을 지킨다
+ * (`component-links.test.mjs`: Vue에 실재하고 문서 페이지가 있어야 한다).
+ */
+const VUE_ONLY = ['drop-menu', 'mobile-menu'];
+const VUE_ONLY_OUT = 'apps/docs/src/lib/vue-only.json';
+
 /** 문서 슬러그가 Vue 이름과 다른 경우 (build-registry-vue.mjs와 같은 규칙) */
 const DOC_SLUG = { SkipLink: 'skiplink', CardList: 'structured-list' };
 
@@ -198,9 +211,18 @@ async function format(value) {
   }
 }
 
+// 목록에 적은 슬러그가 실제로 Vue에 있는지 여기서 먼저 막는다.
+for (const slug of VUE_ONLY) {
+  if (!api[slug]) {
+    console.error(`❌ VUE_ONLY에 적힌 '${slug}'가 Vue 컴포넌트에 없습니다.`);
+    process.exit(1);
+  }
+}
+
 const outputs = [
   [OUT, api, await format(api)],
   [BLOCKS_OUT, blocks, await format(blocks)],
+  [VUE_ONLY_OUT, VUE_ONLY, await format(VUE_ONLY)],
 ];
 
 if (process.argv.includes('--check')) {
@@ -216,7 +238,7 @@ if (process.argv.includes('--check')) {
   });
   if (stale.length === 0) {
     console.log(
-      `✅ 소스와 일치합니다 — 컴포넌트 ${comps.length}개, 블록 ${Object.keys(blocks).length}개`
+      `✅ 소스와 일치합니다 — 컴포넌트 ${comps.length}개, 블록 ${Object.keys(blocks).length}개, Vue 전용 ${VUE_ONLY.length}개`
     );
     process.exit(0);
   }

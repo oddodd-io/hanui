@@ -65,3 +65,27 @@ export function filterByFramework(
     return Object.prototype.hasOwnProperty.call(available, segments[1]);
   });
 }
+
+/**
+ * React 주소에서 **Vue 전용** 컴포넌트를 뺀다.
+ *
+ * `filterByFramework`의 반대 방향이다. 둘을 한 함수로 합치지 않는 이유 —
+ * 판정 근거가 다르다. Vue 쪽은 소스에서 생성한 목록으로 "있다"를 확인하고,
+ * React 쪽은 "없다"를 손으로 적은 작은 목록으로 뺀다.
+ *
+ * @template {{href: string}} T
+ * @param {T[]} items
+ * @param {string} framework 'react' | 'vue'
+ * @param {string[]} vueOnly Vue 전용 슬러그
+ * @returns {T[]}
+ */
+export function hideVueOnly(items, framework, vueOnly) {
+  if (framework !== 'react') return items;
+  return items.filter((c) => {
+    const segments = String(c?.href ?? '')
+      .split('/')
+      .filter(Boolean);
+    if (segments[0] !== 'components' || segments.length < 2) return true;
+    return !vueOnly.includes(segments[1]);
+  });
+}

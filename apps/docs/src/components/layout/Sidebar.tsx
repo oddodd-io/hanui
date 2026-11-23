@@ -1,9 +1,10 @@
 'use client';
 
 import { useFramework } from '@/components/FrameworkTabs';
-import { filterByFramework } from '@/lib/vue-availability.mjs';
+import { filterByFramework, hideVueOnly } from '@/lib/vue-availability.mjs';
 import vueApi from '@/lib/vue-api.json';
 import vueBlocks from '@/lib/vue-blocks.json';
+import vueOnly from '@/lib/vue-only.json';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useRef } from 'react';
@@ -83,6 +84,7 @@ const componentsNavigation = [
       { title: 'In-page Navigation', href: '/components/in-page-navigation' },
       { title: 'Input', href: '/components/input' },
       { title: 'Label', href: '/components/label' },
+      { title: 'Link', href: '/components/link' },
       { title: 'List', href: '/components/list' },
       { title: 'Main Menu', href: '/components/main-menu' },
       { title: 'Masthead', href: '/components/masthead' },
@@ -95,6 +97,8 @@ const componentsNavigation = [
         href: '/components/section-heading-system',
       },
       { title: 'Select', href: '/components/select' },
+      { title: 'Mobile Menu', href: '/components/mobile-menu' },
+      { title: 'Drop Menu', href: '/components/drop-menu' },
       { title: 'Side Navigation', href: '/components/side-navigation' },
       { title: 'Sidebar', href: '/components/sidebar' },
       { title: 'SimpleGrid', href: '/components/simple-grid' },
@@ -102,6 +106,7 @@ const componentsNavigation = [
       { title: 'SkipLink', href: '/components/skiplink' },
       { title: 'Slider', href: '/components/slider' },
       { title: 'Spinner', href: '/components/spinner' },
+      { title: 'Structured List', href: '/components/structured-list' },
       { title: 'Stack', href: '/components/stack', isNew: true },
       {
         title: 'Step Indicator',
@@ -116,6 +121,7 @@ const componentsNavigation = [
       { title: 'Textarea', href: '/components/textarea' },
       { title: 'Toast', href: '/components/toast' },
       { title: 'Tooltip', href: '/components/tooltip' },
+      { title: 'Visually Hidden', href: '/components/visually-hidden' },
       { title: 'Wrap', href: '/components/wrap' },
     ],
   },
@@ -320,7 +326,11 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       sections
         .map((s) => ({
           ...s,
-          items: filterByFramework(s.items, framework, available, section),
+          items: hideVueOnly(
+            filterByFramework(s.items, framework, available, section),
+            framework,
+            vueOnly
+          ),
         }))
         .filter((s) => s.items.length > 0);
 

@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { SquareArrowOutUpRight } from 'lucide-react';
 import { useFramework } from '@/components/FrameworkTabs';
-import { filterByFramework } from '@/lib/vue-availability.mjs';
+import { filterByFramework, hideVueOnly } from '@/lib/vue-availability.mjs';
 import vueApi from '@/lib/vue-api.json';
+import vueOnly from '@/lib/vue-only.json';
 // Docs layout components
 import { PageSection as Section, Heading } from '@/components/content';
 
@@ -66,6 +67,16 @@ const navigationMainComponents = [
     description: '주 메뉴',
     // 라우트는 `main-menu`다. `mainmenu`로 적혀 있어 줄곧 404였다.
     href: '/components/main-menu',
+  },
+  {
+    name: 'Mobile Menu',
+    description: '모바일 전체메뉴 (Vue 전용)',
+    href: '/components/mobile-menu',
+  },
+  {
+    name: 'Drop Menu',
+    description: '헤더 유틸 드롭다운 (Vue 전용)',
+    href: '/components/drop-menu',
   },
   {
     name: 'Side Navigation',
@@ -408,7 +419,12 @@ function ComponentSection({
 }) {
   // Vue 주소에서는 Vue에 있는 것만 남긴다. 다 비면 그 묶음은 통째로 사라진다.
   const { framework } = useFramework();
-  const visible = filterByFramework(components, framework, vueApi);
+  // Vue에서는 Vue에 있는 것만, React에서는 Vue 전용을 뺀다.
+  const visible = hideVueOnly(
+    filterByFramework(components, framework, vueApi),
+    framework,
+    vueOnly
+  );
   if (visible.length === 0) return null;
 
   return (
